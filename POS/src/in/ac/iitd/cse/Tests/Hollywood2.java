@@ -4,15 +4,12 @@
 package in.ac.iitd.cse.Tests;
 
 import in.ac.iitd.cse.Classifier.SMOClassifier;
-import in.ac.iitd.cse.Properties.Props;
+import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-
-import edu.mit.jwi.morph.WordnetStemmer;
-import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 /**
  * @author mcs122810
@@ -49,7 +46,7 @@ public class Hollywood2 extends Utilities
 				case 0:
 					try
 					{
-						populateAllClips( Props.stipFeaturesDirPath );
+						populateAllClips( YouTubeDataset.stipFeaturesDirPath );
 						
 						PrepareKMeansInputFile();
 					}
@@ -131,6 +128,6 @@ public class Hollywood2 extends Utilities
 			}
 		}
 		
-		Props.state.ALLCLIPS_INITIALISED.isDone( true );
+		YouTubeDataset.state.ALLCLIPS_INITIALISED.isDone( true );
 	}
 }

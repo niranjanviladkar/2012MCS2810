@@ -3,7 +3,7 @@
  */
 package in.ac.iitd.cse.Classifier;
 
-import in.ac.iitd.cse.Properties.Props;
+import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
 import java.io.BufferedReader;
@@ -46,7 +46,7 @@ class PrepareInstance
 		readData();
 
 		// declare attributes corresponding to histogram
-		Attribute[] histogramAttrs = new Attribute[Props.KMeansNumClusters];
+		Attribute[] histogramAttrs = new Attribute[YouTubeDataset.KMeansNumClusters];
 
 		// for each element in histogram, add an attribute
 		// ATTR1, ATTR2 ... ATTR200
@@ -101,7 +101,7 @@ class PrepareInstance
 
 	private void readData() throws Exception
 	{
-		File labelsDirectory = new File( Props.labelDirPath );
+		File labelsDirectory = new File( YouTubeDataset.labelDirPath );
 		
 		File[] allFiles = labelsDirectory.listFiles();
 		
@@ -147,7 +147,7 @@ class PrepareInstance
 					uniqueLabels.add( label );
 
 				// read attribute - the histogram
-				String histogramFile = Props.histogramDirPath + File.separator + clip.getName() + ".histogram";
+				String histogramFile = YouTubeDataset.histogramDirPath + File.separator + clip.getName() + ".histogram";
 
 				try
 				{
@@ -158,7 +158,7 @@ class PrepareInstance
 
 					reader.close();
 
-					int[] histogram = new int[Props.KMeansNumClusters];
+					int[] histogram = new int[YouTubeDataset.KMeansNumClusters];
 
 					// convert histogram into integer values.
 					for ( int i = 0; i < histogram.length; i++ )

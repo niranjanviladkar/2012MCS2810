@@ -14,8 +14,6 @@ import java.util.List;
 public class YTClip
 {
 	private String			name;
-	@Deprecated
-	private List < String >	descriptionsList;
 	private List < String >	verbsList;
 	private String			mostFreqVerb;
 	private List < String >	label;
@@ -31,15 +29,8 @@ public class YTClip
 	public YTClip( String clipName )
 	{
 		this.name = clipName;
-		descriptionsList = new ArrayList < String >();
 		verbsList = new ArrayList < String >();
 		label = new ArrayList < String >();
-	}
-
-	@Deprecated
-	public void addDescription( String dscr )
-	{
-		descriptionsList.add( dscr );
 	}
 
 	public void addLabel( String lbl )
@@ -62,15 +53,6 @@ public class YTClip
 		this.name = name;
 	}
 
-	public List < String > getDescriptionsList()
-	{
-		return descriptionsList;
-	}
-
-	public void setDescriptionsList( List < String > descriptionsList )
-	{
-		this.descriptionsList = descriptionsList;
-	}
 
 	public List < String > getVerbsList()
 	{
