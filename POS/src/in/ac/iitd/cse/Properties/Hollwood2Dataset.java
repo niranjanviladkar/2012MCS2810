@@ -6,7 +6,7 @@ package in.ac.iitd.cse.Properties;
  */
 public class Hollwood2Dataset
 {
-	private static String projectRoot = "/misc/research/parags/mcs122810/ActivityRecognition/";
+	private static String	projectRoot						= "/misc/research/parags/mcs122810/ActivityRecognition/";
 
 	/**
 	 * Length of one STIP descriptor.<br/>
@@ -38,7 +38,7 @@ public class Hollwood2Dataset
 	/**
 	 * Path to the directory which will contain final clip labels.
 	 */
-	public static String	labelDirPath					= projectRoot + "dataset/Hollywood/ClipSets3/ClipSets" ;
+	public static String	labelDirPath					= projectRoot + "dataset/Hollywood/ClipSets3/ClipSets";
 
 	/**
 	 * Number of sampled descriptors to be used for KMeans clustering.
@@ -62,13 +62,12 @@ public class Hollwood2Dataset
 	public static String	stipFeaturesDirPath				= projectRoot + "features/Hollywood";
 
 	/*** Tagger model file used by MaxentTagger. ***/
-	public static String	taggerFilePath					= "/misc/buffer/Softwares/MachineLearning_Data/"
-																	+ "stanford-postagger-2012-11-11/models/"
-																	+ "english-bidirectional-distsim.tagger";
+	public static String	taggerFilePath					= "/home/mtech/mcs122810/Project/ActivityRecog/2012MCS2810/"
+																	+ "POS/tagger/english-bidirectional-distsim.tagger";
 
 	/*** Directory location of folder dict of WordNet-3.0. ***/
-	public static String	wordNet_3_0_DictFolderPath		= "/misc/buffer/Softwares/MachineLearning_Data/"
-																	+ "WordNet-3.0/dict";
+	public static String	wordNet_3_0_DictFolderPath		= "/home/mtech/mcs122810/Project/ActivityRecog/2012MCS2810/"
+																	+ "POS/dict";
 
 	public static enum state
 	{
