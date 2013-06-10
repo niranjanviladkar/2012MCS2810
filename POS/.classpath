@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/jaws-bin.jar"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/stanford-postagger.jar"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/opencsv-2.3.jar"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/JWI2.2.4_src.jar"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/ajt-2.9.jar"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/commons-math-1.2.jar"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/Jama-1.0.2.jar"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/libsvm.jar"/>
+	<classpathentry kind="lib" path="/misc/buffer/Softwares/MachineLearning_Data/ExternalJars/weka.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
