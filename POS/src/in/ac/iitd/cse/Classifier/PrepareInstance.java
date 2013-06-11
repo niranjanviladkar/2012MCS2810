@@ -3,6 +3,7 @@
  */
 package in.ac.iitd.cse.Classifier;
 
+import in.ac.iitd.cse.Properties.Common;
 import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
@@ -43,7 +44,13 @@ class PrepareInstance
 	 */
 	PrepareInstance() throws Exception
 	{
-		readData();
+		if( Common.DataSet.YOUTUBE.currentDS() == true )
+			prepareYTInstance();
+	}
+	
+	private void prepareYTInstance() throws Exception
+	{
+		readYTData();
 
 		// declare attributes corresponding to histogram
 		Attribute[] histogramAttrs = new Attribute[YouTubeDataset.KMeansNumClusters];
@@ -99,8 +106,12 @@ class PrepareInstance
 		}
 	}
 
-	private void readData() throws Exception
+	private void readYTData() throws Exception
 	{
+		// if current dataset is not YouTube, return.
+		if( Common.DataSet.YOUTUBE.currentDS() == false )
+			return;
+		
 		File labelsDirectory = new File( YouTubeDataset.labelDirPath );
 		
 		File[] allFiles = labelsDirectory.listFiles();

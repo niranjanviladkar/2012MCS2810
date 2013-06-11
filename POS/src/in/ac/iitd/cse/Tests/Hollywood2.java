@@ -4,6 +4,7 @@
 package in.ac.iitd.cse.Tests;
 
 import in.ac.iitd.cse.Classifier.SMOClassifier;
+import in.ac.iitd.cse.Properties.Common;
 import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
@@ -23,8 +24,10 @@ public class Hollywood2 extends Utilities
 	 */
 	public static void main( String[] args )
 	{
-		allClips.clear();
+		// current dataset is hollywood2
+		Common.DataSet.HOLLYWOOD2.currentDS( true );
 
+		allClips.clear();
 
 		int choice = 0;
 		boolean breakLoop = false;
@@ -43,58 +46,53 @@ public class Hollywood2 extends Utilities
 
 			switch ( choice )
 			{
-				case 0:
+				case 0 :
 					try
 					{
 						populateAllClips( YouTubeDataset.stipFeaturesDirPath );
-						
+
 						PrepareKMeansInputFile();
-					}
-					catch ( Exception e1 )
+					} catch ( Exception e1 )
 					{
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						
+
 						breakLoop = true;
 					}
 
 					break;
 
-				case 1:
+				case 1 :
 					// Run KMeans clustering
 
 					RunKMeans();
 
 					break;
 
-				case 2:
+				case 2 :
 					try
 					{
 						ClipsToHistograms();
-					}
-					catch ( IOException e1 )
+					} catch ( IOException e1 )
 					{
-						// TODO Auto-generated catch block
 						e1.printStackTrace();
 						breakLoop = true;
 					}
 					break;
 
-				case 3:
+				case 3 :
 					try
 					{
 						SMOClassifier smo = new SMOClassifier();
 						smo.Train();
 						smo.TestAndPrintResult( true );
-					}
-					catch ( Exception e )
+					} catch ( Exception e )
 					{
 						e.printStackTrace();
 						breakLoop = true;
 					}
 					break;
 
-				case 4:
+				case 4 :
 					breakLoop = true;
 					break;
 			}
@@ -127,7 +125,7 @@ public class Hollywood2 extends Utilities
 				allClips.add( clip );
 			}
 		}
-		
+
 		YouTubeDataset.state.ALLCLIPS_INITIALISED.isDone( true );
 	}
 }

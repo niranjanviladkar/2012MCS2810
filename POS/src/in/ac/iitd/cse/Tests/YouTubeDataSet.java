@@ -4,6 +4,7 @@
 package in.ac.iitd.cse.Tests;
 
 import in.ac.iitd.cse.Classifier.SMOClassifier;
+import in.ac.iitd.cse.Properties.Common;
 import in.ac.iitd.cse.Properties.YouTubeDataset;
 
 import java.io.IOException;
@@ -35,6 +36,9 @@ public class YouTubeDataSet extends Utilities
 	 */
 	public static void main( String[] args ) throws IOException, ClassNotFoundException
 	{
+		// current dataset is YouTube
+		Common.DataSet.YOUTUBE.currentDS( true );
+		
 		// Initialize dictionary
 
 		String path = YouTubeDataset.wordNet_3_0_DictFolderPath;
