@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.com.bytecode.opencsv.CSVReader;
+
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -45,19 +47,22 @@ class PrepareInstance
 	 */
 	PrepareInstance() throws Exception
 	{
+		int numCluster = 0;
+
 		if ( Common.DataSet.YOUTUBE.currentDS() == true )
-			PrepareYTInstance();
+		{
+			readYTData();
+			numCluster = YouTubeDataset.KMeansNumClusters;
+		}
 		else
 			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
-				PrepareHW2Instance();
-	}
-
-	private void PrepareYTInstance() throws Exception
-	{
-		readYTData();
+			{
+				readHW2Data();
+				numCluster = Hollywood2Dataset.KMeansNumClusters;
+			}
 
 		// declare attributes corresponding to histogram
-		Attribute[] histogramAttrs = new Attribute[YouTubeDataset.KMeansNumClusters];
+		Attribute[] histogramAttrs = new Attribute[numCluster];
 
 		// for each element in histogram, add an attribute
 		// ATTR1, ATTR2 ... ATTR200
@@ -108,38 +113,6 @@ class PrepareInstance
 			// add the instance to training set
 			TrainingSet.add( instance );
 		}
-	}
-
-	private void PrepareHW2Instance() throws Exception
-	{
-		readHW2Data();
-
-		// declare attributes corresponding to histogram
-		Attribute[] histogramAttrs = new Attribute[Hollywood2Dataset.KMeansNumClusters];
-
-		// for each element in histogram, add an attribute
-		// ATTR1, ATTR2 ... ATTR200
-		for ( int i = 0; i < histogramAttrs.length; i++ )
-			histogramAttrs[ i ] = new Attribute( "ATTR" + ( i + 1 ) );
-
-		// Declare the class attribute along with its values
-		FastVector classes = new FastVector( uniqueLabels.size() );
-
-		for ( String lbl : uniqueLabels )
-			classes.addElement( lbl );
-
-		Attribute classAttribute = new Attribute( "theClass", classes );
-
-		// Declare the feature vector
-		FastVector WekaAttributes = new FastVector( histogramAttrs.length + 1 );
-
-		// histogram attributes
-		for ( Attribute attr : histogramAttrs )
-			WekaAttributes.addElement( attr );
-
-		// class attribute
-		WekaAttributes.addElement( classAttribute );
-
 	}
 
 	private void readYTData() throws Exception
@@ -250,5 +223,62 @@ class PrepareInstance
 
 		reader.close();
 
+		CSVReader csvReader = new CSVReader( new FileReader( Hollywood2Dataset.labelDirPath + File.separator
+				+ "all_labels_train.txt" ), ' ' );
+
+		String[] nextLine = null;
+
+		while ( ( nextLine = csvReader.readNext() ) != null )
+		{
+			// add clip
+			YTClip clip = new YTClip( nextLine[ 0 ] );
+
+			// read label
+
+			for ( int i = 2; i < nextLine.length; i++ )
+			{
+				if ( nextLine[ i ].equalsIgnoreCase( "1" ) == true )
+				{
+					String lbl = uniqueLabels.get( i - 2 );
+
+					clip.setLabelAsString( lbl );
+
+					// read only first positive instance of label
+					break;
+				}
+			}
+
+			// read histograms
+			String histogramFile = Hollywood2Dataset.histogramDirPath + File.separator + clip.getName() + ".histogram";
+
+			try
+			{
+				reader = new BufferedReader( new FileReader( histogramFile ) );
+
+				// read histogram as a string
+				String[] histogramAsString = reader.readLine().split( " " );
+
+				reader.close();
+
+				int[] histogram = new int[Hollywood2Dataset.KMeansNumClusters];
+
+				// convert histogram into integer values.
+				for ( int i = 0; i < histogram.length; i++ )
+					histogram[ i ] = Integer.parseInt( histogramAsString[ i ] );
+
+				// set the label
+				clip.setHistogram( histogram );
+			}
+			catch ( FileNotFoundException e )
+			{
+				//System.err.println( "This file should exists : " + histogramFile );
+
+				continue;
+			}
+
+			discoveredClips.add( clip );
+		}
+
+		csvReader.close();
 	}
 }

@@ -525,7 +525,7 @@ class Utilities
 		{
 			BufferedReader reader = new BufferedReader( new FileReader( fileName ) );
 
-			// if file exists, close it dont process further.
+			// if file exists, close it don't process further.
 			reader.close();
 
 			process = false;
