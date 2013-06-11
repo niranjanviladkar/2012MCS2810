@@ -69,30 +69,30 @@ public class YouTubeDataSet extends Utilities
 					// Initialize the tagger
 
 					MaxentTagger tagger = new MaxentTagger( YouTubeDataset.taggerFilePath );
-					YouTubeDataset.state.TAGGER_INITIALISED.isDone( true );
+					Common.state.TAGGER_INITIALISED.isDone( true );
 
 					dict.open();
-					YouTubeDataset.state.DICT_OPENED.isDone( true );
+					Common.state.DICT_OPENED.isDone( true );
 
 					// Create stemmer
 
 					WordnetStemmer wordNetStemmer = new WordnetStemmer( dict );
-					YouTubeDataset.state.STEMMER_INITIALISED.isDone( true );
+					Common.state.STEMMER_INITIALISED.isDone( true );
 
 					// Process CSV to get set of verbs for each clip
 					CSVProcessing( tagger, wordNetStemmer );
 
 					tagger = null;
 					wordNetStemmer = null;
-					YouTubeDataset.state.STEMMER_INITIALISED.isDone( false );
-					YouTubeDataset.state.TAGGER_INITIALISED.isDone( false );
+					Common.state.STEMMER_INITIALISED.isDone( false );
+					Common.state.TAGGER_INITIALISED.isDone( false );
 
 					// make labels of each clip using WordNet Similarity
 					SimilarityComparisons( dict );
 
 					dict.close();
 					dict = null;
-					YouTubeDataset.state.DICT_OPENED.isDone( false );
+					Common.state.DICT_OPENED.isDone( false );
 
 					// try to free as much memory as possible
 					System.gc();
@@ -110,7 +110,17 @@ public class YouTubeDataSet extends Utilities
 					break;
 
 				case 2:
-					ClipsToHistograms();
+					try
+					{
+						ClipsToHistograms();
+					}
+					catch ( Exception e1 )
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						
+						breakLoop = true;
+					}
 					break;
 
 				case 3:

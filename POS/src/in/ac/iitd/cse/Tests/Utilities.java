@@ -3,6 +3,8 @@
  */
 package in.ac.iitd.cse.Tests;
 
+import in.ac.iitd.cse.Properties.Common;
+import in.ac.iitd.cse.Properties.Hollywood2Dataset;
 import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
@@ -44,7 +46,7 @@ class Utilities
 
 	static ArrayList < ISynsetID >	roots		= new ArrayList < ISynsetID >();
 
-	static double[][]				centroids	= new double[YouTubeDataset.KMeansNumClusters][YouTubeDataset.DescriptorLength];
+	static double[][]				centroids	= null;
 
 	/**
 	 * Adds a clip if not already added. If already added, just add verbs from
@@ -141,21 +143,42 @@ class Utilities
 		}
 	}
 
-	static void ClipsToHistograms() throws IOException
+	static void ClipsToHistograms() throws Exception
 	{
-		if ( YouTubeDataset.state.CLIP_TO_HISTOGRAM_DONE.isDone() == true )
+		int descLength = 0;
+		int numCluster = 0;
+		String featuresFileBase = null;
+		String histogramFileBase = null;
+
+		if ( Common.state.CLIP_TO_HISTOGRAM_DONE.isDone() == true )
 			return;
 
-		if ( YouTubeDataset.state.ALLCLIPS_INITIALISED.isDone() == false )
+		if ( Common.state.ALLCLIPS_INITIALISED.isDone() == false )
 		{
 			System.err.println( "Please initialise all clips before running this function." );
 			return;
 		}
+
+		if ( Common.DataSet.YOUTUBE.currentDS() == true )
+		{
+			descLength = YouTubeDataset.DescriptorLength;
+			featuresFileBase = YouTubeDataset.stipFeaturesDirPath + File.separator;
+			histogramFileBase = YouTubeDataset.histogramDirPath + File.separator;
+			numCluster = YouTubeDataset.KMeansNumClusters;
+		}
+		else
+			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+			{
+				descLength = Hollywood2Dataset.DescriptorLength;
+				featuresFileBase = Hollywood2Dataset.stipFeaturesDirPath + File.separator;
+				histogramFileBase = Hollywood2Dataset.histogramDirPath + File.separator;
+				numCluster = Hollywood2Dataset.KMeansNumClusters;
+			}
 		// read the centroids - output of Kmeans clustering
 
 		ReadCentroids();
 
-		double[] currentDescriptor = new double[YouTubeDataset.DescriptorLength];
+		double[] currentDescriptor = new double[descLength];
 
 		System.err.println( "Started converting Clips to histogram." );
 		for ( YTClip clip : allClips )
@@ -165,10 +188,8 @@ class Utilities
 			double currentDistance = -1;
 
 			// open corresponding features' file
-
-			String featuresFile = YouTubeDataset.stipFeaturesDirPath + File.separator + clip.getName() + ".features";
-
-			String histogramFile = YouTubeDataset.histogramDirPath + File.separator + clip.getName() + ".histogram";
+			String featuresFile = featuresFileBase + clip.getName() + ".features";
+			String histogramFile = histogramFileBase + clip.getName() + ".histogram";
 
 			File file = new File( histogramFile );
 
@@ -199,16 +220,16 @@ class Utilities
 
 			System.err.println( "ClipToHistogram : " + clip.getName() + " started." );
 
-			clip.setHistogram( new int[YouTubeDataset.KMeansNumClusters] );
+			clip.setHistogram( new int[numCluster] );
 
 			while ( scanner.hasNextDouble() )
 			{
 				// read current descriptor
-				for ( int i = 0; i < YouTubeDataset.DescriptorLength; i++ )
+				for ( int i = 0; i < descLength; i++ )
 					currentDescriptor[ i ] = scanner.nextDouble();
 
 				// find the nearest cluster
-				for ( int i = 0; i < YouTubeDataset.KMeansNumClusters; i++ )
+				for ( int i = 0; i < numCluster; i++ )
 				{
 					currentDistance = EuDistance( centroids[ i ], currentDescriptor );
 
@@ -241,7 +262,8 @@ class Utilities
 			System.err.println( "ClipToHistogram : " + clip.getName() + " done." );
 		}
 
-		YouTubeDataset.state.CLIP_TO_HISTOGRAM_DONE.isDone( true );
+		Common.state.CLIP_TO_HISTOGRAM_DONE.isDone( true );
+
 		System.err.println( "Done converting Clips to histogram." );
 
 		currentDescriptor = null;
@@ -266,7 +288,7 @@ class Utilities
 	 */
 	static void CSVProcessing( MaxentTagger tagger, WordnetStemmer wordNetStemmer ) throws IOException
 	{
-		if ( YouTubeDataset.state.ALLCLIPS_INITIALISED.isDone() == true )
+		if ( Common.state.ALLCLIPS_INITIALISED.isDone() == true )
 			return;
 
 		boolean UsePrevResult = true;
@@ -297,7 +319,8 @@ class Utilities
 		}
 		else
 		{
-			if ( YouTubeDataset.state.TAGGER_INITIALISED.isDone() == false || YouTubeDataset.state.STEMMER_INITIALISED.isDone() == false )
+			if ( Common.state.TAGGER_INITIALISED.isDone() == false
+					|| Common.state.STEMMER_INITIALISED.isDone() == false )
 			{
 				System.err.println( "Please initialise tagger and stemmer properly." );
 				return;
@@ -354,7 +377,7 @@ class Utilities
 			csvWriter.close();
 		}
 
-		YouTubeDataset.state.ALLCLIPS_INITIALISED.isDone( true );
+		Common.state.ALLCLIPS_INITIALISED.isDone( true );
 		System.err.println( "Done with CSV processing." );
 	}
 
@@ -428,7 +451,7 @@ class Utilities
 	 */
 	static void getRoots( POS pos, IDictionary dict )
 	{
-		if ( YouTubeDataset.state.ROOTS_INITIALISED.isDone() == true )
+		if ( Common.state.ROOTS_INITIALISED.isDone() == true )
 			return;
 
 		ISynset synset = null;
@@ -453,7 +476,7 @@ class Utilities
 			}
 		}
 
-		YouTubeDataset.state.ROOTS_INITIALISED.isDone( true );
+		Common.state.ROOTS_INITIALISED.isDone( true );
 	}
 
 	/**
@@ -464,7 +487,7 @@ class Utilities
 	 */
 	static void PrepareKMeansInputFile() throws IOException
 	{
-		if ( YouTubeDataset.state.ALLCLIPS_INITIALISED.isDone() == false )
+		if ( Common.state.ALLCLIPS_INITIALISED.isDone() == false )
 		{
 			System.err.println( "Please initialise all clips before running this function." );
 			return;
@@ -472,98 +495,162 @@ class Utilities
 
 		int descAdded = 0;
 
-		int maxDescPerClip = YouTubeDataset.numOfDescriptorsForClustering / allClips.size();
+		int numOfDescForClustering = 0;
+
+		// prepare KMeans Input file
+		String fileName = null;
+
+		if ( Common.DataSet.YOUTUBE.currentDS() == true )
+		{
+			numOfDescForClustering = YouTubeDataset.numOfDescriptorsForClustering;
+			fileName = YouTubeDataset.KMeansInputFile;
+		}
+		else
+			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+			{
+				numOfDescForClustering = Hollywood2Dataset.numOfDescriptorsForClustering;
+				fileName = Hollywood2Dataset.KMeansInputFile;
+			}
+
+		int maxDescPerClip = numOfDescForClustering / allClips.size();
 
 		int descFromThisClip = 0;
 
 		Random random = new Random();
 
-		// prepare KMeans Input file
+		// if file already exists, then dont process
+		boolean process = false;
 
-		BufferedWriter writer = new BufferedWriter( new FileWriter( YouTubeDataset.KMeansInputFile ) );
+		try
+		{
+			BufferedReader reader = new BufferedReader( new FileReader( fileName ) );
+
+			// if file exists, close it dont process further.
+			reader.close();
+
+			process = false;
+		}
+		catch ( Exception e1 )
+		{
+			// if exception occurs, then we need to process.
+			process = true;
+		}
 
 		System.err.println( "Started with Preparing KMeans Input File." );
 
-		// add descriptors till required amount
-		while ( descAdded < YouTubeDataset.numOfDescriptorsForClustering )
+		if ( process == true )
 		{
-			// choose a random clip
+			BufferedWriter writer = new BufferedWriter( new FileWriter( fileName ) );
 
-			int randClip = random.nextInt( allClips.size() );
-
-			YTClip clip = allClips.get( randClip );
-
-			// open corresponding features' file
-
-			String featuresFile = YouTubeDataset.stipFeaturesDirPath + File.separator + clip.getName() + ".features";
-
-			BufferedReader reader;
-
-			// try to open corresponding .features file of the clip.
-			try
+			// add descriptors till required amount
+			while ( descAdded < numOfDescForClustering )
 			{
-				reader = new BufferedReader( new FileReader( featuresFile ) );
+				// choose a random clip
+
+				int randClip = random.nextInt( allClips.size() );
+
+				YTClip clip = allClips.get( randClip );
+
+				// open corresponding features' file
+
+				String featuresFile = null;
+
+				if ( Common.DataSet.YOUTUBE.currentDS() == true )
+					featuresFile = YouTubeDataset.stipFeaturesDirPath + File.separator + clip.getName() + ".features";
+				else
+					if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+						featuresFile = Hollywood2Dataset.stipFeaturesDirPath + File.separator + clip.getName()
+								+ ".features";
+
+				BufferedReader reader;
+
+				// try to open corresponding .features file of the clip.
+				try
+				{
+					reader = new BufferedReader( new FileReader( featuresFile ) );
+				}
+				catch ( Exception e )
+				{
+					// You need to extract STIP features before running this code.
+					// Please make sure that path for features' directory has been provided correctly.
+
+					System.err.println( "\nThis file should exists : " + featuresFile + "\n" );
+
+					// we continue to next random choice of clip.
+					// we just warn for non existing files - do not halt / throw exception.
+					continue;
+				}
+
+				// add features to Kmeans clustering Input file.
+
+				String feature = null;
+
+				descFromThisClip = 0;
+
+				// stopping conditions are : 
+				// either .features file get exhausted
+				// or we get our required amount of descriptors
+				// or we have taken required amount from this clip
+				while ( ( feature = reader.readLine() ) != null && descAdded < numOfDescForClustering
+						&& descFromThisClip < maxDescPerClip )
+				{
+					writer.write( feature );
+
+					// keep one feature per line
+
+					writer.newLine();
+
+					descAdded++;
+					descFromThisClip++;
+				}
+
+				// close features file
+
+				reader.close();
 			}
-			catch ( Exception e )
-			{
-				// You need to extract STIP features before running this code.
-				// Please make sure that path for features' directory has been provided correctly.
-
-				System.err.println( "\nThis file should exists : " + featuresFile + "\n" );
-
-				// we continue to next random choice of clip.
-				// we just warn for non existing files - do not halt / throw exception.
-				continue;
-			}
-
-			// add features to Kmeans clustering Input file.
-
-			String feature = null;
-
-			descFromThisClip = 0;
-
-			// stopping conditions are : 
-			// either .features file get exhausted
-			// or we get our required amount of descriptors
-			// or we have taken required amount from this clip
-			while ( ( feature = reader.readLine() ) != null && descAdded < YouTubeDataset.numOfDescriptorsForClustering
-					&& descFromThisClip < maxDescPerClip )
-			{
-				writer.write( feature );
-
-				// keep one feature per line
-
-				writer.newLine();
-
-				descAdded++;
-				descFromThisClip++;
-			}
-
-			// close features file
-
-			reader.close();
+			writer.close();
 		}
 
-		writer.close();
-
-		YouTubeDataset.state.KMEANS_INPUT_PREPARED.isDone( true );
+		Common.state.KMEANS_INPUT_PREPARED.isDone( true );
 
 		System.err.println( "Done with Preparing KMeans Input File." );
 	}
 
 	/**
 	 * Use after running KMeans. It reads output of KMeans.
+	 * @throws Exception 
 	 */
-	static void ReadCentroids()
+	static void ReadCentroids() throws Exception
 	{
 		try
 		{
-			// read in the data
-			Scanner input = new Scanner( new File( YouTubeDataset.KMeansOutputFile ) );
+			int numCluster = 0;
+			int descLength = 0;
 
-			for ( int i = 0; i < YouTubeDataset.KMeansNumClusters; ++i )
+			// read in the data
+			String fileName = null;
+
+			if ( Common.DataSet.YOUTUBE.currentDS() == true )
 			{
-				for ( int j = 0; j < YouTubeDataset.DescriptorLength; ++j )
+				fileName = YouTubeDataset.KMeansOutputFile;
+				numCluster = YouTubeDataset.KMeansNumClusters;
+				descLength = YouTubeDataset.DescriptorLength;
+				centroids = new double[YouTubeDataset.KMeansNumClusters][YouTubeDataset.DescriptorLength];
+			}
+			else
+				if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+				{
+					fileName = Hollywood2Dataset.KMeansOutputFile;
+					numCluster = Hollywood2Dataset.KMeansNumClusters;
+					descLength = Hollywood2Dataset.DescriptorLength;
+					centroids = new double[Hollywood2Dataset.KMeansNumClusters][Hollywood2Dataset.DescriptorLength];
+				}
+
+			Scanner input = new Scanner( new File( fileName ) );
+
+			for ( int i = 0; i < numCluster; ++i )
+			{
+				for ( int j = 0; j < descLength; ++j )
 				{
 					if ( input.hasNextDouble() )
 					{
@@ -576,10 +663,8 @@ class Utilities
 		}
 		catch ( FileNotFoundException e )
 		{
-			System.err.println( "Please run Kmeans first. Please make sure this file exists and is readable :\n"
+			throw new Exception( "Please run Kmeans first. Please make sure this file exists and is readable :\n"
 					+ YouTubeDataset.KMeansOutputFile );
-
-			return;
 		}
 	}
 
@@ -590,7 +675,7 @@ class Utilities
 	 */
 	static void RunKMeans() //throws IOException, InterruptedException
 	{
-		if ( YouTubeDataset.state.KMEANS_INPUT_PREPARED.isDone() == false )
+		if ( Common.state.KMEANS_INPUT_PREPARED.isDone() == false )
 		{
 			System.err.println( "Please prepare KMeans input file before running this function." );
 			return;
@@ -641,16 +726,16 @@ class Utilities
 	 */
 	static void SimilarityComparisons( IDictionary dict ) throws IOException
 	{
-		if ( YouTubeDataset.state.SIMILARITY_DONE.isDone() == true )
+		if ( Common.state.SIMILARITY_DONE.isDone() == true )
 			return;
 
-		if ( YouTubeDataset.state.ALLCLIPS_INITIALISED.isDone() == false )
+		if ( Common.state.ALLCLIPS_INITIALISED.isDone() == false )
 		{
 			System.err.println( "Please initialise all clips before running this function." );
 			return;
 		}
 
-		if ( YouTubeDataset.state.DICT_OPENED.isDone() == false )
+		if ( Common.state.DICT_OPENED.isDone() == false )
 		{
 			System.err.println( "Please initialise and open the MIT JWI dictionary before calling this function." );
 			return;
@@ -769,7 +854,7 @@ class Utilities
 			writer.close();
 		}
 
-		YouTubeDataset.state.SIMILARITY_DONE.isDone( true );
+		Common.state.SIMILARITY_DONE.isDone( true );
 
 		System.err.println( "Done with Similarity comparisons." );
 	}

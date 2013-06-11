@@ -5,7 +5,7 @@ package in.ac.iitd.cse.Tests;
 
 import in.ac.iitd.cse.Classifier.SMOClassifier;
 import in.ac.iitd.cse.Properties.Common;
-import in.ac.iitd.cse.Properties.YouTubeDataset;
+import in.ac.iitd.cse.Properties.Hollywood2Dataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
 import java.io.File;
@@ -21,8 +21,9 @@ public class Hollywood2 extends Utilities
 
 	/**
 	 * @param args
+	 * @throws Exception 
 	 */
-	public static void main( String[] args )
+	public static void main( String[] args ) throws Exception
 	{
 		// current dataset is hollywood2
 		Common.DataSet.HOLLYWOOD2.currentDS( true );
@@ -49,7 +50,7 @@ public class Hollywood2 extends Utilities
 				case 0 :
 					try
 					{
-						populateAllClips( YouTubeDataset.stipFeaturesDirPath );
+						populateAllClips( Hollywood2Dataset.stipFeaturesDirPath );
 
 						PrepareKMeansInputFile();
 					} catch ( Exception e1 )
@@ -114,7 +115,7 @@ public class Hollywood2 extends Utilities
 
 		for ( File file : allFiles )
 		{
-			if ( file.getName().endsWith( ".features" ) )
+			if ( file.getName().startsWith( "actioncliptrain" ) && file.getName().endsWith( ".features" ) )
 			{
 				int length = file.getName().length();
 
@@ -126,6 +127,6 @@ public class Hollywood2 extends Utilities
 			}
 		}
 
-		YouTubeDataset.state.ALLCLIPS_INITIALISED.isDone( true );
+		Common.state.ALLCLIPS_INITIALISED.isDone( true );
 	}
 }

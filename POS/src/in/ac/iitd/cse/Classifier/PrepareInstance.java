@@ -4,6 +4,7 @@
 package in.ac.iitd.cse.Classifier;
 
 import in.ac.iitd.cse.Properties.Common;
+import in.ac.iitd.cse.Properties.Hollywood2Dataset;
 import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
@@ -32,8 +33,8 @@ class PrepareInstance
 	List < YTClip >	discoveredClips	= new ArrayList < YTClip >();
 
 	List < String >	uniqueLabels	= new ArrayList < String >();
-	
-	Instances TrainingSet;
+
+	Instances		TrainingSet;
 
 	/**
 	 * Constructor.<br/>
@@ -44,11 +45,14 @@ class PrepareInstance
 	 */
 	PrepareInstance() throws Exception
 	{
-		if( Common.DataSet.YOUTUBE.currentDS() == true )
-			prepareYTInstance();
+		if ( Common.DataSet.YOUTUBE.currentDS() == true )
+			PrepareYTInstance();
+		else
+			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+				PrepareHW2Instance();
 	}
-	
-	private void prepareYTInstance() throws Exception
+
+	private void PrepareYTInstance() throws Exception
 	{
 		readYTData();
 
@@ -106,17 +110,49 @@ class PrepareInstance
 		}
 	}
 
+	private void PrepareHW2Instance() throws Exception
+	{
+		readHW2Data();
+
+		// declare attributes corresponding to histogram
+		Attribute[] histogramAttrs = new Attribute[Hollywood2Dataset.KMeansNumClusters];
+
+		// for each element in histogram, add an attribute
+		// ATTR1, ATTR2 ... ATTR200
+		for ( int i = 0; i < histogramAttrs.length; i++ )
+			histogramAttrs[ i ] = new Attribute( "ATTR" + ( i + 1 ) );
+
+		// Declare the class attribute along with its values
+		FastVector classes = new FastVector( uniqueLabels.size() );
+
+		for ( String lbl : uniqueLabels )
+			classes.addElement( lbl );
+
+		Attribute classAttribute = new Attribute( "theClass", classes );
+
+		// Declare the feature vector
+		FastVector WekaAttributes = new FastVector( histogramAttrs.length + 1 );
+
+		// histogram attributes
+		for ( Attribute attr : histogramAttrs )
+			WekaAttributes.addElement( attr );
+
+		// class attribute
+		WekaAttributes.addElement( classAttribute );
+
+	}
+
 	private void readYTData() throws Exception
 	{
 		// if current dataset is not YouTube, return.
-		if( Common.DataSet.YOUTUBE.currentDS() == false )
+		if ( Common.DataSet.YOUTUBE.currentDS() == false )
 			return;
-		
+
 		File labelsDirectory = new File( YouTubeDataset.labelDirPath );
-		
+
 		File[] allFiles = labelsDirectory.listFiles();
-		
-		if( allFiles == null || allFiles.length == 0 )
+
+		if ( allFiles == null || allFiles.length == 0 )
 			throw new Exception( "Empty Label directory. Please generate labels first." );
 
 		for ( File file : allFiles )
@@ -194,5 +230,25 @@ class PrepareInstance
 				}
 			}
 		}
+	}
+
+	private void readHW2Data() throws Exception
+	{
+		// if current dataset is not Hollywood2, then return
+		if ( Common.DataSet.HOLLYWOOD2.currentDS() == false )
+			return;
+
+		// read classes
+		BufferedReader reader = new BufferedReader( new FileReader( Hollywood2Dataset.labelDirPath + File.separator
+				+ "classes.txt" ) );
+		uniqueLabels.clear();
+
+		String line;
+
+		while ( ( line = reader.readLine() ) != null )
+			uniqueLabels.add( line );
+
+		reader.close();
+
 	}
 }

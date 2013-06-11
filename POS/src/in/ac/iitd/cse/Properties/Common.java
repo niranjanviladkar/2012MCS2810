@@ -35,4 +35,37 @@ public class Common
 			return isCurrent;
 		}
 	}
+	
+	public static enum state
+	{
+		// @formatter:off - turns off code style formatting in eclipse 
+		
+		TAGGER_INITIALISED( false ), 
+		STEMMER_INITIALISED( false ), 
+		DICT_OPENED( false ), 
+		ALLCLIPS_INITIALISED( false ), 
+		SIMILARITY_DONE( false ), 
+		KMEANS_INPUT_PREPARED( false ), 
+		ROOTS_INITIALISED( false ), 
+		CLIP_TO_HISTOGRAM_DONE( false );
+		
+		// @formatter:on - turns on code style formatting in eclipse
+
+		private boolean	isDone;
+
+		state( boolean b )
+		{
+			this.isDone = b;
+		}
+
+		public void isDone( boolean b )
+		{
+			this.isDone = b;
+		}
+
+		public boolean isDone()
+		{
+			return isDone;
+		}
+	}
 }
