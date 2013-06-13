@@ -536,10 +536,11 @@ class Utilities
 			process = true;
 		}
 
-		System.err.println( "Started with Preparing KMeans Input File." );
 
 		if ( process == true )
 		{
+			System.err.println( "Started with Preparing KMeans Input File." );
+			
 			BufferedWriter writer = new BufferedWriter( new FileWriter( fileName ) );
 
 			// add descriptors till required amount
@@ -609,11 +610,13 @@ class Utilities
 				reader.close();
 			}
 			writer.close();
+			
+			System.err.println( "Done with Preparing KMeans Input File." );
 		}
+		else
+			System.err.println("Using previous KMeans input file.");
 
 		Common.state.KMEANS_INPUT_PREPARED.isDone( true );
-
-		System.err.println( "Done with Preparing KMeans Input File." );
 	}
 
 	/**
