@@ -38,9 +38,11 @@ class PrepareInstance
 
 	Instances		TrainingSet;
 
+	Instances		TestingSet;
+
 	/**
 	 * Constructor.<br/>
-	 * It reads the data and prepares instance.<br/>
+	 * It reads the data and prepares training instance.<br/>
 	 * This instance can now be used in various types of classifier models.
 	 * 
 	 * @throws IOException
@@ -51,13 +53,13 @@ class PrepareInstance
 
 		if ( Common.DataSet.YOUTUBE.currentDS() == true )
 		{
-			readYTData();
+			readYT_TrainingData();
 			numCluster = YouTubeDataset.KMeansNumClusters;
 		}
 		else
 			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
 			{
-				readHW2Data();
+				readHW2_TrainingData();
 				numCluster = Hollywood2Dataset.KMeansNumClusters;
 			}
 
@@ -115,7 +117,7 @@ class PrepareInstance
 		}
 	}
 
-	private void readYTData() throws Exception
+	private void readYT_TrainingData() throws Exception
 	{
 		// if current dataset is not YouTube, return.
 		if ( Common.DataSet.YOUTUBE.currentDS() == false )
@@ -205,7 +207,7 @@ class PrepareInstance
 		}
 	}
 
-	private void readHW2Data() throws Exception
+	private void readHW2_TrainingData() throws Exception
 	{
 		// if current dataset is not Hollywood2, then return
 		if ( Common.DataSet.HOLLYWOOD2.currentDS() == false )
@@ -271,7 +273,7 @@ class PrepareInstance
 			}
 			catch ( FileNotFoundException e )
 			{
-				//System.err.println( "This file should exists : " + histogramFile );
+				System.err.println( "This file should exists : " + histogramFile );
 
 				continue;
 			}

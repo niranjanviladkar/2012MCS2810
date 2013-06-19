@@ -42,11 +42,13 @@ import edu.sussex.nlp.jws.WuAndPalmer;
  */
 class Utilities
 {
-	static List < YTClip >			allClips	= new ArrayList < YTClip >();
+	static List < YTClip >			allTrainingClips	= new ArrayList < YTClip >();
 
-	static ArrayList < ISynsetID >	roots		= new ArrayList < ISynsetID >();
+	static List < YTClip >			allTestingClips		= new ArrayList < YTClip >();
 
-	static double[][]				centroids	= null;
+	static ArrayList < ISynsetID >	roots				= new ArrayList < ISynsetID >();
+
+	static double[][]				centroids			= null;
 
 	/**
 	 * Adds a clip if not already added. If already added, just add verbs from
@@ -70,7 +72,7 @@ class Utilities
 
 		YTClip currentClip = null;
 
-		for ( YTClip clip : allClips )
+		for ( YTClip clip : allTrainingClips )
 		{
 			if ( clip.getName().equalsIgnoreCase( clipName ) )
 			{
@@ -90,7 +92,7 @@ class Utilities
 
 			currentClip = new YTClip( clipName );
 
-			allClips.add( currentClip );
+			allTrainingClips.add( currentClip );
 		}
 
 		String[] tagged = tagger.tagString( description ).split( " " );
@@ -115,7 +117,8 @@ class Utilities
 	 * least once which prepares initial CSV file.<br/>
 	 * CSVProcessing takes long time, hence its output can be stored.<br/>
 	 * This output is then fed to this routine, AddClipsFromCSV. The list -
-	 * allClips is first made empty by this routine and then built fresh.
+	 * allTrainingClips is first made empty by this routine and then built
+	 * fresh.
 	 * 
 	 * @param csvName
 	 *            - CSV file formed using previous results.
@@ -128,7 +131,7 @@ class Utilities
 
 		String[] nextLine;
 
-		allClips.clear();
+		allTrainingClips.clear();
 
 		while ( ( nextLine = csvReader.readNext() ) != null )
 		{
@@ -139,7 +142,7 @@ class Utilities
 			initialLabel.add( nextLine[ 1 ] );
 			clip.setLabel( initialLabel );
 
-			allClips.add( clip );
+			allTrainingClips.add( clip );
 		}
 	}
 
@@ -153,9 +156,9 @@ class Utilities
 		if ( Common.state.CLIP_TO_HISTOGRAM_DONE.isDone() == true )
 			return;
 
-		if ( Common.state.ALLCLIPS_INITIALISED.isDone() == false )
+		if ( Common.state.ALL_CLIPS_INITIALISED.isDone() == false )
 		{
-			System.err.println( "Please initialise all clips before running this function." );
+			System.err.println( "Please initialise ALL clips before running this function." );
 			return;
 		}
 
@@ -181,6 +184,11 @@ class Utilities
 		double[] currentDescriptor = new double[descLength];
 
 		System.err.println( "Started converting Clips to histogram." );
+
+		// convert all training as well as testing clips to histogram
+		List < YTClip > allClips = allTrainingClips;
+		allClips.addAll( allTestingClips );
+
 		for ( YTClip clip : allClips )
 		{
 			double minDist = Double.POSITIVE_INFINITY;
@@ -288,7 +296,7 @@ class Utilities
 	 */
 	static void CSVProcessing( MaxentTagger tagger, WordnetStemmer wordNetStemmer ) throws IOException
 	{
-		if ( Common.state.ALLCLIPS_INITIALISED.isDone() == true )
+		if ( Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone() == true )
 			return;
 
 		boolean UsePrevResult = true;
@@ -357,7 +365,7 @@ class Utilities
 
 			String[] csvLine = new String[2];
 
-			for ( YTClip clip : allClips )
+			for ( YTClip clip : allTrainingClips )
 			{
 				// set labels of each video clip initially to the most frequent verb
 
@@ -377,7 +385,7 @@ class Utilities
 			csvWriter.close();
 		}
 
-		Common.state.ALLCLIPS_INITIALISED.isDone( true );
+		Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone( true );
 		System.err.println( "Done with CSV processing." );
 	}
 
@@ -487,7 +495,7 @@ class Utilities
 	 */
 	static void PrepareKMeansInputFile() throws IOException
 	{
-		if ( Common.state.ALLCLIPS_INITIALISED.isDone() == false )
+		if ( Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone() == false )
 		{
 			System.err.println( "Please initialise all clips before running this function." );
 			return;
@@ -512,7 +520,7 @@ class Utilities
 				fileName = Hollywood2Dataset.KMeansInputFile;
 			}
 
-		int maxDescPerClip = numOfDescForClustering / allClips.size();
+		int maxDescPerClip = numOfDescForClustering / allTrainingClips.size();
 
 		int descFromThisClip = 0;
 
@@ -536,11 +544,10 @@ class Utilities
 			process = true;
 		}
 
-
 		if ( process == true )
 		{
 			System.err.println( "Started with Preparing KMeans Input File." );
-			
+
 			BufferedWriter writer = new BufferedWriter( new FileWriter( fileName ) );
 
 			// add descriptors till required amount
@@ -548,9 +555,9 @@ class Utilities
 			{
 				// choose a random clip
 
-				int randClip = random.nextInt( allClips.size() );
+				int randClip = random.nextInt( allTrainingClips.size() );
 
-				YTClip clip = allClips.get( randClip );
+				YTClip clip = allTrainingClips.get( randClip );
 
 				// open corresponding features' file
 
@@ -610,18 +617,19 @@ class Utilities
 				reader.close();
 			}
 			writer.close();
-			
+
 			System.err.println( "Done with Preparing KMeans Input File." );
 		}
 		else
-			System.err.println("Using previous KMeans input file.");
+			System.err.println( "Using previous KMeans input file." );
 
 		Common.state.KMEANS_INPUT_PREPARED.isDone( true );
 	}
 
 	/**
 	 * Use after running KMeans. It reads output of KMeans.
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
 	static void ReadCentroids() throws Exception
 	{
@@ -681,41 +689,29 @@ class Utilities
 		if ( Common.state.KMEANS_INPUT_PREPARED.isDone() == false )
 		{
 			System.err.println( "Please prepare KMeans input file before running this function." );
-			return;
+//			return;
 		}
+		int numClusters = 0;
+		String KmeansIPFile = null;
+		String kmeansOPFile = null;
 
-		System.out.println( "Using Matlab to run KMeans. Running following with matlab : " );
-		System.out.println( "X = load( '/media/NIRANJAN/Project/detected/KMeansInputFile.data', '-ascii');\n"
-				+ "[~, C] = kmeans(X, " + YouTubeDataset.KMeansNumClusters + ", 'Replicates', 5 );\n"
-				+ "dlmwrite('/media/NIRANJAN/Project/detected/KMeansOutputFile.data', C, ' ');" );
-		/*		
-				Process p = Runtime.getRuntime().exec( "/misc/slocal/matlab2010a/bin/matlab " +
-						"-nodisplay -nodesktop -nosplash " +
-						"-c 27000@licmngr1.iitd.ernet.in,27000@licmngr2.iitd.ernet.in,27000@licmanager.cse.iitd.ernet.in " +
-						"-r \"X = load \\\\('/media/NIRANJAN/Project/detected/KMeansInputFile.data','-ascii'\\);exit\"" );
-						//"-r \"cd /media/NIRANJAN/Project/detected/; X = load( 'KMeansInputFile.data', '-ascii'); [~, C] = kmeans(X, " + YouTubeDataset.KMeansNumClusters  + ", 'Replicates', 5); dlmwrite('KMeansOutputFile.data', C, ' ');\"" );
-				
-				p.waitFor();
-				
-				String s = null;
-				 BufferedReader stdInput = new BufferedReader(new 
-		                 InputStreamReader(p.getInputStream()));
+		if ( Common.DataSet.YOUTUBE.currentDS() == true )
+		{
+			numClusters = YouTubeDataset.KMeansNumClusters;
+			KmeansIPFile = YouTubeDataset.KMeansInputFile;
+			kmeansOPFile = YouTubeDataset.KMeansOutputFile;
+		}
+		else
+			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+			{
+				numClusters = Hollywood2Dataset.KMeansNumClusters;
+				KmeansIPFile = Hollywood2Dataset.KMeansInputFile;
+				kmeansOPFile = Hollywood2Dataset.KMeansOutputFile;
+			}
 
-		            BufferedReader stdError = new BufferedReader(new 
-		                 InputStreamReader(p.getErrorStream()));
-
-		            // read the output from the command
-		            System.out.println("Here is the standard output of the command:\n");
-		            while ((s = stdInput.readLine()) != null ) {
-		                System.out.println(s);
-		            }
-		            
-		            // read any errors from the attempted command
-		            System.out.println("Here is the standard error of the command (if any):\n");
-		            while ((s = stdError.readLine()) != null) {
-		                System.out.println(s);
-		            }
-		*/
+		System.out.println( "Use Matlab to run KMeans. Run following with matlab : " );
+		System.out.println( "X = load( '" + KmeansIPFile + "', '-ascii');\n" + "[~, C] = kmeans(X, " + numClusters
+				+ ", 'emptyaction', 'singleton' );\n" + "dlmwrite('" + kmeansOPFile + "', C, ' ');\n" + "exit;" );
 	}
 
 	/**
@@ -732,7 +728,7 @@ class Utilities
 		if ( Common.state.SIMILARITY_DONE.isDone() == true )
 			return;
 
-		if ( Common.state.ALLCLIPS_INITIALISED.isDone() == false )
+		if ( Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone() == false )
 		{
 			System.err.println( "Please initialise all clips before running this function." );
 			return;
@@ -753,10 +749,11 @@ class Utilities
 
 		// Compare verbs for similarity and update labels
 
-		for ( int i = 0; i < allClips.size() - 1; i++ )
+		for ( int i = 0; i < allTrainingClips.size() - 1; i++ )
 		{
 			// check if label for this clip already exists on disk
-			String labelFile = YouTubeDataset.labelDirPath + File.separator + allClips.get( i ).getName() + ".label";
+			String labelFile = YouTubeDataset.labelDirPath + File.separator + allTrainingClips.get( i ).getName()
+					+ ".label";
 
 			try
 			{
@@ -770,10 +767,10 @@ class Utilities
 				// if label is not present on the disk, we process the clip and generate a label.
 			}
 
-			for ( int j = i + 1; j < allClips.size(); j++ )
+			for ( int j = i + 1; j < allTrainingClips.size(); j++ )
 			{
-				YTClip clip1 = allClips.get( i );
-				YTClip clip2 = allClips.get( j );
+				YTClip clip1 = allTrainingClips.get( i );
+				YTClip clip2 = allTrainingClips.get( j );
 
 				List < String > label1 = clip1.getLabel();
 				List < String > label2 = clip2.getLabel();
@@ -823,7 +820,7 @@ class Utilities
 
 		System.err.println( "Writing labels to disk" );
 
-		for ( YTClip clip : allClips )
+		for ( YTClip clip : allTrainingClips )
 		{
 			// check if label for this clip already exists on disk
 

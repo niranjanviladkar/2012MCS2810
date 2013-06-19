@@ -21,14 +21,14 @@ public class Hollywood2 extends Utilities
 
 	/**
 	 * @param args
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static void main( String[] args ) throws Exception
 	{
 		// current dataset is hollywood2
 		Common.DataSet.HOLLYWOOD2.currentDS( true );
 
-		allClips.clear();
+		allTrainingClips.clear();
 
 		int choice = 0;
 		boolean breakLoop = false;
@@ -47,13 +47,14 @@ public class Hollywood2 extends Utilities
 
 			switch ( choice )
 			{
-				case 0 :
+				case 0:
 					try
 					{
 						populateAllClips( Hollywood2Dataset.stipFeaturesDirPath );
 
 						PrepareKMeansInputFile();
-					} catch ( Exception e1 )
+					}
+					catch ( Exception e1 )
 					{
 						e1.printStackTrace();
 
@@ -62,38 +63,40 @@ public class Hollywood2 extends Utilities
 
 					break;
 
-				case 1 :
+				case 1:
 					// Run KMeans clustering
 
 					RunKMeans();
 
 					break;
 
-				case 2 :
+				case 2:
 					try
 					{
 						ClipsToHistograms();
-					} catch ( IOException e1 )
+					}
+					catch ( IOException e1 )
 					{
 						e1.printStackTrace();
 						breakLoop = true;
 					}
 					break;
 
-				case 3 :
+				case 3:
 					try
 					{
 						SMOClassifier smo = new SMOClassifier();
 						smo.Train();
 						smo.TestAndPrintResult( true );
-					} catch ( Exception e )
+					}
+					catch ( Exception e )
 					{
 						e.printStackTrace();
 						breakLoop = true;
 					}
 					break;
 
-				case 4 :
+				case 4:
 					breakLoop = true;
 					break;
 			}
@@ -104,7 +107,16 @@ public class Hollywood2 extends Utilities
 		scan.close();
 	}
 
-	static void populateAllClips( String stipFeaturesDir ) throws Exception
+	/**
+	 * Populate only training clips.<br/>
+	 * From the directory containing video clips, read and add clips to
+	 * allTrainingClips list.<br/>
+	 * Only training clips are considered. Rest of the clips are ignored.<br/>
+	 * 
+	 * @param stipFeaturesDir
+	 * @throws Exception
+	 */
+	private static void populateAllTrainingClips( String stipFeaturesDir ) throws Exception
 	{
 		File featuresDirectory = new File( stipFeaturesDir );
 
@@ -123,10 +135,63 @@ public class Hollywood2 extends Utilities
 
 				YTClip clip = new YTClip( onlyName );
 
-				allClips.add( clip );
+				allTrainingClips.add( clip );
 			}
 		}
 
-		Common.state.ALLCLIPS_INITIALISED.isDone( true );
+		Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone( true );
+	}
+
+	/**
+	 * Populate only testing clips.<br/>
+	 * From the directory containing video clips, read and add clips to
+	 * allTestingClips list.<br/>
+	 * Only testing clips are considered. Rest of the clips are ignored.<br/>
+	 * 
+	 * @param stipFeaturesDir
+	 * @throws Exception
+	 */
+	private static void populateAllTestingClips( String stipFeaturesDir ) throws Exception
+	{
+		File featuresDirectory = new File( stipFeaturesDir );
+
+		File[] allFiles = featuresDirectory.listFiles();
+
+		if ( allFiles == null || allFiles.length == 0 )
+			throw new Exception( "Empty or non existent features directory : " + stipFeaturesDir );
+
+		for ( File file : allFiles )
+		{
+			if ( file.getName().startsWith( "actioncliptest" ) && file.getName().endsWith( ".features" ) )
+			{
+				int length = file.getName().length();
+
+				String onlyName = (String) file.getName().substring( 0, length - 9 );
+
+				YTClip clip = new YTClip( onlyName );
+
+				allTestingClips.add( clip );
+			}
+		}
+
+		Common.state.ALL_TESTING_CLIPS_INITIALISED.isDone( true );
+	}
+
+	/**
+	 * Populate both training as well as testing clips.<br/>
+	 * From the directory containing video clips, read and add training clips to
+	 * allTrainingClips list <br/>
+	 * and testing clips to allTestingClips list.<br/>
+	 * 
+	 * @param stipFeaturesDir
+	 * @throws Exception
+	 */
+	private static void populateAllClips( String stipFeaturesDir ) throws Exception
+	{
+		populateAllTrainingClips( stipFeaturesDir );
+
+		populateAllTestingClips( stipFeaturesDir );
+
+		Common.state.ALL_CLIPS_INITIALISED.isDone( true );
 	}
 }
