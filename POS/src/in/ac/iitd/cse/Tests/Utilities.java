@@ -633,13 +633,13 @@ class Utilities
 	 */
 	static void ReadCentroids() throws Exception
 	{
+		// read in the data
+		String fileName = null;
+		
 		try
 		{
 			int numCluster = 0;
 			int descLength = 0;
-
-			// read in the data
-			String fileName = null;
 
 			if ( Common.DataSet.YOUTUBE.currentDS() == true )
 			{
@@ -675,7 +675,7 @@ class Utilities
 		catch ( FileNotFoundException e )
 		{
 			throw new Exception( "Please run Kmeans first. Please make sure this file exists and is readable :\n"
-					+ YouTubeDataset.KMeansOutputFile );
+					+ fileName );
 		}
 	}
 

@@ -34,11 +34,17 @@ class PrepareInstance
 {
 	List < YTClip >	discoveredClips	= new ArrayList < YTClip >();
 
+	List < YTClip >	testingClips	= new ArrayList < YTClip >();
+
 	List < String >	uniqueLabels	= new ArrayList < String >();
 
 	Instances		TrainingSet;
 
 	Instances		TestingSet;
+
+	double[]		maxHistogram;
+
+	double[]		avgHistogram;
 
 	/**
 	 * Constructor.<br/>
@@ -49,22 +55,39 @@ class PrepareInstance
 	 */
 	PrepareInstance() throws Exception
 	{
-		int numCluster = 0;
+		int numClusters = 0;
 
 		if ( Common.DataSet.YOUTUBE.currentDS() == true )
 		{
 			readYT_TrainingData();
-			numCluster = YouTubeDataset.KMeansNumClusters;
+			numClusters = YouTubeDataset.KMeansNumClusters;
 		}
 		else
 			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
 			{
-				readHW2_TrainingData();
-				numCluster = Hollywood2Dataset.KMeansNumClusters;
+				// read training data
+				readHW2_Data( true );
+				
+				// read testing data
+				readHW2_Data( false );
+				
+				numClusters = Hollywood2Dataset.KMeansNumClusters;
 			}
 
+		maxHistogram = new double[numClusters];
+		avgHistogram = new double[numClusters];
+
+		for ( int i = 0; i < numClusters; i++ )
+		{
+			// we divide by max so keep default to 1
+			maxHistogram[ i ] = 1;
+
+			// we subtract mean so keep default to 0
+			avgHistogram[ i ] = 0;
+		}
+
 		// declare attributes corresponding to histogram
-		Attribute[] histogramAttrs = new Attribute[numCluster];
+		Attribute[] histogramAttrs = new Attribute[numClusters];
 
 		// for each element in histogram, add an attribute
 		// ATTR1, ATTR2 ... ATTR200
@@ -90,13 +113,24 @@ class PrepareInstance
 		WekaAttributes.addElement( classAttribute );
 
 		// Create an empty training set
-
 		TrainingSet = new Instances( "Rel", WekaAttributes, discoveredClips.size() );
-
+		
+		if ( testingClips.size() > 0 )
+		{
+			// Create empty testing set
+			TestingSet = new Instances( "Testing", WekaAttributes, testingClips.size() );
+			
+			// last element will be class
+			TestingSet.setClassIndex( TestingSet.numAttributes() - 1 );
+		}
+		
 		// last element will be class
 		TrainingSet.setClassIndex( TrainingSet.numAttributes() - 1 );
 
-		// Create instances
+		// calculate max and average for each cluster.
+		statisticalProcessing( numClusters );
+
+		// Create training instances
 		for ( YTClip clip : discoveredClips )
 		{
 			// declare
@@ -107,13 +141,64 @@ class PrepareInstance
 
 			// add histogram
 			for ( int i = 0; i < histogramAttrs.length; i++ )
-				instance.setValue( (Attribute) WekaAttributes.elementAt( i ), currentHistogram[ i ] );
+				instance.setValue( (Attribute) WekaAttributes.elementAt( i ),
+						( currentHistogram[ i ] - avgHistogram[ i ] ) / maxHistogram[ i ] );
 
 			// add label
 			instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ), clip.getLabelAsString() );
 
 			// add the instance to training set
 			TrainingSet.add( instance );
+		}
+		
+		// Create testing instances
+		if( testingClips.size() > 0 )
+		{
+			for( YTClip clip : testingClips )
+			{
+				// declare
+				Instance instance = new Instance( histogramAttrs.length + 1 );
+
+				// get histogram
+				int[] currentHistogram = clip.getHistogram();
+
+				// add histogram
+				for ( int i = 0; i < histogramAttrs.length; i++ )
+					instance.setValue( (Attribute) WekaAttributes.elementAt( i ),
+							( currentHistogram[ i ] - avgHistogram[ i ] ) / maxHistogram[ i ] );
+
+				// add label
+				instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ), clip.getLabelAsString() );
+
+				// add the instance to training set
+				TestingSet.add( instance );
+			}
+		}
+	}
+
+	private void statisticalProcessing( int numClusters )
+	{
+		int sum;
+		int max;
+		int current;
+
+		for ( int i = 0; i < numClusters; i++ )
+		{
+			sum = 0;
+			max = 1;
+
+			for ( YTClip clip : discoveredClips )
+			{
+				current = clip.getHistogram()[ i ];
+
+				sum += current;
+
+				if ( current > max )
+					max = current;
+			}
+
+			maxHistogram[ i ] = max;
+			avgHistogram[ i ] = sum / discoveredClips.size();
 		}
 	}
 
@@ -207,7 +292,7 @@ class PrepareInstance
 		}
 	}
 
-	private void readHW2_TrainingData() throws Exception
+	private void readHW2_Data( boolean isTrainingData ) throws Exception
 	{
 		// if current dataset is not Hollywood2, then return
 		if ( Common.DataSet.HOLLYWOOD2.currentDS() == false )
@@ -224,9 +309,14 @@ class PrepareInstance
 			uniqueLabels.add( line );
 
 		reader.close();
+		
+		if( isTrainingData == true )
+			line = "all_labels_train.txt";
+		else
+			line = "all_labels_test.txt";
 
 		CSVReader csvReader = new CSVReader( new FileReader( Hollywood2Dataset.labelDirPath + File.separator
-				+ "all_labels_train.txt" ), ' ' );
+				+ line ), ' ' );
 
 		String[] nextLine = null;
 
@@ -278,7 +368,10 @@ class PrepareInstance
 				continue;
 			}
 
-			discoveredClips.add( clip );
+			if( isTrainingData == true )
+				discoveredClips.add( clip );
+			else
+				testingClips.add( clip );
 		}
 
 		csvReader.close();

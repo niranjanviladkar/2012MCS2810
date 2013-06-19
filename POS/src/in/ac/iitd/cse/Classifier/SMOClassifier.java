@@ -20,7 +20,7 @@ public class SMOClassifier extends PrepareInstance
 	public void Train() throws Exception
 	{
 		cModel = new SMO();
-		
+
 		System.out.println( "Value of C : " + cModel.getC() );
 
 		cModel.buildClassifier( TrainingSet );
@@ -28,9 +28,19 @@ public class SMOClassifier extends PrepareInstance
 
 	private void Test() throws Exception
 	{
-		eTest = new Evaluation( TrainingSet );
-		eTest.useNoPriors();
-		eTest.evaluateModel( cModel, TrainingSet );
+		if ( testingClips.size() == 0 )
+		{
+			eTest = new Evaluation( TrainingSet );
+			eTest.useNoPriors();
+			eTest.evaluateModel( cModel, TrainingSet );
+		}
+		else
+		{
+			eTest = new Evaluation( TestingSet );
+			eTest.useNoPriors();
+			eTest.evaluateModel( cModel, TestingSet );
+		}
+
 	}
 
 	public void TestAndPrintResult( boolean shouldPrint ) throws Exception
@@ -41,7 +51,7 @@ public class SMOClassifier extends PrepareInstance
 		{
 			String strSummary = eTest.toSummaryString();
 			System.out.println( strSummary );
-			
+
 			System.out.println( "Value of C : " + cModel.getC() );
 		}
 	}
