@@ -43,7 +43,9 @@ public class Hollywood2Dataset
 	/**
 	 * Number of sampled descriptors to be used for KMeans clustering.
 	 */
-	public static int		numOfDescriptorsForClustering	= 100000;
+	public static int		numOfDescriptorsForClustering	= 400000;
+
+	public static String	previousRunDir					= projectRoot + "previousRun/Hollywood2";
 
 	/**
 	 * Path to the directory which contains STIP HoG - HoF features.<br/>
