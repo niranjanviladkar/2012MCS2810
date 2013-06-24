@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import weka.classifiers.Evaluation;
 import weka.classifiers.functions.SMO;
+import weka.classifiers.functions.supportVector.RBFKernel;
 
 /**
  * @author mcs122810
@@ -20,27 +21,41 @@ public class SMOClassifier extends PrepareInstance
 	public void Train() throws Exception
 	{
 		cModel = new SMO();
+		
+		RBFKernel rbfKernel = new RBFKernel();
+		
+		cModel.setKernel( rbfKernel );
+		
+		cModel.setC( 1 );
 
-		System.out.println( "Value of C : " + cModel.getC() );
+		System.err.println( "Value of C : " + cModel.getC() );
+		
+		System.err.println( "Started building classifier." );
 
 		cModel.buildClassifier( TrainingSet );
+		
+		System.err.println( "Done building classifier." );
 	}
 
 	private void Test() throws Exception
 	{
+		System.err.println( "Started evaluation." );
+		
+		eTest = new Evaluation( TrainingSet );
+		//eTest.useNoPriors();
+
 		if ( testingClips.size() == 0 )
 		{
-			eTest = new Evaluation( TrainingSet );
-			eTest.useNoPriors();
+			System.err.println( "Using Training set for testing." );
 			eTest.evaluateModel( cModel, TrainingSet );
 		}
 		else
 		{
-			eTest = new Evaluation( TestingSet );
-			eTest.useNoPriors();
+			System.err.println( "Using Testing set for testing." );
 			eTest.evaluateModel( cModel, TestingSet );
 		}
-
+		
+		System.out.println( "Done Evaluation." );
 	}
 
 	public void TestAndPrintResult( boolean shouldPrint ) throws Exception

@@ -9,9 +9,11 @@ import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ import weka.core.Instances;
  */
 class PrepareInstance
 {
-	List < YTClip >	discoveredClips	= new ArrayList < YTClip >();
+	List < YTClip >	trainingClips	= new ArrayList < YTClip >();
 
 	List < YTClip >	testingClips	= new ArrayList < YTClip >();
 
@@ -113,7 +115,7 @@ class PrepareInstance
 		WekaAttributes.addElement( classAttribute );
 
 		// Create an empty training set
-		TrainingSet = new Instances( "Rel", WekaAttributes, discoveredClips.size() );
+		TrainingSet = new Instances( "Rel", WekaAttributes, trainingClips.size() );
 		
 		if ( testingClips.size() > 0 )
 		{
@@ -128,10 +130,12 @@ class PrepareInstance
 		TrainingSet.setClassIndex( TrainingSet.numAttributes() - 1 );
 
 		// calculate max and average for each cluster.
-		statisticalProcessing( numClusters );
+		statisticalProcessing( numClusters, trainingClips );
 
+		System.err.println( "Adding training instances" );
+		
 		// Create training instances
-		for ( YTClip clip : discoveredClips )
+		for ( YTClip clip : trainingClips )
 		{
 			// declare
 			Instance instance = new Instance( histogramAttrs.length + 1 );
@@ -142,7 +146,7 @@ class PrepareInstance
 			// add histogram
 			for ( int i = 0; i < histogramAttrs.length; i++ )
 				instance.setValue( (Attribute) WekaAttributes.elementAt( i ),
-						( currentHistogram[ i ] - avgHistogram[ i ] ) / maxHistogram[ i ] );
+						( currentHistogram[ i ] ) / maxHistogram[ i ] );
 
 			// add label
 			instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ), clip.getLabelAsString() );
@@ -151,9 +155,20 @@ class PrepareInstance
 			TrainingSet.add( instance );
 		}
 		
+		// write training instances as arff file. - mainly for debugging
+		String trainARFF = TrainingSet.toString();
+		BufferedWriter writer = new BufferedWriter( new FileWriter( "train.arff" ) );
+		writer.write( trainARFF );
+		writer.close();
+		trainARFF = null;
+		
 		// Create testing instances
 		if( testingClips.size() > 0 )
 		{
+			System.err.println( "Adding testing instances" );
+			
+			statisticalProcessing( numClusters, testingClips );
+			
 			for( YTClip clip : testingClips )
 			{
 				// declare
@@ -165,7 +180,7 @@ class PrepareInstance
 				// add histogram
 				for ( int i = 0; i < histogramAttrs.length; i++ )
 					instance.setValue( (Attribute) WekaAttributes.elementAt( i ),
-							( currentHistogram[ i ] - avgHistogram[ i ] ) / maxHistogram[ i ] );
+							( currentHistogram[ i ] ) / maxHistogram[ i ] );
 
 				// add label
 				instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ), clip.getLabelAsString() );
@@ -173,10 +188,18 @@ class PrepareInstance
 				// add the instance to training set
 				TestingSet.add( instance );
 			}
+			
+			// write testing instances as arff file. - mainly for debugging
+			String testARFF = TestingSet.toString();
+			writer = new BufferedWriter( new FileWriter( "test.arff" ) );
+			writer.write( testARFF );
+			writer.close();
+			testARFF = null;
+
 		}
 	}
 
-	private void statisticalProcessing( int numClusters )
+	private void statisticalProcessing( int numClusters, List< YTClip > clipList )
 	{
 		int sum;
 		int max;
@@ -187,7 +210,7 @@ class PrepareInstance
 			sum = 0;
 			max = 1;
 
-			for ( YTClip clip : discoveredClips )
+			for ( YTClip clip : clipList )
 			{
 				current = clip.getHistogram()[ i ];
 
@@ -198,7 +221,7 @@ class PrepareInstance
 			}
 
 			maxHistogram[ i ] = max;
-			avgHistogram[ i ] = sum / discoveredClips.size();
+			avgHistogram[ i ] = sum / clipList.size();
 		}
 	}
 
@@ -208,6 +231,8 @@ class PrepareInstance
 		if ( Common.DataSet.YOUTUBE.currentDS() == false )
 			return;
 
+		System.err.println( "Reading training data." );
+		
 		File labelsDirectory = new File( YouTubeDataset.labelDirPath );
 
 		File[] allFiles = labelsDirectory.listFiles();
@@ -227,7 +252,7 @@ class PrepareInstance
 
 				YTClip clip = new YTClip( onlyName );
 
-				discoveredClips.add( clip );
+				trainingClips.add( clip );
 
 				BufferedReader reader = new BufferedReader( new FileReader( file ) );
 
@@ -279,10 +304,10 @@ class PrepareInstance
 					//System.err.println( "This file should exists : " + histogramFile );
 
 					// remove clip from list
-					for ( int i = 0; i < discoveredClips.size(); i++ )
-						if ( discoveredClips.get( i ).getName().equalsIgnoreCase( clip.getName() ) )
+					for ( int i = 0; i < trainingClips.size(); i++ )
+						if ( trainingClips.get( i ).getName().equalsIgnoreCase( clip.getName() ) )
 						{
-							discoveredClips.remove( i );
+							trainingClips.remove( i );
 							break;
 						}
 
@@ -290,6 +315,8 @@ class PrepareInstance
 				}
 			}
 		}
+		
+		System.err.println( "Reading training data - Done" );
 	}
 
 	private void readHW2_Data( boolean isTrainingData ) throws Exception
@@ -311,9 +338,15 @@ class PrepareInstance
 		reader.close();
 		
 		if( isTrainingData == true )
+		{
 			line = "all_labels_train.txt";
+			System.err.println( "Reading training data." );
+		}
 		else
+		{
 			line = "all_labels_test.txt";
+			System.err.println( "Reading testing data." );
+		}
 
 		CSVReader csvReader = new CSVReader( new FileReader( Hollywood2Dataset.labelDirPath + File.separator
 				+ line ), ' ' );
@@ -369,11 +402,13 @@ class PrepareInstance
 			}
 
 			if( isTrainingData == true )
-				discoveredClips.add( clip );
+				trainingClips.add( clip );
 			else
 				testingClips.add( clip );
 		}
 
 		csvReader.close();
+		
+		System.err.println( "Reading data - Done" );
 	}
 }
