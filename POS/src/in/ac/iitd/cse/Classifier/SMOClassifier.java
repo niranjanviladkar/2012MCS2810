@@ -26,7 +26,7 @@ public class SMOClassifier extends PrepareInstance
 		
 		cModel.setKernel( rbfKernel );
 		
-		cModel.setC( 50 );
+		cModel.setC( 48 );
 
 		System.err.println( "Value of C : " + cModel.getC() );
 		

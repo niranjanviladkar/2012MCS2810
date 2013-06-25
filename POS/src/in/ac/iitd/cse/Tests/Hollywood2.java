@@ -20,6 +20,7 @@ public class Hollywood2 extends Utilities
 {
 
 	/**
+	 * Main function.
 	 * @param args
 	 * @throws Exception
 	 */
