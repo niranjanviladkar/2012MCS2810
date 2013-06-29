@@ -23,7 +23,7 @@ public class SMOClassifier extends PrepareInstance
 		cModel = new SMO();
 		
 		RBFKernel rbfKernel = new RBFKernel();
-		rbfKernel.setGamma( 0.005 );
+		rbfKernel.setGamma( 0.01 );
 		
 		cModel.setKernel( rbfKernel );
 		cModel.setC( 50 );
