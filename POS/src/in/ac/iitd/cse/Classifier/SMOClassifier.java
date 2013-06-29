@@ -23,13 +23,13 @@ public class SMOClassifier extends PrepareInstance
 		cModel = new SMO();
 		
 		RBFKernel rbfKernel = new RBFKernel();
+		rbfKernel.setGamma( 0.005 );
 		
 		cModel.setKernel( rbfKernel );
-		
-		cModel.setC( 48 );
+		cModel.setC( 50 );
 
 		System.err.println( "Value of C : " + cModel.getC() );
-		
+		System.err.println( "Value of gamma : " + rbfKernel.getGamma() );
 		System.err.println( "Started building classifier." );
 
 		cModel.buildClassifier( TrainingSet );

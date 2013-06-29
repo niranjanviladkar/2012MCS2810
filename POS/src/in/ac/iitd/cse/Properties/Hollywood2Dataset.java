@@ -38,7 +38,7 @@ public class Hollywood2Dataset
 	/**
 	 * Path to the directory which will contain final clip labels.
 	 */
-	public static String	labelDirPath					= projectRoot + "dataset/Hollywood/ClipSets3/ClipSets";
+	public static String	labelDirPath					= projectRoot + "dataset/Hollywood/ClipSets";
 
 	/**
 	 * Number of sampled descriptors to be used for KMeans clustering.
