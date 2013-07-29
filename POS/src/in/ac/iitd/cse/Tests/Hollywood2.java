@@ -51,7 +51,7 @@ public class Hollywood2 extends Utilities
 				case 0:
 					try
 					{
-						populateAllClips( Hollywood2Dataset.stipFeaturesDirPath );
+						populateAllClips( Hollywood2Dataset.ClipsDirPath );
 
 						PrepareKMeansInputFile();
 					}
@@ -114,25 +114,25 @@ public class Hollywood2 extends Utilities
 	 * allTrainingClips list.<br/>
 	 * Only training clips are considered. Rest of the clips are ignored.<br/>
 	 * 
-	 * @param stipFeaturesDir
+	 * @param ClipsDir
 	 * @throws Exception
 	 */
-	private static void populateAllTrainingClips( String stipFeaturesDir ) throws Exception
+	private static void populateAllTrainingClips( String ClipsDir ) throws Exception
 	{
-		File featuresDirectory = new File( stipFeaturesDir );
+		File featuresDirectory = new File( ClipsDir );
 
 		File[] allFiles = featuresDirectory.listFiles();
 
 		if ( allFiles == null || allFiles.length == 0 )
-			throw new Exception( "Empty or non existent features directory : " + stipFeaturesDir );
+			throw new Exception( "Empty or non existent features directory : " + ClipsDir );
 
 		for ( File file : allFiles )
 		{
-			if ( file.getName().startsWith( "actioncliptrain" ) && file.getName().endsWith( ".features" ) )
+			if ( file.getName().startsWith( "actioncliptrain" ) && file.getName().endsWith( ".avi" ) )
 			{
 				int length = file.getName().length();
 
-				String onlyName = (String) file.getName().substring( 0, length - 9 );
+				String onlyName = (String) file.getName().substring( 0, length - 4 );
 
 				YTClip clip = new YTClip( onlyName );
 
