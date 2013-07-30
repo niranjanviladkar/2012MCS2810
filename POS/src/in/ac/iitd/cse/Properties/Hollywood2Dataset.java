@@ -8,6 +8,8 @@ public class Hollywood2Dataset
 {
 	private static String	projectRoot						= "/misc/research/parags/mcs122810/ActivityRecognition/";
 
+	public static String	ClipsDirPath					= projectRoot + "dataset/Hollywood/AVIClips05/";
+
 	/**
 	 * Length of one STIP descriptor.<br/>
 	 * Typically this is 90 + 72 = 162. ( HoG + HoF )
