@@ -203,7 +203,7 @@ class Utilities
 
 			// if we have already processed, then save some time.
 			// If you DO want to write new histograms, either delete old ones from disk
-			// or change YouTubeDataset.histogramDirPath
+			// or change histogramDirPath from properties package
 			// or worse, comment following condition check.
 			if ( file.exists() )
 				continue;

@@ -17,7 +17,8 @@ public class YTClip
 	private List < String >	verbsList;
 	private String			mostFreqVerb;
 	private List < String >	label;
-	private String labelAsString;
+	private String			labelAsString;
+	private int				labelAsInt;
 	private int				height;
 	private boolean			enableHeightRestriction;
 	private int[]			histogram;
@@ -52,7 +53,6 @@ public class YTClip
 	{
 		this.name = name;
 	}
-
 
 	public List < String > getVerbsList()
 	{
@@ -127,6 +127,16 @@ public class YTClip
 	public void setLabelAsString( String labelAsString )
 	{
 		this.labelAsString = labelAsString;
+	}
+
+	public int getLabelAsInt()
+	{
+		return labelAsInt;
+	}
+
+	public void setLabelAsInt( int labelAsInt )
+	{
+		this.labelAsInt = labelAsInt;
 	}
 
 }

@@ -69,13 +69,22 @@ class PrepareInstance
 			{
 				// read training data
 				readHW2_Data( true );
-				
+
 				// read testing data
 				readHW2_Data( false );
-				
+
 				numClusters = Hollywood2Dataset.KMeansNumClusters;
 			}
 
+		if ( Common.Classifier.WEKA.getCurrentClassifier() == true )
+			processForWekaClassifier( numClusters );
+		else
+			if ( Common.Classifier.LIBSVM.getCurrentClassifier() == true )
+				processForLibsvmClassifier();
+	}
+
+	private void processForWekaClassifier( int numClusters ) throws Exception
+	{
 		maxHistogram = new double[numClusters];
 		avgHistogram = new double[numClusters];
 
@@ -116,16 +125,16 @@ class PrepareInstance
 
 		// Create an empty training set
 		TrainingSet = new Instances( "Rel", WekaAttributes, trainingClips.size() );
-		
+
 		if ( testingClips.size() > 0 )
 		{
 			// Create empty testing set
 			TestingSet = new Instances( "Testing", WekaAttributes, testingClips.size() );
-			
+
 			// last element will be class
 			TestingSet.setClassIndex( TestingSet.numAttributes() - 1 );
 		}
-		
+
 		// last element will be class
 		TrainingSet.setClassIndex( TrainingSet.numAttributes() - 1 );
 
@@ -133,7 +142,7 @@ class PrepareInstance
 		statisticalProcessing( numClusters, trainingClips );
 
 		System.err.println( "Adding training instances" );
-		
+
 		// Create training instances
 		for ( YTClip clip : trainingClips )
 		{
@@ -145,8 +154,8 @@ class PrepareInstance
 
 			// add histogram
 			for ( int i = 0; i < histogramAttrs.length; i++ )
-				instance.setValue( (Attribute) WekaAttributes.elementAt( i ),
-						( currentHistogram[ i ] ) / maxHistogram[ i ] );
+				instance.setValue( (Attribute) WekaAttributes.elementAt( i ), ( currentHistogram[ i ] )
+						/ maxHistogram[ i ] );
 
 			// add label
 			instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ), clip.getLabelAsString() );
@@ -154,22 +163,22 @@ class PrepareInstance
 			// add the instance to training set
 			TrainingSet.add( instance );
 		}
-		
+
 		// write training instances as arff file. - mainly for debugging
 		String trainARFF = TrainingSet.toString();
 		BufferedWriter writer = new BufferedWriter( new FileWriter( "train.arff" ) );
 		writer.write( trainARFF );
 		writer.close();
 		trainARFF = null;
-		
+
 		// Create testing instances
-		if( testingClips.size() > 0 )
+		if ( testingClips.size() > 0 )
 		{
 			System.err.println( "Adding testing instances" );
-			
+
 			statisticalProcessing( numClusters, testingClips );
-			
-			for( YTClip clip : testingClips )
+
+			for ( YTClip clip : testingClips )
 			{
 				// declare
 				Instance instance = new Instance( histogramAttrs.length + 1 );
@@ -179,16 +188,17 @@ class PrepareInstance
 
 				// add histogram
 				for ( int i = 0; i < histogramAttrs.length; i++ )
-					instance.setValue( (Attribute) WekaAttributes.elementAt( i ),
-							( currentHistogram[ i ] ) / maxHistogram[ i ] );
+					instance.setValue( (Attribute) WekaAttributes.elementAt( i ), ( currentHistogram[ i ] )
+							/ maxHistogram[ i ] );
 
 				// add label
-				instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ), clip.getLabelAsString() );
+				instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ),
+						clip.getLabelAsString() );
 
 				// add the instance to training set
 				TestingSet.add( instance );
 			}
-			
+
 			// write testing instances as arff file. - mainly for debugging
 			String testARFF = TestingSet.toString();
 			writer = new BufferedWriter( new FileWriter( "test.arff" ) );
@@ -199,7 +209,58 @@ class PrepareInstance
 		}
 	}
 
-	private void statisticalProcessing( int numClusters, List< YTClip > clipList )
+	private void processForLibsvmClassifier() throws IOException
+	{
+		String filename = Hollywood2Dataset.libsvmDir + "Hollywood2.train";
+
+		try
+		{
+			FileReader f = new FileReader( filename );
+
+			// if exception does not occure, file exists. do not proceed.
+			f.close();
+
+			System.err.println( "Using old file : " + filename );
+
+			return;
+		}
+		catch ( Exception e )
+		{
+			// file does not exists, so create it.
+		}
+
+		BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
+
+		System.err.println( "Preparing Input file for libsvm training." );
+
+		for ( YTClip clip : trainingClips )
+		{
+			int label = clip.getLabelAsInt();
+			int[] histogram = clip.getHistogram();
+
+			String training_instance;
+
+			// add label
+			training_instance = String.valueOf( label ) + " ";
+
+			// add attributes
+			for ( int i = 0; i < histogram.length; i++ )
+			{
+				training_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
+			}
+
+			// write to training file
+			writer.write( training_instance );
+
+			writer.newLine();
+		}
+
+		writer.close();
+
+		System.err.println( "Done Preparing Input file for libsvm training." );
+	}
+
+	private void statisticalProcessing( int numClusters, List < YTClip > clipList )
 	{
 		int sum;
 		int max;
@@ -232,7 +293,7 @@ class PrepareInstance
 			return;
 
 		System.err.println( "Reading training data." );
-		
+
 		File labelsDirectory = new File( YouTubeDataset.labelDirPath );
 
 		File[] allFiles = labelsDirectory.listFiles();
@@ -315,7 +376,7 @@ class PrepareInstance
 				}
 			}
 		}
-		
+
 		System.err.println( "Reading training data - Done" );
 	}
 
@@ -336,8 +397,8 @@ class PrepareInstance
 			uniqueLabels.add( line );
 
 		reader.close();
-		
-		if( isTrainingData == true )
+
+		if ( isTrainingData == true )
 		{
 			line = "all_labels_train.txt";
 			System.err.println( "Reading training data." );
@@ -348,8 +409,8 @@ class PrepareInstance
 			System.err.println( "Reading testing data." );
 		}
 
-		CSVReader csvReader = new CSVReader( new FileReader( Hollywood2Dataset.labelDirPath + File.separator
-				+ line ), ' ' );
+		CSVReader csvReader = new CSVReader( new FileReader( Hollywood2Dataset.labelDirPath + File.separator + line ),
+				' ' );
 
 		String[] nextLine = null;
 
@@ -367,6 +428,7 @@ class PrepareInstance
 					String lbl = uniqueLabels.get( i - 2 );
 
 					clip.setLabelAsString( lbl );
+					clip.setLabelAsInt( i - 2 );
 
 					// read only first positive instance of label
 					break;
@@ -401,14 +463,14 @@ class PrepareInstance
 				continue;
 			}
 
-			if( isTrainingData == true )
+			if ( isTrainingData == true )
 				trainingClips.add( clip );
 			else
 				testingClips.add( clip );
 		}
 
 		csvReader.close();
-		
+
 		System.err.println( "Reading data - Done" );
 	}
 }

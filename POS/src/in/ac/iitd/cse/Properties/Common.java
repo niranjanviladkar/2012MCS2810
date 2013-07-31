@@ -5,7 +5,7 @@ package in.ac.iitd.cse.Properties;
 
 /**
  * @author shree
- *
+ * 
  */
 public class Common
 {
@@ -35,7 +35,34 @@ public class Common
 			return isCurrent;
 		}
 	}
-	
+
+	public static enum Classifier
+	{
+		// @formatter:off - turns off code style formatting in eclipse 
+		
+		WEKA( false ), 
+		LIBSVM( false );
+		
+		// @formatter:on - turns on code style formatting in eclipse
+
+		private boolean	isCurrent;
+
+		Classifier( boolean b )
+		{
+			this.isCurrent = b;
+		}
+
+		public void setCurrentClassifier( boolean b )
+		{
+			this.isCurrent = b;
+		}
+
+		public boolean getCurrentClassifier()
+		{
+			return isCurrent;
+		}
+	}
+
 	public static enum state
 	{
 		// @formatter:off - turns off code style formatting in eclipse 

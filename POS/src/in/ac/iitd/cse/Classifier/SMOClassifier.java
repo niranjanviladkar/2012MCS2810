@@ -21,10 +21,10 @@ public class SMOClassifier extends PrepareInstance
 	public void Train() throws Exception
 	{
 		cModel = new SMO();
-		
+
 		RBFKernel rbfKernel = new RBFKernel();
 		rbfKernel.setGamma( 0.01 );
-		
+
 		cModel.setKernel( rbfKernel );
 		cModel.setC( 50 );
 
@@ -33,14 +33,14 @@ public class SMOClassifier extends PrepareInstance
 		System.err.println( "Started building classifier." );
 
 		cModel.buildClassifier( TrainingSet );
-		
+
 		System.err.println( "Done building classifier." );
 	}
 
 	private void Test() throws Exception
 	{
 		System.err.println( "Started evaluation." );
-		
+
 		eTest = new Evaluation( TrainingSet );
 		//eTest.useNoPriors();
 
@@ -54,7 +54,7 @@ public class SMOClassifier extends PrepareInstance
 			System.err.println( "Using Testing set for testing." );
 			eTest.evaluateModel( cModel, TestingSet );
 		}
-		
+
 		System.out.println( "Done Evaluation." );
 	}
 

@@ -3,6 +3,7 @@
  */
 package in.ac.iitd.cse.Tests;
 
+import in.ac.iitd.cse.Classifier.LibSvmClassifier;
 import in.ac.iitd.cse.Classifier.SMOClassifier;
 import in.ac.iitd.cse.Properties.Common;
 import in.ac.iitd.cse.Properties.Hollywood2Dataset;
@@ -21,6 +22,7 @@ public class Hollywood2 extends Utilities
 
 	/**
 	 * Main function.
+	 * 
 	 * @param args
 	 * @throws Exception
 	 */
@@ -42,7 +44,8 @@ public class Hollywood2 extends Utilities
 			System.out.println( "Run KMeans : 1" );
 			System.out.println( "Convert clips into histograms : 2" );
 			System.out.println( "Train classifier : 3" );
-			System.out.println( "Exit : 4" );
+			System.out.println( "Prepare libsvm training file : 4" );
+			System.out.println( "Exit : 5" );
 
 			choice = scan.nextInt();
 
@@ -86,9 +89,11 @@ public class Hollywood2 extends Utilities
 				case 3:
 					try
 					{
+						Common.Classifier.WEKA.setCurrentClassifier( true );
 						SMOClassifier smo = new SMOClassifier();
 						smo.Train();
 						smo.TestAndPrintResult( true );
+						Common.Classifier.WEKA.setCurrentClassifier( false );
 					}
 					catch ( Exception e )
 					{
@@ -98,6 +103,16 @@ public class Hollywood2 extends Utilities
 					break;
 
 				case 4:
+					Common.Classifier.LIBSVM.setCurrentClassifier( true );
+					new LibSvmClassifier();
+					Common.Classifier.LIBSVM.setCurrentClassifier( false );
+					break;
+
+				case 5:
+					breakLoop = true;
+					break;
+
+				default:
 					breakLoop = true;
 					break;
 			}
@@ -149,25 +164,25 @@ public class Hollywood2 extends Utilities
 	 * allTestingClips list.<br/>
 	 * Only testing clips are considered. Rest of the clips are ignored.<br/>
 	 * 
-	 * @param stipFeaturesDir
+	 * @param clipsDir
 	 * @throws Exception
 	 */
-	private static void populateAllTestingClips( String stipFeaturesDir ) throws Exception
+	private static void populateAllTestingClips( String clipsDir ) throws Exception
 	{
-		File featuresDirectory = new File( stipFeaturesDir );
+		File featuresDirectory = new File( clipsDir );
 
 		File[] allFiles = featuresDirectory.listFiles();
 
 		if ( allFiles == null || allFiles.length == 0 )
-			throw new Exception( "Empty or non existent features directory : " + stipFeaturesDir );
+			throw new Exception( "Empty or non existent features directory : " + clipsDir );
 
 		for ( File file : allFiles )
 		{
-			if ( file.getName().startsWith( "actioncliptest" ) && file.getName().endsWith( ".features" ) )
+			if ( file.getName().startsWith( "actioncliptest" ) && file.getName().endsWith( ".avi" ) )
 			{
 				int length = file.getName().length();
 
-				String onlyName = (String) file.getName().substring( 0, length - 9 );
+				String onlyName = (String) file.getName().substring( 0, length - 4 );
 
 				YTClip clip = new YTClip( onlyName );
 
@@ -184,14 +199,14 @@ public class Hollywood2 extends Utilities
 	 * allTrainingClips list <br/>
 	 * and testing clips to allTestingClips list.<br/>
 	 * 
-	 * @param stipFeaturesDir
+	 * @param clipsDir
 	 * @throws Exception
 	 */
-	private static void populateAllClips( String stipFeaturesDir ) throws Exception
+	private static void populateAllClips( String clipsDir ) throws Exception
 	{
-		populateAllTrainingClips( stipFeaturesDir );
+		populateAllTrainingClips( clipsDir );
 
-		populateAllTestingClips( stipFeaturesDir );
+		populateAllTestingClips( clipsDir );
 
 		Common.state.ALL_CLIPS_INITIALISED.isDone( true );
 	}

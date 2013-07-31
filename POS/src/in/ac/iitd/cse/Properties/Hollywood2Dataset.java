@@ -23,6 +23,11 @@ public class Hollywood2Dataset
 	public static String	histogramDirPath				= projectRoot + "histograms/Hollywood2";
 
 	/**
+	 * Path to the libsvm directory.
+	 */
+	public static String	libsvmDir						= projectRoot + "libsvm-3.17/";
+
+	/**
 	 * Input file used for KMeans clustering.
 	 */
 	public static String	KMeansInputFile					= projectRoot + "stip-extraction/KMeansInputFile.data";
@@ -35,7 +40,7 @@ public class Hollywood2Dataset
 	/**
 	 * Value of K used for KMeans clustering.
 	 */
-	public static int		KMeansNumClusters				= 4000;
+	public static int		KMeansNumClusters				= 500;
 
 	/**
 	 * Path to the directory which will contain final clip labels.
@@ -45,7 +50,7 @@ public class Hollywood2Dataset
 	/**
 	 * Number of sampled descriptors to be used for KMeans clustering.
 	 */
-	public static int		numOfDescriptorsForClustering	= 400000;
+	public static int		numOfDescriptorsForClustering	= 500000;
 
 	public static String	previousRunDir					= projectRoot + "previousRun/Hollywood2";
 
