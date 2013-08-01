@@ -212,52 +212,111 @@ class PrepareInstance
 	private void processForLibsvmClassifier() throws IOException
 	{
 		String filename = Hollywood2Dataset.libsvmDir + "Hollywood2.train";
+		boolean processTraining = true;
+		boolean processTesting = true;
+
+		// prepare a training file
+		try
+		{
+			FileReader f = new FileReader( filename );
+
+			// if exception does not occur, file exists. do not proceed.
+			f.close();
+
+			System.err.println( "Using old file : " + filename );
+
+			processTraining = false;
+		}
+		catch ( Exception e )
+		{
+			// file does not exists, so create it.
+			processTraining = true;
+		}
+
+		if ( processTraining == true )
+		{
+			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
+
+			System.err.println( "Preparing Input file for libsvm training." );
+
+			for ( YTClip clip : trainingClips )
+			{
+				int label = clip.getLabelAsInt();
+				int[] histogram = clip.getHistogram();
+
+				String training_instance;
+
+				// add label
+				training_instance = String.valueOf( label ) + " ";
+
+				// add attributes
+				for ( int i = 0; i < histogram.length; i++ )
+				{
+					training_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
+				}
+
+				// write to training file
+				writer.write( training_instance );
+
+				writer.newLine();
+			}
+			writer.close();
+
+			System.err.println( "Done Preparing Input file for libsvm training." );
+		}
+
+		// Now prepare for testing file
+
+		filename = Hollywood2Dataset.libsvmDir + "Hollywood2.test";
 
 		try
 		{
 			FileReader f = new FileReader( filename );
 
-			// if exception does not occure, file exists. do not proceed.
+			// if exception does not occur, file exists. do not proceed.
 			f.close();
 
 			System.err.println( "Using old file : " + filename );
 
-			return;
+			processTesting = false;
 		}
 		catch ( Exception e )
 		{
 			// file does not exists, so create it.
+			processTesting = true;
 		}
 
-		BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
-
-		System.err.println( "Preparing Input file for libsvm training." );
-
-		for ( YTClip clip : trainingClips )
+		if ( processTesting == true )
 		{
-			int label = clip.getLabelAsInt();
-			int[] histogram = clip.getHistogram();
+			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
 
-			String training_instance;
+			System.err.println( "Preparing Input file for libsvm testing." );
 
-			// add label
-			training_instance = String.valueOf( label ) + " ";
-
-			// add attributes
-			for ( int i = 0; i < histogram.length; i++ )
+			for ( YTClip clip : testingClips )
 			{
-				training_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
+				int label = clip.getLabelAsInt();
+				int[] histogram = clip.getHistogram();
+
+				String testing_instance;
+
+				// add label
+				testing_instance = String.valueOf( label ) + " ";
+
+				// add attributes
+				for ( int i = 0; i < histogram.length; i++ )
+				{
+					testing_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
+				}
+
+				// write to training file
+				writer.write( testing_instance );
+
+				writer.newLine();
 			}
+			writer.close();
 
-			// write to training file
-			writer.write( training_instance );
-
-			writer.newLine();
+			System.err.println( "Done Preparing Input file for libsvm testing." );
 		}
-
-		writer.close();
-
-		System.err.println( "Done Preparing Input file for libsvm training." );
 	}
 
 	private void statisticalProcessing( int numClusters, List < YTClip > clipList )
