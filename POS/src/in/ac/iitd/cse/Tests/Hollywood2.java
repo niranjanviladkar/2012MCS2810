@@ -56,7 +56,9 @@ public class Hollywood2 extends Utilities
 					{
 						populateAllClips( Hollywood2Dataset.ClipsDirPath );
 
-						PrepareKMeansInputFile();
+//						prepareKMeansInputFile_OLD();
+						
+						prepareKMeansInputFile();
 					}
 					catch ( Exception e1 )
 					{

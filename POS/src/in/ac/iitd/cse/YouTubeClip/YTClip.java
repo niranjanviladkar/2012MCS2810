@@ -9,19 +9,60 @@ import java.util.List;
 
 /**
  * @author mcs122810
- * 
+ *
  */
 public class YTClip
 {
+	/**
+	 * Name of the AVI file without extension.
+	 */
 	private String			name;
+
+	/**
+	 * All the verbs appearing in all the descriptions of this clip.
+	 */
 	private List < String >	verbsList;
+
+	/**
+	 * Most frequent verb used in all the descriptions of the clip.
+	 */
 	private String			mostFreqVerb;
+
+	/**
+	 * Label given after Hierarchical Agglomerative Clustering.
+	 */
 	private List < String >	label;
+
+	/**
+	 * Label given after Hierarchical Agglomerative Clustering. Represented as a
+	 * single string.
+	 */
 	private String			labelAsString;
+
+	/**
+	 * Label read from file. - Completely supervised learning.
+	 */
 	private int				labelAsInt;
+
+	/**
+	 * Height in Hierarchical Agglomerative Clustering.
+	 */
 	private int				height;
+
+	/**
+	 * Cut off HAC at certain height.
+	 */
 	private boolean			enableHeightRestriction;
+
+	/**
+	 * A Clip is represented as histogram over clusters of HoGHoF features.
+	 */
 	private int[]			histogram;
+
+	/**
+	 * Number of HoGHoF features for the clip.
+	 */
+	private int				numOfFeatures;
 
 	/**
 	 * @param name
@@ -137,6 +178,16 @@ public class YTClip
 	public void setLabelAsInt( int labelAsInt )
 	{
 		this.labelAsInt = labelAsInt;
+	}
+
+	public int getNumOfFeatures()
+	{
+		return numOfFeatures;
+	}
+
+	public void setNumOfFeatures( int numOfFeatures )
+	{
+		this.numOfFeatures = numOfFeatures;
 	}
 
 }

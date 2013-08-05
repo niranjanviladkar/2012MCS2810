@@ -51,6 +51,11 @@ class Utilities
 	static double[][]				centroids			= null;
 
 	/**
+	 * Total features in all training clips.
+	 */
+	static int						totalFeatures		= 0;
+
+	/**
 	 * Adds a clip if not already added. If already added, just add verbs from
 	 * description.<br/>
 	 * Will use tagger to tag verbs and stemmer to stem them.
@@ -488,12 +493,202 @@ class Utilities
 	}
 
 	/**
+	 * Amongst from all HoGHoF descriptors choose randomly.<br/>
+	 * 
+	 * Notice that longer videos have more probability in sampling over shorter
+	 * videos. Other strategy : Giving equal weightage to all the clips.
+	 * Roughly, this function will take 1 hour for 100,000 samples.
+	 * 
+	 * @throws IOException
+	 */
+	static void prepareKMeansInputFile() throws IOException
+	{
+		if ( Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone() == false )
+		{
+			System.err.println( "Please initialise all clips before running this function." );
+			return;
+		}
+
+		int descAdded = 0;
+
+		int numOfDescForClustering = 0;
+
+		// prepare KMeans Input file
+		String kMeansFileName = null;
+
+		// STIP HoGHoF features' directory
+		String featuresDir = null;
+
+		if ( Common.DataSet.YOUTUBE.currentDS() == true )
+		{
+			numOfDescForClustering = YouTubeDataset.numOfDescriptorsForClustering;
+			kMeansFileName = YouTubeDataset.KMeansInputFile;
+			featuresDir = YouTubeDataset.stipFeaturesDirPath + File.separator;
+		}
+		else
+			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+			{
+				numOfDescForClustering = Hollywood2Dataset.numOfDescriptorsForClustering;
+				kMeansFileName = Hollywood2Dataset.KMeansInputFile;
+				featuresDir = Hollywood2Dataset.stipFeaturesDirPath + File.separator;
+			}
+
+		// if file already exists, then dont process
+		boolean process = false;
+
+		try
+		{
+			BufferedReader reader = new BufferedReader( new FileReader( kMeansFileName ) );
+
+			// if file exists, close it don't process further.
+			reader.close();
+
+			process = false;
+		}
+		catch ( Exception e1 )
+		{
+			// if exception occurs, then we need to process.
+			process = true;
+		}
+
+		// TODO ... modified below condition for testing.
+		if ( true || process == true )
+		{
+			countFeaturesPerClip( featuresDir );
+
+			System.err.println( "Started with Preparing KMeans Input File." );
+
+			BufferedWriter writer = new BufferedWriter( new FileWriter( kMeansFileName ) );
+
+			Random random = new Random();
+
+			for ( int i = 0; i < numOfDescForClustering; i++ )
+			{
+				// in each iteration add one feature
+
+				// select a random descriptor from all available training descriptors.
+				int descrIndex = random.nextInt( totalFeatures );
+
+				YTClip selectedClip = null;
+
+				int remaining = descrIndex;
+
+				// find the clip containing this descriptor ( or feature ).
+				{
+					for ( YTClip clip : allTrainingClips )
+					{
+						if ( remaining < clip.getNumOfFeatures() )
+						{
+							selectedClip = clip;
+							break;
+						}
+						else
+						{
+							remaining -= clip.getNumOfFeatures();
+						}
+					}
+				}
+
+				// open corresponding features' file.
+				BufferedReader reader = new BufferedReader( new FileReader( featuresDir + selectedClip.getName()
+						+ ".features" ) );
+
+				String selectedDescriptor = null;
+
+				// go till required index and read the descriptor ( or feature ) & close the reader.
+				{
+					// 'remaining' is the number of descriptors we need to skip.
+					while ( remaining-- > 0 )
+						reader.readLine();
+
+					// next line is required descriptor ( or feature )
+					selectedDescriptor = reader.readLine();
+
+					reader.close();
+				}
+
+				reader = null; // help garbage collection ( gc ) ?
+
+				// write descriptor ( or feature ) to the k-means input file.
+				{
+					writer.write( selectedDescriptor );
+
+					// keep one feature per line
+
+					writer.newLine();
+				}
+
+				if ( i % 1000 == 0 )
+				{
+					System.err.print( "." );
+				}
+			}
+
+			System.err.println();
+
+			writer.close();
+
+			System.err.println( "Done with Preparing KMeans Input File." );
+		}
+		else
+			System.err.println( "Using previous KMeans input file." );
+
+		Common.state.KMEANS_INPUT_PREPARED.isDone( true );
+	}
+
+	/**
+	 * Count how many HoGHoF features appear in each clip.
+	 * 
+	 * @param featuresDir
+	 *            - The directory containing STIP features for all training
+	 *            clips. It should end with a slash character.
+	 * @throws IOException
+	 */
+	static private void countFeaturesPerClip( String featuresDir ) throws IOException
+	{
+		totalFeatures = 0;
+
+		int clipsDone = 0;
+
+		System.err.println( "Counting number of descriptors ( or features ) for each training clip. - Started." );
+
+		for ( YTClip clip : allTrainingClips )
+		{
+			BufferedReader reader = new BufferedReader( new FileReader( featuresDir + clip.getName() + ".features" ) );
+
+			int featureCount = 0;
+
+			while ( reader.readLine() != null )
+				featureCount++;
+
+			reader.close();
+
+			reader = null; // help gc ?
+
+			// save with clip the number of features for it.
+			clip.setNumOfFeatures( featureCount );
+
+			// keep count of total features
+			totalFeatures += featureCount;
+
+			if ( clipsDone++ % 10 == 0 )
+				System.err.print( "." );
+		}
+
+		System.err.println();
+
+		System.err.println( "Counting number of descriptors ( or features ) for each training clip. - Completed." );
+	}
+
+	/**
 	 * Randomly choose a clip to get descriptors from that clip.<br/>
 	 * Do not choose too many from a single file.<br/>
 	 * 
 	 * @throws IOException
+	 * 
 	 */
-	static void PrepareKMeansInputFile() throws IOException
+	@Deprecated
+	static void prepareKMeansInputFile_OLD() throws IOException
 	{
 		if ( Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone() == false )
 		{
@@ -635,7 +830,7 @@ class Utilities
 	{
 		// read in the data
 		String fileName = null;
-		
+
 		try
 		{
 			int numCluster = 0;
@@ -689,7 +884,7 @@ class Utilities
 		if ( Common.state.KMEANS_INPUT_PREPARED.isDone() == false )
 		{
 			System.err.println( "Please prepare KMeans input file before running this function." );
-//			return;
+			//			return;
 		}
 		int numClusters = 0;
 		String KmeansIPFile = null;
