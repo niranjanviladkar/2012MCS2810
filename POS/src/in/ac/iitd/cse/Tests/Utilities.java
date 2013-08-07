@@ -257,6 +257,8 @@ class Utilities
 				clip.incrHistogram( nearestClusterIndex );
 			}
 
+			scanner.close();
+
 			BufferedWriter writer = new BufferedWriter( new FileWriter( histogramFile ) );
 
 			int[] currentHistogram = clip.getHistogram();
@@ -551,8 +553,7 @@ class Utilities
 			process = true;
 		}
 
-		// TODO ... modified below condition for testing.
-		if ( true || process == true )
+		if ( process == true )
 		{
 			countFeaturesPerClip( featuresDir );
 
