@@ -3,7 +3,7 @@
  */
 package in.ac.iitd.cse.Tests;
 
-import in.ac.iitd.cse.Classifier.SMOClassifier;
+import in.ac.iitd.cse.Classifier.WekaSMOClassifier;
 import in.ac.iitd.cse.Properties.Common;
 import in.ac.iitd.cse.Properties.YouTubeDataset;
 
@@ -126,7 +126,7 @@ public class YouTubeDataSet extends Utilities
 				case 3:
 					try
 					{
-						SMOClassifier smo = new SMOClassifier();
+						WekaSMOClassifier smo = new WekaSMOClassifier();
 						smo.Train();
 						smo.TestAndPrintResult( true );
 					}

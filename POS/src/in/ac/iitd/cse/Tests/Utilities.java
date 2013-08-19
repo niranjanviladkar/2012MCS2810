@@ -510,7 +510,7 @@ class Utilities
 			System.err.println( "Please initialise all clips before running this function." );
 			return;
 		}
-		
+
 		int numOfDescForClustering = 0;
 
 		// prepare KMeans Input file

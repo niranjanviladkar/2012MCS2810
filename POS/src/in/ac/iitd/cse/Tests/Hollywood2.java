@@ -4,7 +4,8 @@
 package in.ac.iitd.cse.Tests;
 
 import in.ac.iitd.cse.Classifier.LibSvmClassifier;
-import in.ac.iitd.cse.Classifier.SMOClassifier;
+import in.ac.iitd.cse.Classifier.MekaSMOClassifier;
+import in.ac.iitd.cse.Classifier.WekaSMOClassifier;
 import in.ac.iitd.cse.Properties.Common;
 import in.ac.iitd.cse.Properties.Hollywood2Dataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
@@ -37,15 +38,18 @@ public class Hollywood2 extends Utilities
 		boolean breakLoop = false;
 		Scanner scan = new Scanner( System.in );
 
+		populateAllClips( Hollywood2Dataset.ClipsDirPath );
+
 		do
 		{
 			System.out.println( "Enter your choice : [0-4]" );
 			System.out.println( "Prepare KMeans input file : 0" );
 			System.out.println( "Run KMeans : 1" );
 			System.out.println( "Convert clips into histograms : 2" );
-			System.out.println( "Train classifier : 3" );
-			System.out.println( "Prepare libsvm training file : 4" );
-			System.out.println( "Exit : 5" );
+			System.out.println( "Train weka SMO classifier : 3" );
+			System.out.println( "Train meka SMO classifier : 4" );
+			System.out.println( "Prepare libsvm training file : 5" );
+			System.out.println( "Exit : 6" );
 
 			choice = scan.nextInt();
 
@@ -54,10 +58,8 @@ public class Hollywood2 extends Utilities
 				case 0:
 					try
 					{
-						populateAllClips( Hollywood2Dataset.ClipsDirPath );
+						//						prepareKMeansInputFile_OLD();
 
-//						prepareKMeansInputFile_OLD();
-						
 						prepareKMeansInputFile();
 					}
 					catch ( Exception e1 )
@@ -92,7 +94,7 @@ public class Hollywood2 extends Utilities
 					try
 					{
 						Common.Classifier.WEKA.setCurrentClassifier( true );
-						SMOClassifier smo = new SMOClassifier();
+						WekaSMOClassifier smo = new WekaSMOClassifier();
 						smo.Train();
 						smo.TestAndPrintResult( true );
 						Common.Classifier.WEKA.setCurrentClassifier( false );
@@ -105,12 +107,30 @@ public class Hollywood2 extends Utilities
 					break;
 
 				case 4:
+					try
+					{
+						Common.Classifier.MEKA.setCurrentClassifier( true );
+
+						MekaSMOClassifier smo = new MekaSMOClassifier();
+						smo.Train();
+						//smo.TestAndPrintResult( true );
+
+						Common.Classifier.MEKA.setCurrentClassifier( false );
+					}
+					catch ( Exception e )
+					{
+						e.printStackTrace();
+						breakLoop = true;
+					}
+					break;
+
+				case 5:
 					Common.Classifier.LIBSVM.setCurrentClassifier( true );
 					new LibSvmClassifier();
 					Common.Classifier.LIBSVM.setCurrentClassifier( false );
 					break;
 
-				case 5:
+				case 6:
 					breakLoop = true;
 					break;
 

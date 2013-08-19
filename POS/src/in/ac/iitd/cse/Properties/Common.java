@@ -1,10 +1,10 @@
 /**
- * Copyright Niranjan Aniruddha Viladkar 2012 - 2013, All rights Reserved.
+ * Copyright IIT Delhi 2012 - 2013, All rights Reserved.
  */
 package in.ac.iitd.cse.Properties;
 
 /**
- * @author shree
+ * @author mcs122810
  * 
  */
 public class Common
@@ -40,7 +40,8 @@ public class Common
 	{
 		// @formatter:off - turns off code style formatting in eclipse 
 		
-		WEKA( false ), 
+		WEKA( false ),
+		MEKA( false ),
 		LIBSVM( false );
 		
 		// @formatter:on - turns on code style formatting in eclipse

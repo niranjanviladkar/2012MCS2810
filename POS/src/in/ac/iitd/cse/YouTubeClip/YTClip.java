@@ -1,5 +1,5 @@
 /**
- * 
+ * Copyright Indian Institute of Technology, Delhi, India. 2012-2013.  
  */
 package in.ac.iitd.cse.YouTubeClip;
 
@@ -43,6 +43,11 @@ public class YTClip
 	 * Label read from file. - Completely supervised learning.
 	 */
 	private int				labelAsInt;
+	
+	/**
+	 * Supports multi label datasets.
+	 */
+	private List < Integer > labelAsIntList;
 
 	/**
 	 * Height in Hierarchical Agglomerative Clustering.
@@ -188,6 +193,16 @@ public class YTClip
 	public void setNumOfFeatures( int numOfFeatures )
 	{
 		this.numOfFeatures = numOfFeatures;
+	}
+
+	public List < Integer > getLabelAsIntList()
+	{
+		return labelAsIntList;
+	}
+
+	public void setLabelAsIntList( List < Integer > labelAsIntList )
+	{
+		this.labelAsIntList = labelAsIntList;
 	}
 
 }

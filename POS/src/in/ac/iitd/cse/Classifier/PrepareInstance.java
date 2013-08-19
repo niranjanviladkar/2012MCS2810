@@ -21,7 +21,7 @@ import java.util.List;
 import au.com.bytecode.opencsv.CSVReader;
 
 import weka.core.Attribute;
-import weka.core.FastVector;
+import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -80,7 +80,54 @@ class PrepareInstance
 			processForWekaClassifier( numClusters );
 		else
 			if ( Common.Classifier.LIBSVM.getCurrentClassifier() == true )
-				processForLibsvmClassifier();
+				processForLibsvmClassifier( true );
+			else
+				if ( Common.Classifier.MEKA.getCurrentClassifier() == true )
+					processForMekaClassifier( numClusters );
+	}
+
+	private void processForMekaClassifier( int numClusters ) throws IOException
+	{
+		// declare attributes corresponding to histogram
+		ArrayList < Attribute > allAttrs = new ArrayList < Attribute >( uniqueLabels.size() + numClusters );
+
+		ArrayList < String > attrValues = new ArrayList < String >();
+		attrValues.add( "0" );
+		attrValues.add( "1" );
+
+		// for each element in histogram, add an attribute
+		// ATTR1, ATTR2 ... ATTR200...
+		for ( int i = 0; i < uniqueLabels.size(); i++ )
+		{
+			allAttrs.add( new Attribute( uniqueLabels.get( i ), attrValues ) );
+		}
+
+		for ( int i = 0; i < numClusters; i++ )
+			allAttrs.add( new Attribute( "ATTR" + ( i + 1 ) ) );
+
+		// Create an empty training set
+		String nameOfRelation = "Train" + ": -C " + uniqueLabels.size();
+		TrainingSet = new Instances( nameOfRelation, allAttrs, trainingClips.size() );
+
+		if ( testingClips.size() > 0 )
+		{
+			nameOfRelation = "Test" + ": -C " + uniqueLabels.size();
+
+			// Create empty testing set
+			TestingSet = new Instances( nameOfRelation, allAttrs, testingClips.size() );
+		}
+
+		System.err.println( "Adding training instances" );
+
+		fill_data( trainingClips, allAttrs, numClusters, true );
+
+		// Create testing instances
+		if ( testingClips.size() > 0 )
+		{
+			System.err.println( "Adding testing instances" );
+
+			fill_data( testingClips, allAttrs, numClusters, false );
+		}
 	}
 
 	private void processForWekaClassifier( int numClusters ) throws Exception
@@ -98,38 +145,40 @@ class PrepareInstance
 		}
 
 		// declare attributes corresponding to histogram
-		Attribute[] histogramAttrs = new Attribute[numClusters];
+		ArrayList < Attribute > histogramAttrs = new ArrayList < Attribute >( numClusters + 1 );
 
 		// for each element in histogram, add an attribute
-		// ATTR1, ATTR2 ... ATTR200
-		for ( int i = 0; i < histogramAttrs.length; i++ )
-			histogramAttrs[ i ] = new Attribute( "ATTR" + ( i + 1 ) );
+		// ATTR1, ATTR2 ... ATTR200...
+		for ( int i = 0; i < numClusters; i++ )
+			histogramAttrs.add( new Attribute( "ATTR" + ( i + 1 ) ) );
 
 		// Declare the class attribute along with its values
-		FastVector classes = new FastVector( uniqueLabels.size() );
+		histogramAttrs.add( new Attribute( "theClass", uniqueLabels ) );
 
-		for ( String lbl : uniqueLabels )
-			classes.addElement( lbl );
+		//		FastVector classes = new FastVector( uniqueLabels.size() );
+		//
+		//		for ( String lbl : uniqueLabels )
+		//			classes.addElement( lbl );
 
-		Attribute classAttribute = new Attribute( "theClass", classes );
+		//			Attribute classAttribute = new Attribute( "theClass", uniqueLabels );
 
 		// Declare the feature vector
-		FastVector WekaAttributes = new FastVector( histogramAttrs.length + 1 );
+		//			FastVector WekaAttributes = new FastVector( histogramAttrs.length + 1 );
 
 		// histogram attributes
-		for ( Attribute attr : histogramAttrs )
-			WekaAttributes.addElement( attr );
-
-		// class attribute
-		WekaAttributes.addElement( classAttribute );
-
+		//			for ( Attribute attr : histogramAttrs )
+		//				WekaAttributes.addElement( attr );
+		//	
+		//			// class attribute
+		//			WekaAttributes.addElement( classAttribute );
+		//	
 		// Create an empty training set
-		TrainingSet = new Instances( "Rel", WekaAttributes, trainingClips.size() );
+		TrainingSet = new Instances( "Rel", histogramAttrs, trainingClips.size() );
 
 		if ( testingClips.size() > 0 )
 		{
 			// Create empty testing set
-			TestingSet = new Instances( "Testing", WekaAttributes, testingClips.size() );
+			TestingSet = new Instances( "Testing", histogramAttrs, testingClips.size() );
 
 			// last element will be class
 			TestingSet.setClassIndex( TestingSet.numAttributes() - 1 );
@@ -139,7 +188,7 @@ class PrepareInstance
 		TrainingSet.setClassIndex( TrainingSet.numAttributes() - 1 );
 
 		// calculate max and average for each cluster.
-		statisticalProcessing( numClusters, trainingClips );
+		//statisticalProcessing( numClusters, trainingClips );
 
 		System.err.println( "Adding training instances" );
 
@@ -147,18 +196,17 @@ class PrepareInstance
 		for ( YTClip clip : trainingClips )
 		{
 			// declare
-			Instance instance = new Instance( histogramAttrs.length + 1 );
+			Instance instance = new DenseInstance( numClusters + 1 );
 
 			// get histogram
 			int[] currentHistogram = clip.getHistogram();
 
 			// add histogram
-			for ( int i = 0; i < histogramAttrs.length; i++ )
-				instance.setValue( (Attribute) WekaAttributes.elementAt( i ), ( currentHistogram[ i ] )
-						/ maxHistogram[ i ] );
+			for ( int i = 0; i < numClusters; i++ )
+				instance.setValue( histogramAttrs.get( i ), currentHistogram[ i ] );// / maxHistogram[ i ] );
 
 			// add label
-			instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ), clip.getLabelAsString() );
+			instance.setValue( histogramAttrs.get( TrainingSet.numAttributes() - 1 ), clip.getLabelAsString() );
 
 			// add the instance to training set
 			TrainingSet.add( instance );
@@ -176,24 +224,22 @@ class PrepareInstance
 		{
 			System.err.println( "Adding testing instances" );
 
-			statisticalProcessing( numClusters, testingClips );
+			//statisticalProcessing( numClusters, testingClips );
 
 			for ( YTClip clip : testingClips )
 			{
 				// declare
-				Instance instance = new Instance( histogramAttrs.length + 1 );
+				Instance instance = new DenseInstance( numClusters + 1 );
 
 				// get histogram
 				int[] currentHistogram = clip.getHistogram();
 
 				// add histogram
-				for ( int i = 0; i < histogramAttrs.length; i++ )
-					instance.setValue( (Attribute) WekaAttributes.elementAt( i ), ( currentHistogram[ i ] )
-							/ maxHistogram[ i ] );
+				for ( int i = 0; i < numClusters; i++ )
+					instance.setValue( histogramAttrs.get( i ), currentHistogram[ i ] );// / maxHistogram[ i ] );
 
 				// add label
-				instance.setValue( (Attribute) WekaAttributes.elementAt( histogramAttrs.length ),
-						clip.getLabelAsString() );
+				instance.setValue( histogramAttrs.get( TrainingSet.numAttributes() - 1 ), clip.getLabelAsString() );
 
 				// add the instance to training set
 				TestingSet.add( instance );
@@ -209,7 +255,7 @@ class PrepareInstance
 		}
 	}
 
-	private void processForLibsvmClassifier() throws IOException
+	private void processForLibsvmClassifier( boolean forceOverwrite ) throws IOException
 	{
 		String filename = Hollywood2Dataset.libsvmDir + "Hollywood2.train";
 		boolean processTraining = true;
@@ -223,7 +269,8 @@ class PrepareInstance
 			// if exception does not occur, file exists. do not proceed.
 			f.close();
 
-			System.err.println( "Using old file : " + filename );
+			if ( forceOverwrite == false )
+				System.err.println( "Using old file : " + filename );
 
 			processTraining = false;
 		}
@@ -233,21 +280,33 @@ class PrepareInstance
 			processTraining = true;
 		}
 
-		if ( processTraining == true )
+		if ( forceOverwrite == true || processTraining == true )
 		{
 			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
 
-			System.err.println( "Preparing Input file for libsvm training." );
+			System.err.println( "Preparing Input file for libsvm training : " + filename );
 
 			for ( YTClip clip : trainingClips )
 			{
-				int label = clip.getLabelAsInt();
+				// int label = clip.getLabelAsInt();
+				List < Integer > labelList = clip.getLabelAsIntList();
 				int[] histogram = clip.getHistogram();
 
-				String training_instance;
+				String training_instance = "";
 
-				// add label
-				training_instance = String.valueOf( label ) + " ";
+				// add label - this does not support multi label dataset... so commented
+				// training_instance = String.valueOf( label ) + " ";
+
+				// add label - supports multi label datasets also.
+				for ( int i = 0; i < labelList.size(); i++ )
+				{
+					training_instance += labelList.get( i );
+
+					if ( i < labelList.size() - 1 )
+						training_instance += ",";
+					else
+						training_instance += " ";
+				}
 
 				// add attributes
 				for ( int i = 0; i < histogram.length; i++ )
@@ -276,7 +335,8 @@ class PrepareInstance
 			// if exception does not occur, file exists. do not proceed.
 			f.close();
 
-			System.err.println( "Using old file : " + filename );
+			if ( forceOverwrite == false )
+				System.err.println( "Using old file : " + filename );
 
 			processTesting = false;
 		}
@@ -286,21 +346,33 @@ class PrepareInstance
 			processTesting = true;
 		}
 
-		if ( processTesting == true )
+		if ( forceOverwrite == true || processTesting == true )
 		{
 			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
 
-			System.err.println( "Preparing Input file for libsvm testing." );
+			System.err.println( "Preparing Input file for libsvm testing : " + filename );
 
 			for ( YTClip clip : testingClips )
 			{
-				int label = clip.getLabelAsInt();
+				// int label = clip.getLabelAsInt();
+				List < Integer > labelList = clip.getLabelAsIntList();
 				int[] histogram = clip.getHistogram();
 
-				String testing_instance;
+				String testing_instance = "";
 
-				// add label
-				testing_instance = String.valueOf( label ) + " ";
+				// add label - this does not support multi label dataset... so commented
+				// testing_instance = String.valueOf( label ) + " ";
+
+				//add label - supports multi label datasets also.
+				for ( int i = 0; i < labelList.size(); i++ )
+				{
+					testing_instance += labelList.get( i );
+
+					if ( i < labelList.size() - 1 )
+						testing_instance += ",";
+					else
+						testing_instance += " ";
+				}
 
 				// add attributes
 				for ( int i = 0; i < histogram.length; i++ )
@@ -316,6 +388,65 @@ class PrepareInstance
 			writer.close();
 
 			System.err.println( "Done Preparing Input file for libsvm testing." );
+		}
+	}
+
+	private void fill_data( List < YTClip > list, ArrayList < Attribute > allAttrs, int numClusetrs, boolean isTraining )
+			throws IOException
+	{
+		// Create instances
+		for ( YTClip clip : list )
+		{
+			// declare
+			Instance instance = new DenseInstance( allAttrs.size() );
+
+			// get histogram
+			int[] currentHistogram = clip.getHistogram();
+
+			// add label
+			{
+				// get label as int list
+				List < Integer > labels = clip.getLabelAsIntList();
+
+				for ( int i = 0; i < uniqueLabels.size(); i++ )
+				{
+					if ( labels.contains( Integer.valueOf( i ) ) )
+						instance.setValue( allAttrs.get( i ), "1" );
+					else
+						instance.setValue( allAttrs.get( i ), "0" );
+				}
+			}
+
+			// add histogram
+			for ( int i = 0; i < numClusetrs; i++ )
+				instance.setValue( allAttrs.get( uniqueLabels.size() + i ), ( currentHistogram[ i ] ) );// / maxHistogram[ i ] );
+
+			// add the instance to training set
+			if ( isTraining == true )
+				TrainingSet.add( instance );
+			else
+				TestingSet.add( instance );
+		}
+
+		{
+			// write instances as arff file. - mainly for debugging
+			String ARFF_output, output_file;
+
+			if ( isTraining == true )
+			{
+				ARFF_output = TrainingSet.toString();
+				output_file = "train.arff";
+			}
+			else
+			{
+				ARFF_output = TestingSet.toString();
+				output_file = "test.arff";
+			}
+
+			BufferedWriter writer = new BufferedWriter( new FileWriter( output_file ) );
+			writer.write( ARFF_output );
+			writer.close();
+			ARFF_output = null;
 		}
 	}
 
@@ -478,8 +609,7 @@ class PrepareInstance
 			// add clip
 			YTClip clip = new YTClip( nextLine[ 0 ] );
 
-			// read label
-
+			// read label - only first label
 			for ( int i = 2; i < nextLine.length; i++ )
 			{
 				if ( nextLine[ i ].equalsIgnoreCase( "1" ) == true )
@@ -493,6 +623,15 @@ class PrepareInstance
 					break;
 				}
 			}
+
+			//read label - all labels in case of multi label
+			List < Integer > labelAsIntList = new ArrayList < Integer >();
+
+			for ( int i = 2; i < nextLine.length; i++ )
+				if ( nextLine[ i ].equalsIgnoreCase( "1" ) == true )
+					labelAsIntList.add( i - 2 );
+
+			clip.setLabelAsIntList( labelAsIntList );
 
 			// read histograms
 			String histogramFile = Hollywood2Dataset.histogramDirPath + File.separator + clip.getName() + ".histogram";
