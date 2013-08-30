@@ -155,23 +155,6 @@ class PrepareInstance
 		// Declare the class attribute along with its values
 		histogramAttrs.add( new Attribute( "theClass", uniqueLabels ) );
 
-		//		FastVector classes = new FastVector( uniqueLabels.size() );
-		//
-		//		for ( String lbl : uniqueLabels )
-		//			classes.addElement( lbl );
-
-		//			Attribute classAttribute = new Attribute( "theClass", uniqueLabels );
-
-		// Declare the feature vector
-		//			FastVector WekaAttributes = new FastVector( histogramAttrs.length + 1 );
-
-		// histogram attributes
-		//			for ( Attribute attr : histogramAttrs )
-		//				WekaAttributes.addElement( attr );
-		//	
-		//			// class attribute
-		//			WekaAttributes.addElement( classAttribute );
-		//	
 		// Create an empty training set
 		TrainingSet = new Instances( "Rel", histogramAttrs, trainingClips.size() );
 

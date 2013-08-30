@@ -97,6 +97,8 @@ public class Hollywood2 extends Utilities
 						WekaSMOClassifier smo = new WekaSMOClassifier();
 						smo.Train();
 						smo.TestAndPrintResult( true );
+						// smo.TrainOneVsAll( 50, 0.01 );
+
 						Common.Classifier.WEKA.setCurrentClassifier( false );
 					}
 					catch ( Exception e )
