@@ -238,9 +238,16 @@ class PrepareInstance
 		}
 	}
 
+	/**
+	 * Create a training and testing file in libsvm format.
+	 * 
+	 * @param forceOverwrite
+	 *            - Should overwrite previous files?
+	 * @throws IOException
+	 */
 	private void processForLibsvmClassifier( boolean forceOverwrite ) throws IOException
 	{
-		String filename = Hollywood2Dataset.libsvmDir + "Hollywood2.train";
+		String filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.train";
 		boolean processTraining = true;
 		boolean processTesting = true;
 
@@ -281,35 +288,65 @@ class PrepareInstance
 				// training_instance = String.valueOf( label ) + " ";
 
 				// add label - supports multi label datasets also.
-				for ( int i = 0; i < labelList.size(); i++ )
-				{
-					training_instance += labelList.get( i );
+				{/*
+					for ( int i = 0; i < labelList.size(); i++ )
 
-					if ( i < labelList.size() - 1 )
-						training_instance += ",";
-					else
+					{
+						training_instance += labelList.get( i );
+
+						if ( i < labelList.size() - 1 )
+							training_instance += ",";
+						else
+							training_instance += " ";
+					}
+
+					// add attributes
+					for ( int i = 0; i < histogram.length; i++ )
+					{
+						training_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
+					}
+
+					// write to training file
+					writer.write( training_instance );
+					
+					writer.newLine();
+					*/
+				}
+
+				// add label - supports multi label datasets also.
+				// create a duplicate training instance for each multi label instance.
+				{
+					for ( int i = 0; i < labelList.size(); i++ )
+					{
+						training_instance += labelList.get( i );
+
 						training_instance += " ";
+
+						// add attributes
+						for ( int j = 0; j < histogram.length; j++ )
+						{
+							training_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ] ) + " ";
+						}
+
+						// write to training file
+						writer.write( training_instance );
+
+						writer.newLine();
+						
+						training_instance = "";
+						
+					}
 				}
 
-				// add attributes
-				for ( int i = 0; i < histogram.length; i++ )
-				{
-					training_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
-				}
-
-				// write to training file
-				writer.write( training_instance );
-
-				writer.newLine();
 			}
 			writer.close();
 
-			System.err.println( "Done Preparing Input file for libsvm training." );
+			System.err.println( "Done Preparing Input file for libsvm training." + filename );
 		}
 
 		// Now prepare for testing file
 
-		filename = Hollywood2Dataset.libsvmDir + "Hollywood2.test";
+		filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.test";
 
 		try
 		{
@@ -347,30 +384,58 @@ class PrepareInstance
 				// testing_instance = String.valueOf( label ) + " ";
 
 				//add label - supports multi label datasets also.
-				for ( int i = 0; i < labelList.size(); i++ )
-				{
-					testing_instance += labelList.get( i );
+				{/*
+					for ( int i = 0; i < labelList.size(); i++ )
+					{
+						testing_instance += labelList.get( i );
 
-					if ( i < labelList.size() - 1 )
-						testing_instance += ",";
-					else
+						if ( i < labelList.size() - 1 )
+							testing_instance += ",";
+						else
+							testing_instance += " ";
+					}
+
+					// add attributes
+					for ( int i = 0; i < histogram.length; i++ )
+					{
+						testing_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
+					}
+
+					// write to training file
+					writer.write( testing_instance );
+
+					writer.newLine();
+					*/
+				}
+				
+
+				// add label - supports multi label datasets also.
+				// create a duplicate training instance for each multi label instance.
+				{
+					for ( int i = 0; i < labelList.size(); i++ )
+					{
+						testing_instance += labelList.get( i );
+
 						testing_instance += " ";
+
+						// add attributes
+						for ( int j = 0; j < histogram.length; j++ )
+						{
+							testing_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ] ) + " ";
+						}
+
+						// write to training file
+						writer.write( testing_instance );
+
+						writer.newLine();
+						
+						testing_instance = "";
+					}
 				}
-
-				// add attributes
-				for ( int i = 0; i < histogram.length; i++ )
-				{
-					testing_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
-				}
-
-				// write to training file
-				writer.write( testing_instance );
-
-				writer.newLine();
 			}
 			writer.close();
 
-			System.err.println( "Done Preparing Input file for libsvm testing." );
+			System.err.println( "Done Preparing Input file for libsvm testing." + filename );
 		}
 	}
 
@@ -600,7 +665,7 @@ class PrepareInstance
 					String lbl = uniqueLabels.get( i - 2 );
 
 					clip.setLabelAsString( lbl );
-					clip.setLabelAsInt( i - 2 );
+					clip.setLabelAsInt( i - 1 ); //  indexing starts at 1 not 0
 
 					// read only first positive instance of label
 					break;
@@ -612,7 +677,7 @@ class PrepareInstance
 
 			for ( int i = 2; i < nextLine.length; i++ )
 				if ( nextLine[ i ].equalsIgnoreCase( "1" ) == true )
-					labelAsIntList.add( i - 2 );
+					labelAsIntList.add( i - 1 );//  indexing starts at 1 not 0
 
 			clip.setLabelAsIntList( labelAsIntList );
 

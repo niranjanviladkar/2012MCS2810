@@ -25,7 +25,7 @@ public class Hollywood2Dataset
 	/**
 	 * Path to the libsvm directory.
 	 */
-	public static String	libsvmDir						= projectRoot + "libsvm-3.17/";
+	public static String	libsvmDir						= projectRoot + "libsvm-3.17/matlab/";
 
 	/**
 	 * Input file used for KMeans clustering.
