@@ -80,7 +80,10 @@ class PrepareInstance
 			processForWekaClassifier( numClusters );
 		else
 			if ( Common.Classifier.LIBSVM.getCurrentClassifier() == true )
+			{
 				processForLibsvmClassifier( true );
+				//processForLibsvmClassifierTesting( true );
+			}
 			else
 				if ( Common.Classifier.MEKA.getCurrentClassifier() == true )
 					processForMekaClassifier( numClusters );
@@ -436,6 +439,165 @@ class PrepareInstance
 			writer.close();
 
 			System.err.println( "Done Preparing Input file for libsvm testing." + filename );
+		}
+	}
+
+	
+	/**
+	 * Create a training and testing file in libsvm format. 
+	 * Testing function - only prepares a training and testing file for 
+	 * 2 labels.
+	 * 
+	 * @param forceOverwrite
+	 *            - Should overwrite previous files?
+	 * @throws IOException
+	 */
+	private void processForLibsvmClassifierTesting( boolean forceOverwrite ) throws IOException
+	{
+		String filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.train";
+		boolean processTraining = true;
+		boolean processTesting = true;
+
+		int label1 = 5; // first label
+		int label2 = 7; // second label
+
+		// prepare a training file
+		try
+		{
+			FileReader f = new FileReader( filename );
+
+			// if exception does not occur, file exists. do not proceed.
+			f.close();
+
+			if ( forceOverwrite == false )
+				System.err.println( "Using old file : " + filename );
+
+			processTraining = false;
+		}
+		catch ( Exception e )
+		{
+			// file does not exists, so create it.
+			processTraining = true;
+		}
+
+		if ( forceOverwrite == true || processTraining == true )
+		{
+			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
+
+			System.err.println( "Preparing Input file for libsvm training : " + filename );
+			System.err.println( "Fisrt Label : " + label1 + " Second Label : " + label2 );
+
+			for ( YTClip clip : trainingClips )
+			{
+				// int label = clip.getLabelAsInt();
+				List < Integer > labelList = clip.getLabelAsIntList();
+				int[] histogram = clip.getHistogram();
+
+				String training_instance = "";
+
+				// add label - supports multi label datasets also.
+				// create a duplicate training instance for each multi label instance.
+				{
+					for ( int i = 0; i < labelList.size(); i++ )
+					{
+						if( labelList.get( i ) != label1 && labelList.get( i ) != label2 )
+							continue;
+
+						training_instance += labelList.get( i );
+
+						training_instance += " ";
+
+						// add attributes
+						for ( int j = 0; j < histogram.length; j++ )
+						{
+							training_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ] ) + " ";
+						}
+
+						// write to training file
+						writer.write( training_instance );
+
+						writer.newLine();
+						
+						training_instance = "";
+						
+					}
+				}
+
+			}
+			writer.close();
+
+			System.err.println( "Done Preparing Input file for libsvm training." + filename );
+			System.err.println( "Fisrt Label : " + label1 + " Second Label : " + label2 );
+		}
+
+		// Now prepare for testing file
+
+		filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.test";
+
+		try
+		{
+			FileReader f = new FileReader( filename );
+
+			// if exception does not occur, file exists. do not proceed.
+			f.close();
+
+			if ( forceOverwrite == false )
+				System.err.println( "Using old file : " + filename );
+
+			processTesting = false;
+		}
+		catch ( Exception e )
+		{
+			// file does not exists, so create it.
+			processTesting = true;
+		}
+
+		if ( forceOverwrite == true || processTesting == true )
+		{
+			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
+
+			System.err.println( "Preparing Input file for libsvm testing : " + filename );
+			System.err.println( "Fisrt Label : " + label1 + " Second Label : " + label2 );
+
+			for ( YTClip clip : testingClips )
+			{
+				// int label = clip.getLabelAsInt();
+				List < Integer > labelList = clip.getLabelAsIntList();
+				int[] histogram = clip.getHistogram();
+
+				String testing_instance = "";
+
+				// add label - supports multi label datasets also.
+				// create a duplicate training instance for each multi label instance.
+				{
+					for ( int i = 0; i < labelList.size(); i++ )
+					{
+						if( labelList.get( i ) != label1 && labelList.get( i ) != label2 )
+							continue;
+
+						testing_instance += labelList.get( i );
+
+						testing_instance += " ";
+
+						// add attributes
+						for ( int j = 0; j < histogram.length; j++ )
+						{
+							testing_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ] ) + " ";
+						}
+
+						// write to training file
+						writer.write( testing_instance );
+
+						writer.newLine();
+						
+						testing_instance = "";
+					}
+				}
+			}
+			writer.close();
+
+			System.err.println( "Done Preparing Input file for libsvm testing." + filename );
+			System.err.println( "Fisrt Label : " + label1 + " Second Label : " + label2 );
 		}
 	}
 
