@@ -253,6 +253,9 @@ class PrepareInstance
 		String filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.train";
 		boolean processTraining = true;
 		boolean processTesting = true;
+		int numClusters = Hollywood2Dataset.KMeansNumClusters;
+		maxHistogram = new double[numClusters];
+		avgHistogram = new double[numClusters];
 
 		// prepare a training file
 		try
@@ -277,6 +280,8 @@ class PrepareInstance
 		{
 			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
 
+			statisticalProcessing( numClusters, trainingClips );
+
 			System.err.println( "Preparing Input file for libsvm training : " + filename );
 
 			for ( YTClip clip : trainingClips )
@@ -290,7 +295,7 @@ class PrepareInstance
 				// add label - this does not support multi label dataset... so commented
 				// training_instance = String.valueOf( label ) + " ";
 
-				// add label - supports multi label datasets also.
+				// add label - supports multi label datasets also. - but this is not a default libsvm format.
 				{/*
 					for ( int i = 0; i < labelList.size(); i++ )
 
@@ -328,19 +333,21 @@ class PrepareInstance
 						// add attributes
 						for ( int j = 0; j < histogram.length; j++ )
 						{
-							training_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ] ) + " ";
+							// for ex. 1:0.6 2:0.0 3:1.0 ... etc
+							training_instance += String.valueOf( j + 1 )
+									+ ":"
+									+ String.valueOf( histogram[ j ]
+											/ ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) ) + " ";
 						}
 
 						// write to training file
 						writer.write( training_instance );
 
 						writer.newLine();
-						
+
 						training_instance = "";
-						
 					}
 				}
-
 			}
 			writer.close();
 
@@ -372,6 +379,8 @@ class PrepareInstance
 		if ( forceOverwrite == true || processTesting == true )
 		{
 			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
+
+			statisticalProcessing( numClusters, testingClips );
 
 			System.err.println( "Preparing Input file for libsvm testing : " + filename );
 
@@ -410,7 +419,6 @@ class PrepareInstance
 					writer.newLine();
 					*/
 				}
-				
 
 				// add label - supports multi label datasets also.
 				// create a duplicate training instance for each multi label instance.
@@ -424,14 +432,17 @@ class PrepareInstance
 						// add attributes
 						for ( int j = 0; j < histogram.length; j++ )
 						{
-							testing_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ] ) + " ";
+							testing_instance += String.valueOf( j + 1 )
+									+ ":"
+									+ String.valueOf( histogram[ j ]
+											/ ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) ) + " ";
 						}
 
 						// write to training file
 						writer.write( testing_instance );
 
 						writer.newLine();
-						
+
 						testing_instance = "";
 					}
 				}
@@ -442,11 +453,9 @@ class PrepareInstance
 		}
 	}
 
-	
 	/**
-	 * Create a training and testing file in libsvm format. 
-	 * Testing function - only prepares a training and testing file for 
-	 * 2 labels.
+	 * Create a training and testing file in libsvm format. Testing function -
+	 * only prepares a training and testing file for 2 labels.
 	 * 
 	 * @param forceOverwrite
 	 *            - Should overwrite previous files?
@@ -457,6 +466,9 @@ class PrepareInstance
 		String filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.train";
 		boolean processTraining = true;
 		boolean processTesting = true;
+		int numClusters = Hollywood2Dataset.KMeansNumClusters;
+		maxHistogram = new double[numClusters];
+		avgHistogram = new double[numClusters];
 
 		int label1 = 5; // first label
 		int label2 = 7; // second label
@@ -487,6 +499,8 @@ class PrepareInstance
 			System.err.println( "Preparing Input file for libsvm training : " + filename );
 			System.err.println( "Fisrt Label : " + label1 + " Second Label : " + label2 );
 
+			statisticalProcessingTesting( numClusters, trainingClips, label1, label2 );
+
 			for ( YTClip clip : trainingClips )
 			{
 				// int label = clip.getLabelAsInt();
@@ -500,7 +514,7 @@ class PrepareInstance
 				{
 					for ( int i = 0; i < labelList.size(); i++ )
 					{
-						if( labelList.get( i ) != label1 && labelList.get( i ) != label2 )
+						if ( labelList.get( i ) != label1 && labelList.get( i ) != label2 )
 							continue;
 
 						training_instance += labelList.get( i );
@@ -510,16 +524,19 @@ class PrepareInstance
 						// add attributes
 						for ( int j = 0; j < histogram.length; j++ )
 						{
-							training_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ] ) + " ";
+							training_instance += String.valueOf( j + 1 )
+									+ ":"
+									+ String.valueOf( histogram[ j ]
+											/ ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) ) + " ";
 						}
 
 						// write to training file
 						writer.write( training_instance );
 
 						writer.newLine();
-						
+
 						training_instance = "";
-						
+
 					}
 				}
 
@@ -559,6 +576,8 @@ class PrepareInstance
 			System.err.println( "Preparing Input file for libsvm testing : " + filename );
 			System.err.println( "Fisrt Label : " + label1 + " Second Label : " + label2 );
 
+			statisticalProcessingTesting( numClusters, testingClips, label1, label2 );
+
 			for ( YTClip clip : testingClips )
 			{
 				// int label = clip.getLabelAsInt();
@@ -572,7 +591,7 @@ class PrepareInstance
 				{
 					for ( int i = 0; i < labelList.size(); i++ )
 					{
-						if( labelList.get( i ) != label1 && labelList.get( i ) != label2 )
+						if ( labelList.get( i ) != label1 && labelList.get( i ) != label2 )
 							continue;
 
 						testing_instance += labelList.get( i );
@@ -582,14 +601,17 @@ class PrepareInstance
 						// add attributes
 						for ( int j = 0; j < histogram.length; j++ )
 						{
-							testing_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ] ) + " ";
+							testing_instance += String.valueOf( j + 1 )
+									+ ":"
+									+ String.valueOf( histogram[ j ]
+											/ ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) ) + " ";
 						}
 
 						// write to training file
 						writer.write( testing_instance );
 
 						writer.newLine();
-						
+
 						testing_instance = "";
 					}
 				}
@@ -663,13 +685,13 @@ class PrepareInstance
 	private void statisticalProcessing( int numClusters, List < YTClip > clipList )
 	{
 		int sum;
-		int max;
+		int max = -1;
 		int current;
 
 		for ( int i = 0; i < numClusters; i++ )
 		{
 			sum = 0;
-			max = 1;
+			max = -1;
 
 			for ( YTClip clip : clipList )
 			{
@@ -683,6 +705,43 @@ class PrepareInstance
 
 			maxHistogram[ i ] = max;
 			avgHistogram[ i ] = sum / clipList.size();
+		}
+	}
+
+	private void statisticalProcessingTesting( int numClusters, List < YTClip > clipList, int label1, int label2 )
+	{
+		int sum;
+		int max = -1;
+		int current;
+		int count = 0;
+
+		for ( int i = 0; i < numClusters; i++ )
+		{
+			sum = 0;
+			max = -1;
+
+			for ( YTClip clip : clipList )
+			{
+				List < Integer > labelList = clip.getLabelAsIntList();
+
+				for ( int j = 0; j < labelList.size(); j++ )
+				{
+					if ( labelList.get( j ) != label1 && labelList.get( j ) != label2 )
+						continue;
+
+					current = clip.getHistogram()[ i ];
+
+					sum += current;
+
+					if ( current > max )
+						max = current;
+
+					count++;
+				}
+			}
+
+			maxHistogram[ i ] = max;
+			avgHistogram[ i ] = sum / count;
 		}
 	}
 
