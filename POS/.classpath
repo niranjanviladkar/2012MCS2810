@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/stanford-postagger.jar"/>
 	<classpathentry kind="lib" path="lib/weka.jar"/>
 	<classpathentry kind="lib" path="lib/meka-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/jws.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
