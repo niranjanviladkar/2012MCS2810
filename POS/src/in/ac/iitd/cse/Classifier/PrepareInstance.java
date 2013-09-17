@@ -461,6 +461,7 @@ class PrepareInstance
 	 *            - Should overwrite previous files?
 	 * @throws IOException
 	 */
+	@SuppressWarnings( "unused" )
 	private void processForLibsvmClassifierTesting( boolean forceOverwrite ) throws IOException
 	{
 		String filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.train";
@@ -536,10 +537,8 @@ class PrepareInstance
 						writer.newLine();
 
 						training_instance = "";
-
 					}
 				}
-
 			}
 			writer.close();
 

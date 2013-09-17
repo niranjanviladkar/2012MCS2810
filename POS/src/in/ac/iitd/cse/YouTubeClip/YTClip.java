@@ -3,7 +3,6 @@
  */
 package in.ac.iitd.cse.YouTubeClip;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,11 @@ import java.util.List;
  */
 public class YTClip
 {
+	/**
+	 * Indices of descriptors to be taken as samples for k-means clustering.
+	 */
+	private List< Integer > decsIndices;
+	
 	/**
 	 * Name of the AVI file without extension.
 	 */
@@ -70,14 +74,16 @@ public class YTClip
 	private int				numOfFeatures;
 
 	/**
-	 * @param name
-	 * @throws IOException
+	 * Constructor.
+	 * 
+	 * @param name - Name of the Clip.
 	 */
 	public YTClip( String clipName )
 	{
 		this.name = clipName;
 		verbsList = new ArrayList < String >();
 		label = new ArrayList < String >();
+		decsIndices = new ArrayList < Integer >();
 	}
 
 	public void addLabel( String lbl )
@@ -90,14 +96,58 @@ public class YTClip
 		label.add( lbl );
 	}
 
+	/**
+	 * Get list of indices of descriptors to be taken as samples for k-means clustering.
+	 */
+	public List < Integer > getDecsIndices()
+	{
+		return decsIndices;
+	}
+
+	/**
+	 * Set Indices of descriptors to be taken as samples for k-means clustering.
+	 */
+	public void setDecsIndices( List < Integer > decsIndices )
+	{
+		this.decsIndices = decsIndices;
+	}
+	
+	/**
+	 * Clear the index list for this clip.
+	 */
+	public void clearIndices()
+	{
+		this.decsIndices.clear();
+	}
+	
+	/**
+	 * Add an index of descriptor for later sampling.
+	 * 
+	 * @param index - The index.
+	 */
+	public void addDescIndex( int index )
+	{
+		this.decsIndices.add( index );
+	}
+	
+	/**
+	 * How many samples taken from this clip for sampling?
+	 * 
+	 * @return The number of samples taken from this clip. 
+	 */
+	public int getNumofSampledDesc( )
+	{
+		return this.decsIndices.size();
+	}
+
+	/**
+	 * Get name of the clip.
+	 * 
+	 * @return Name of the clip.
+	 */
 	public String getName()
 	{
 		return name;
-	}
-
-	public void setName( String name )
-	{
-		this.name = name;
 	}
 
 	public List < String > getVerbsList()

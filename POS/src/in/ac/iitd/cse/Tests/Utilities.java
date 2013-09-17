@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -680,14 +681,14 @@ class Utilities
 	}
 
 	/**
-	 * Randomly choose a clip to get descriptors from that clip.<br/>
-	 * Do not choose too many from a single file.<br/>
+	 * Randomly choose a clip to get a random descriptors from that clip.<br/>
+	 * Longer clips are given more weightage.
 	 * 
+	 * @param shouldOverwrite
+	 *            - Should previous file be over-written?
 	 * @throws IOException
-	 * 
 	 */
-	@Deprecated
-	static void prepareKMeansInputFile_OLD() throws IOException
+	static void prepareKMeansInputFile_1( boolean shouldOverwrite ) throws IOException
 	{
 		if ( Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone() == false )
 		{
@@ -695,42 +696,42 @@ class Utilities
 			return;
 		}
 
-		int descAdded = 0;
-
 		int numOfDescForClustering = 0;
 
 		// prepare KMeans Input file
 		String fileName = null;
 
+		// features directory
+		String featuresDir = null;
+
 		if ( Common.DataSet.YOUTUBE.currentDS() == true )
 		{
 			numOfDescForClustering = YouTubeDataset.numOfDescriptorsForClustering;
 			fileName = YouTubeDataset.KMeansInputFile;
+			featuresDir = YouTubeDataset.stipFeaturesDirPath + File.separator;
 		}
 		else
 			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
 			{
 				numOfDescForClustering = Hollywood2Dataset.numOfDescriptorsForClustering;
 				fileName = Hollywood2Dataset.KMeansInputFile;
+				featuresDir = Hollywood2Dataset.stipFeaturesDirPath + File.separator;
 			}
-
-		int maxDescPerClip = numOfDescForClustering / allTrainingClips.size();
-
-		int descFromThisClip = 0;
 
 		Random random = new Random();
 
-		// if file already exists, then dont process
-		boolean process = false;
+		// whether to process in case the file exists. 
+		boolean process = shouldOverwrite;
 
 		try
 		{
 			BufferedReader reader = new BufferedReader( new FileReader( fileName ) );
 
-			// if file exists, close it don't process further.
+			// no exception means file exists
 			reader.close();
 
-			process = false;
+			if ( shouldOverwrite == false )
+				process = false;
 		}
 		catch ( Exception e1 )
 		{
@@ -740,29 +741,36 @@ class Utilities
 
 		if ( process == true )
 		{
+			countFeaturesPerClip( featuresDir );
+
+			// first randomly select a clip. then randomly just select the index of descriptor.
+			// when the file is read, read all the descriptor chosen for sampling at once.
+			{
+				for ( int i = 0; i < numOfDescForClustering; i++ )
+				{
+					// select a random clip.
+					int randClipIndex = random.nextInt( allTrainingClips.size() );
+
+					YTClip randClip = allTrainingClips.get( randClipIndex );
+
+					// find out total number of descriptors in that clip.
+					int numOfDesc = randClip.getNumOfFeatures();
+
+					// among them, chose a random descriptor
+					int randDescIndex = random.nextInt( numOfDesc );
+
+					// add index to the clip - to be sampled later.
+					randClip.addDescIndex( randDescIndex );
+				}
+			}
+
 			System.err.println( "Started with Preparing KMeans Input File." );
 
 			BufferedWriter writer = new BufferedWriter( new FileWriter( fileName ) );
 
-			// add descriptors till required amount
-			while ( descAdded < numOfDescForClustering )
+			for ( YTClip clip : allTrainingClips )
 			{
-				// choose a random clip
-
-				int randClip = random.nextInt( allTrainingClips.size() );
-
-				YTClip clip = allTrainingClips.get( randClip );
-
-				// open corresponding features' file
-
-				String featuresFile = null;
-
-				if ( Common.DataSet.YOUTUBE.currentDS() == true )
-					featuresFile = YouTubeDataset.stipFeaturesDirPath + File.separator + clip.getName() + ".features";
-				else
-					if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
-						featuresFile = Hollywood2Dataset.stipFeaturesDirPath + File.separator + clip.getName()
-								+ ".features";
+				String featuresFile = featuresDir + clip.getName() + ".features";
 
 				BufferedReader reader;
 
@@ -778,38 +786,168 @@ class Utilities
 
 					System.err.println( "\nThis file should exists : " + featuresFile + "\n" );
 
-					// we continue to next random choice of clip.
+					// we continue to next clip.
 					// we just warn for non existing files - do not halt / throw exception.
 					continue;
 				}
 
-				// add features to Kmeans clustering Input file.
+				List < Integer > indices = clip.getDecsIndices();
 
-				String feature = null;
+				Collections.sort( indices );
 
-				descFromThisClip = 0;
+				int currentIndex = 0;
 
-				// stopping conditions are : 
-				// either .features file get exhausted
-				// or we get our required amount of descriptors
-				// or we have taken required amount from this clip
-				while ( ( feature = reader.readLine() ) != null && descAdded < numOfDescForClustering
-						&& descFromThisClip < maxDescPerClip )
+				for ( int index : indices )
 				{
-					writer.write( feature );
+					// skip ( index - currentIndex ) descriptors
+					while ( currentIndex < index )
+					{
+						reader.readLine();
+						currentIndex++;
+					}
 
-					// keep one feature per line
-
-					writer.newLine();
-
-					descAdded++;
-					descFromThisClip++;
+					writer.write( reader.readLine() );
+					currentIndex++;
 				}
-
-				// close features file
 
 				reader.close();
 			}
+
+			writer.close();
+
+			System.err.println( "Done with Preparing KMeans Input File." );
+		}
+		else
+			System.err.println( "Using previous KMeans input file." );
+
+		Common.state.KMEANS_INPUT_PREPARED.isDone( true );
+	}
+
+	/**
+	 * Randomly choose a clip to get a random descriptors from that clip.<br/>
+	 * Each clip is given equal weightage.
+	 * 
+	 * @param shouldOverwrite
+	 *            - Should previous file be over-written?
+	 * @throws IOException
+	 */
+	static void prepareKMeansInputFile_2( boolean shouldOverwrite ) throws IOException
+	{
+		if ( Common.state.ALL_TRAINING_CLIPS_INITIALISED.isDone() == false )
+		{
+			System.err.println( "Please initialise all clips before running this function." );
+			return;
+		}
+
+		int numOfDescForClustering = 0;
+
+		// prepare KMeans Input file
+		String fileName = null;
+
+		// features directory
+		String featuresDir = null;
+
+		if ( Common.DataSet.YOUTUBE.currentDS() == true )
+		{
+			numOfDescForClustering = YouTubeDataset.numOfDescriptorsForClustering;
+			fileName = YouTubeDataset.KMeansInputFile;
+			featuresDir = YouTubeDataset.stipFeaturesDirPath + File.separator;
+		}
+		else
+			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+			{
+				numOfDescForClustering = Hollywood2Dataset.numOfDescriptorsForClustering;
+				fileName = Hollywood2Dataset.KMeansInputFile;
+				featuresDir = Hollywood2Dataset.stipFeaturesDirPath + File.separator;
+			}
+
+		Random random = new Random();
+
+		// whether to process in case the file exists. 
+		boolean process = shouldOverwrite;
+
+		try
+		{
+			BufferedReader reader = new BufferedReader( new FileReader( fileName ) );
+
+			// no exception means file exists
+			reader.close();
+
+			if ( shouldOverwrite == false )
+				process = false;
+		}
+		catch ( Exception e1 )
+		{
+			// if exception occurs, then we need to process.
+			process = true;
+		}
+
+		if ( process == true )
+		{
+			countFeaturesPerClip( featuresDir );
+
+			int maxSamplesPerClip = numOfDescForClustering / allTrainingClips.size();
+
+			for ( YTClip clip : allTrainingClips )
+			{
+				clip.clearIndices();
+
+				for ( int i = 0; i < maxSamplesPerClip; i++ )
+				{
+					int randIndex = random.nextInt( clip.getNumOfFeatures() );
+					clip.addDescIndex( randIndex );
+				}
+			}
+
+			System.err.println( "Started with Preparing KMeans Input File." );
+
+			BufferedWriter writer = new BufferedWriter( new FileWriter( fileName ) );
+
+			for ( YTClip clip : allTrainingClips )
+			{
+				String featuresFile = featuresDir + clip.getName() + ".features";
+
+				BufferedReader reader;
+
+				// try to open corresponding .features file of the clip.
+				try
+				{
+					reader = new BufferedReader( new FileReader( featuresFile ) );
+				}
+				catch ( Exception e )
+				{
+					// You need to extract STIP features before running this code.
+					// Please make sure that path for features' directory has been provided correctly.
+
+					System.err.println( "\nThis file should exists : " + featuresFile + "\n" );
+
+					// we continue to next clip.
+					// we just warn for non existing files - do not halt / throw exception.
+					continue;
+				}
+
+				List < Integer > indices = clip.getDecsIndices();
+
+				Collections.sort( indices );
+
+				int currentIndex = 0;
+
+				for ( int index : indices )
+				{
+					// skip ( index - currentIndex ) descriptors
+					while ( currentIndex < index )
+					{
+						reader.readLine();
+						currentIndex++;
+					}
+
+					writer.write( reader.readLine() );
+					currentIndex++;
+				}
+
+				reader.close();
+			}
+
 			writer.close();
 
 			System.err.println( "Done with Preparing KMeans Input File." );
