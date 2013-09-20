@@ -58,9 +58,7 @@ public class Hollywood2 extends Utilities
 				case 0:
 					try
 					{
-						//						prepareKMeansInputFile_OLD();
-
-						prepareKMeansInputFile();
+						prepareKMeansInputFile_2( true );
 					}
 					catch ( Exception e1 )
 					{

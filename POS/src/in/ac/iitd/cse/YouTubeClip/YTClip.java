@@ -142,6 +142,7 @@ public class YTClip
 
 	/**
 	 * Get name of the clip.
+	 * This does not contain any extension. - More versatile.
 	 * 
 	 * @return Name of the clip.
 	 */

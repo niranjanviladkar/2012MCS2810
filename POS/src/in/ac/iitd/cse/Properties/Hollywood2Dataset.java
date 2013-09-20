@@ -40,7 +40,7 @@ public class Hollywood2Dataset
 	/**
 	 * Value of K used for KMeans clustering.
 	 */
-	public static int		KMeansNumClusters				= 500;
+	public static int		KMeansNumClusters				= 4000;
 
 	/**
 	 * Path to the directory which will contain final clip labels.
@@ -50,9 +50,9 @@ public class Hollywood2Dataset
 	/**
 	 * Number of sampled descriptors to be used for KMeans clustering.
 	 */
-	public static int		numOfDescriptorsForClustering	= 500000;
+	public static int		numOfDescriptorsForClustering	= 100000;
 
-	public static String	previousRunDir					= projectRoot + "previousRun/Hollywood2";
+//	public static String	previousRunDir					= projectRoot + "previousRun/Hollywood2";
 
 	/**
 	 * Path to the directory which contains STIP HoG - HoF features.<br/>

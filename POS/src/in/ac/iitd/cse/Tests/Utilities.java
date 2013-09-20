@@ -808,6 +808,9 @@ class Utilities
 
 					writer.write( reader.readLine() );
 					currentIndex++;
+
+					// keep one feature per line
+					writer.newLine();
 				}
 
 				reader.close();
@@ -886,13 +889,13 @@ class Utilities
 		{
 			countFeaturesPerClip( featuresDir );
 
-			int maxSamplesPerClip = numOfDescForClustering / allTrainingClips.size();
+			int maxSamplesPerClip = numOfDescForClustering / allTrainingClips.size() + 1;
 
 			for ( YTClip clip : allTrainingClips )
 			{
 				clip.clearIndices();
 
-				for ( int i = 0; i < maxSamplesPerClip; i++ )
+				for ( int i = 0; i < maxSamplesPerClip && i < clip.getNumOfFeatures(); i++ )
 				{
 					int randIndex = random.nextInt( clip.getNumOfFeatures() );
 					clip.addDescIndex( randIndex );
@@ -934,6 +937,12 @@ class Utilities
 
 				for ( int index : indices )
 				{
+					if( currentIndex > index )
+					{
+						reader.close();
+						reader = new BufferedReader( new FileReader( featuresFile ) );
+						currentIndex = 0;
+					}
 					// skip ( index - currentIndex ) descriptors
 					while ( currentIndex < index )
 					{
@@ -941,14 +950,24 @@ class Utilities
 						currentIndex++;
 					}
 
-					writer.write( reader.readLine() );
+					String desc = reader.readLine();
+					writer.write( desc );
 					currentIndex++;
+
+					// keep one feature per line
+					writer.newLine();
 				}
 
 				reader.close();
 			}
 
 			writer.close();
+			
+			// see the distribution
+			for( YTClip clip : allTrainingClips )
+				if( clip.getNumofSampledDesc() != maxSamplesPerClip )
+					System.out.println( clip.getName() + "\t" + clip.getNumofSampledDesc() );
+			System.out.println( "Other clips have " + maxSamplesPerClip + " samples taken from them." );
 
 			System.err.println( "Done with Preparing KMeans Input File." );
 		}
@@ -1012,7 +1031,7 @@ class Utilities
 	}
 
 	/**
-	 * Run KMeans clustering. Currently it gives you sommands to be executed
+	 * Run KMeans clustering. Currently it gives you commands to be executed
 	 * with matlab. Kindly run matlab KMeans externally.<br/>
 	 * In future, running KMeans will be made automatic.
 	 */
@@ -1042,8 +1061,10 @@ class Utilities
 			}
 
 		System.out.println( "Use Matlab to run KMeans. Run following with matlab : " );
-		System.out.println( "X = load( '" + KmeansIPFile + "', '-ascii');\n" + "[~, C] = kmeans(X, " + numClusters
-				+ ", 'emptyaction', 'singleton' );\n" + "dlmwrite('" + kmeansOPFile + "', C, ' ');\n" + "exit;" );
+		System.out.println( "X = load( '" + KmeansIPFile + "', '-ascii');\n"
+				+ "opts = statset('Display', 'iter', 'MaxIter', 200);" + "[~, C] = kmeans(X, " + numClusters
+				+ ", 'emptyaction', 'singleton', 'Options', opts  );\n" + "dlmwrite('" + kmeansOPFile + "', C, ' ');\n"
+				+ "exit;" );
 	}
 
 	/**
