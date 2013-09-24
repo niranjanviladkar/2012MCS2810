@@ -226,11 +226,19 @@ public class YTClip
 		this.labelAsString = labelAsString;
 	}
 
+	/**
+	 * indexing starts at 1 not 0
+	 * @return label index [1..max]
+	 */
 	public int getLabelAsInt()
 	{
 		return labelAsInt;
 	}
 
+	/**
+	 * indexing starts at 1 not 0
+	 * @param labelAsInt - The label [1..max]
+	 */
 	public void setLabelAsInt( int labelAsInt )
 	{
 		this.labelAsInt = labelAsInt;
@@ -246,11 +254,19 @@ public class YTClip
 		this.numOfFeatures = numOfFeatures;
 	}
 
+	/**
+	 * indexing starts at 1 not 0
+	 * @return integer list of all labels. [1..max]
+	 */
 	public List < Integer > getLabelAsIntList()
 	{
 		return labelAsIntList;
 	}
 
+	/**
+	 * indexing starts at 1 not 0
+	 * @param labelAsIntList - integer list of indices of labels. [1..max]
+	 */
 	public void setLabelAsIntList( List < Integer > labelAsIntList )
 	{
 		this.labelAsIntList = labelAsIntList;

@@ -799,6 +799,13 @@ class Utilities
 
 				for ( int index : indices )
 				{
+					if( currentIndex > index )
+					{
+						reader.close();
+						reader = new BufferedReader( new FileReader( featuresFile ) );
+						currentIndex = 0;
+					}
+
 					// skip ( index - currentIndex ) descriptors
 					while ( currentIndex < index )
 					{
