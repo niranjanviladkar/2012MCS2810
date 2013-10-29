@@ -40,7 +40,7 @@ public class Hollywood2Dataset
 	/**
 	 * Value of K used for KMeans clustering.
 	 */
-	public static int		KMeansNumClusters				= 4000;
+	public static int		KMeansNumClusters				= 1000;
 
 	/**
 	 * Path to the directory which will contain final clip labels.

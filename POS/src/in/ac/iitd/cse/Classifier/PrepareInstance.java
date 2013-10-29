@@ -280,50 +280,33 @@ class PrepareInstance
 		{
 			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
 
-			statisticalProcessing( numClusters, trainingClips );
+			if ( true ) // easy debugging
+				// if( false )
+				statisticalProcessing( numClusters, trainingClips );
+			else
+			{
+				List < YTClip > combined = new ArrayList < YTClip >( trainingClips );
+				combined.addAll( testingClips );
+
+				statisticalProcessing( numClusters, combined );
+			}
 
 			System.err.println( "Preparing Input file for libsvm training : " + filename );
 
 			for ( YTClip clip : trainingClips )
 			{
-				// int label = clip.getLabelAsInt();
 				List < Integer > labelList = clip.getLabelAsIntList();
 				int[] histogram = clip.getHistogram();
 
 				String training_instance = "";
 
-				// add label - this does not support multi label dataset... so commented
-				// training_instance = String.valueOf( label ) + " ";
-
-				// add label - supports multi label datasets also. - but this is not a default libsvm format.
-				{/*
-					for ( int i = 0; i < labelList.size(); i++ )
-
-					{
-						training_instance += labelList.get( i );
-
-						if ( i < labelList.size() - 1 )
-							training_instance += ",";
-						else
-							training_instance += " ";
-					}
-
-					// add attributes
-					for ( int i = 0; i < histogram.length; i++ )
-					{
-						training_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
-					}
-
-					// write to training file
-					writer.write( training_instance );
-					
-					writer.newLine();
-					*/
-				}
-
 				// add label - supports multi label datasets also.
 				// create a duplicate training instance for each multi label instance.
 				{
+					// temporarily, consider only uni-labeled clips.
+					if ( labelList.size() > 1 )
+						continue;
+
 					for ( int i = 0; i < labelList.size(); i++ )
 					{
 						training_instance += labelList.get( i );
@@ -380,49 +363,25 @@ class PrepareInstance
 		{
 			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
 
-			statisticalProcessing( numClusters, testingClips );
+			// below call is commented. Reason is we want to scale test data with the same amount as that of training data.
+			// statisticalProcessing( numClusters, testingClips );
 
 			System.err.println( "Preparing Input file for libsvm testing : " + filename );
 
 			for ( YTClip clip : testingClips )
 			{
-				// int label = clip.getLabelAsInt();
 				List < Integer > labelList = clip.getLabelAsIntList();
 				int[] histogram = clip.getHistogram();
 
 				String testing_instance = "";
 
-				// add label - this does not support multi label dataset... so commented
-				// testing_instance = String.valueOf( label ) + " ";
-
-				//add label - supports multi label datasets also.
-				{/*
-					for ( int i = 0; i < labelList.size(); i++ )
-					{
-						testing_instance += labelList.get( i );
-
-						if ( i < labelList.size() - 1 )
-							testing_instance += ",";
-						else
-							testing_instance += " ";
-					}
-
-					// add attributes
-					for ( int i = 0; i < histogram.length; i++ )
-					{
-						testing_instance += String.valueOf( i + 1 ) + ":" + String.valueOf( histogram[ i ] ) + " ";
-					}
-
-					// write to training file
-					writer.write( testing_instance );
-
-					writer.newLine();
-					*/
-				}
-
 				// add label - supports multi label datasets also.
 				// create a duplicate training instance for each multi label instance.
 				{
+					// temporarily, consider only uni-labeled clips.
+					if ( labelList.size() > 1 )
+						continue;
+
 					for ( int i = 0; i < labelList.size(); i++ )
 					{
 						testing_instance += labelList.get( i );
@@ -695,6 +654,11 @@ class PrepareInstance
 			for ( YTClip clip : clipList )
 			{
 				current = clip.getHistogram()[ i ];
+				List < Integer > labelList = clip.getLabelAsIntList();
+
+				// temporarily, consider only uni-labeled clips.
+				if ( labelList.size() > 1 )
+					continue;
 
 				sum += current;
 
