@@ -13,6 +13,7 @@ public class Common
 	{
 		// @formatter:off - turns off code style formatting in eclipse 
 		
+		HOLLYWOOD1( false ),
 		HOLLYWOOD2( false ), 
 		YOUTUBE( false );
 		

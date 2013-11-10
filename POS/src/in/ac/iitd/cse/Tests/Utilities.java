@@ -4,6 +4,7 @@
 package in.ac.iitd.cse.Tests;
 
 import in.ac.iitd.cse.Properties.Common;
+import in.ac.iitd.cse.Properties.Hollywood1Dataset;
 import in.ac.iitd.cse.Properties.Hollywood2Dataset;
 import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
@@ -654,7 +655,18 @@ class Utilities
 
 		for ( YTClip clip : allTrainingClips )
 		{
-			BufferedReader reader = new BufferedReader( new FileReader( featuresDir + clip.getName() + ".features" ) );
+			BufferedReader reader = null;
+			try
+			{
+				reader = new BufferedReader( new FileReader( featuresDir + clip.getName() + ".features" ) );
+			}
+			catch ( Exception e )
+			{
+				// some clips are short so no descriptors are detected.. 
+				// such *.features files are not created and will not be found
+				System.err.println( "File not found : " + featuresDir + clip.getName() + ".features" );
+				continue;
+			}
 
 			int featureCount = 0;
 
@@ -799,7 +811,7 @@ class Utilities
 
 				for ( int index : indices )
 				{
-					if( currentIndex > index )
+					if ( currentIndex > index )
 					{
 						reader.close();
 						reader = new BufferedReader( new FileReader( featuresFile ) );
@@ -870,6 +882,13 @@ class Utilities
 				fileName = Hollywood2Dataset.KMeansInputFile;
 				featuresDir = Hollywood2Dataset.stipFeaturesDirPath + File.separator;
 			}
+			else
+				if ( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+				{
+					numOfDescForClustering = Hollywood1Dataset.numOfDescriptorsForClustering;
+					fileName = Hollywood1Dataset.KMeansInputFile;
+					featuresDir = Hollywood1Dataset.stipFeaturesDirPath + File.separator;
+				}
 
 		Random random = new Random();
 
@@ -898,6 +917,8 @@ class Utilities
 
 			int maxSamplesPerClip = numOfDescForClustering / allTrainingClips.size() + 1;
 
+			// for each clip, generate random number of descriptor indices.
+			// these descriptors will be sampled to form KMeansInput file.
 			for ( YTClip clip : allTrainingClips )
 			{
 				clip.clearIndices();
@@ -944,7 +965,7 @@ class Utilities
 
 				for ( int index : indices )
 				{
-					if( currentIndex > index )
+					if ( currentIndex > index )
 					{
 						reader.close();
 						reader = new BufferedReader( new FileReader( featuresFile ) );
@@ -969,10 +990,10 @@ class Utilities
 			}
 
 			writer.close();
-			
+
 			// see the distribution
-			for( YTClip clip : allTrainingClips )
-				if( clip.getNumofSampledDesc() != maxSamplesPerClip )
+			for ( YTClip clip : allTrainingClips )
+				if ( clip.getNumofSampledDesc() != maxSamplesPerClip )
 					System.out.println( clip.getName() + "\t" + clip.getNumofSampledDesc() );
 			System.out.println( "Other clips have " + maxSamplesPerClip + " samples taken from them." );
 
