@@ -51,9 +51,9 @@ public class Hollywood2 extends Utilities
 			System.out.println( "Prepare libsvm training file : 5" );
 			System.out.println( "Exit : 6" );
 
-			//choice = scan.nextInt();
-			choice = 2;
-			System.out.println( "Automatically chosen choice is : 2" );
+			choice = scan.nextInt();
+			// choice = 2;
+			// System.out.println( "Automatically chosen choice is : 2" );
 
 			switch ( choice )
 			{
@@ -88,7 +88,7 @@ public class Hollywood2 extends Utilities
 						e1.printStackTrace();
 						breakLoop = true;
 					}
-					breakLoop = true;
+					// breakLoop = true;
 					break;
 
 				case 3:

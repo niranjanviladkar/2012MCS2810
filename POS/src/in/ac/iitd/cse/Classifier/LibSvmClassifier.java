@@ -3,6 +3,10 @@
  */
 package in.ac.iitd.cse.Classifier;
 
+import in.ac.iitd.cse.YouTubeClip.YTClip;
+
+import java.util.List;
+
 /**
  * @author mcs122810
  * 
@@ -25,6 +29,11 @@ public class LibSvmClassifier extends PrepareInstance
 	public LibSvmClassifier() throws Exception
 	{
 		super();
+	}
+	
+	public LibSvmClassifier( List < YTClip > trainingList, List< YTClip> testingList ) throws Exception
+	{
+		super( trainingList, testingList );
 	}
 
 }

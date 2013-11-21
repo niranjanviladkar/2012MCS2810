@@ -61,7 +61,7 @@ public class Hollywood1Dataset
 	/**
 	 * Value of K used for KMeans clustering.
 	 */
-	public static int		KMeansNumClusters				= 1000;
+	public static int		KMeansNumClusters				= 500;
 
 	/**
 	 * Path to the directory which will contain final clip labels.
@@ -83,5 +83,5 @@ public class Hollywood1Dataset
 	 * Strip out extra output and keep ONLY last 162 fields.<br/>
 	 * 1 Descriptor per line.
 	 */
-	public static String	stipFeaturesDirPath				= projectRoot + "features/Hollywood1/";
+	public static String	stipFeaturesDirPath				= projectRoot + "features/Hollywood1_old/";
 }

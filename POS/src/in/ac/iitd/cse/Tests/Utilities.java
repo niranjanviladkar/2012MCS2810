@@ -184,6 +184,13 @@ class Utilities
 				histogramFileBase = Hollywood2Dataset.histogramDirPath + File.separator;
 				numCluster = Hollywood2Dataset.KMeansNumClusters;
 			}
+			else if( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+			{
+				descLength = Hollywood1Dataset.DescriptorLength;
+				featuresFileBase = Hollywood1Dataset.stipFeaturesDirPath + File.separator;
+				histogramFileBase = Hollywood1Dataset.histogramDirPath + File.separator;
+				numCluster = Hollywood1Dataset.KMeansNumClusters;
+			}
 		// read the centroids - output of Kmeans clustering
 
 		ReadCentroids();
@@ -413,7 +420,7 @@ class Utilities
 
 		for ( int i = 0; i < YouTubeDataset.DescriptorLength; i++ )
 			distance += ( ( cluster[ i ] - descriptor[ i ] ) * ( cluster[ i ] - descriptor[ i ] ) );
-		return distance;
+		return Math.sqrt(distance);
 	}
 
 	/**
@@ -1034,6 +1041,13 @@ class Utilities
 					numCluster = Hollywood2Dataset.KMeansNumClusters;
 					descLength = Hollywood2Dataset.DescriptorLength;
 					centroids = new double[Hollywood2Dataset.KMeansNumClusters][Hollywood2Dataset.DescriptorLength];
+				}
+				else if( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+				{
+					fileName = Hollywood1Dataset.KMeansOutputFile;
+					numCluster = Hollywood1Dataset.KMeansNumClusters;
+					descLength = Hollywood1Dataset.DescriptorLength;
+					centroids = new double[ numCluster ][ descLength ];
 				}
 
 			Scanner input = new Scanner( new File( fileName ) );

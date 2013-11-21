@@ -3,6 +3,7 @@
  */
 package in.ac.iitd.cse.Tests;
 
+import in.ac.iitd.cse.Classifier.LibSvmClassifier;
 import in.ac.iitd.cse.Properties.Common;
 import in.ac.iitd.cse.Properties.Hollywood1Dataset;
 import in.ac.iitd.cse.Properties.Hollywood2Dataset;
@@ -11,6 +12,7 @@ import in.ac.iitd.cse.YouTubeClip.YTClip;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -45,7 +47,7 @@ public class Hollywood1 extends Utilities
 
 		do
 		{
-			System.out.println( "Enter your choice : [0-4]" );
+			System.out.println( "Enter your choice : [0-6]" );
 			System.out.println( "Prepare KMeans input file : 0" );
 			System.out.println( "Run KMeans : 1" );
 			System.out.println( "Convert clips into histograms : 2" );
@@ -53,6 +55,7 @@ public class Hollywood1 extends Utilities
 			System.out.println( "Train meka SMO classifier : 4" );
 			System.out.println( "Prepare libsvm training file : 5" );
 			System.out.println( "Exit : 6" );
+			System.out.print( "Your Choice : " );
 
 			choice = scan.nextInt();
 
@@ -80,6 +83,16 @@ public class Hollywood1 extends Utilities
 					break;
 
 				case 2:
+					try
+					{
+						ClipsToHistograms();
+					}
+					catch ( IOException e1 )
+					{
+						e1.printStackTrace();
+						breakLoop = true;
+					}
+					// breakLoop = true;
 					break;
 
 				case 3:
@@ -120,7 +133,7 @@ public class Hollywood1 extends Utilities
 
 				case 5:
 					Common.Classifier.LIBSVM.setCurrentClassifier( true );
-					//new LibSvmClassifier();
+					new LibSvmClassifier( allTrainingClips, allTestingClips );
 					Common.Classifier.LIBSVM.setCurrentClassifier( false );
 					break;
 

@@ -4,6 +4,7 @@
 package in.ac.iitd.cse.Classifier;
 
 import in.ac.iitd.cse.Properties.Common;
+import in.ac.iitd.cse.Properties.Hollywood1Dataset;
 import in.ac.iitd.cse.Properties.Hollywood2Dataset;
 import in.ac.iitd.cse.Properties.YouTubeDataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
@@ -87,6 +88,26 @@ class PrepareInstance
 			else
 				if ( Common.Classifier.MEKA.getCurrentClassifier() == true )
 					processForMekaClassifier( numClusters );
+	}
+
+	PrepareInstance( List < YTClip > trainingList, List < YTClip > testingList ) throws Exception
+	{
+		if ( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+		{
+			trainingClips.clear();
+			testingClips.clear();
+
+			// read training data
+			readHW1_Data( trainingList );
+
+			// read testing data
+			readHW1_Data( testingList );
+
+			trainingClips.addAll( trainingList );
+			testingClips.addAll( testingList );
+
+			processForLibsvmClassifier( true );
+		}
 	}
 
 	private void processForMekaClassifier( int numClusters ) throws IOException
@@ -250,10 +271,32 @@ class PrepareInstance
 	 */
 	private void processForLibsvmClassifier( boolean forceOverwrite ) throws IOException
 	{
-		String filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.train";
+		String filename = null, testingFile = null;
 		boolean processTraining = true;
 		boolean processTesting = true;
-		int numClusters = Hollywood2Dataset.KMeansNumClusters;
+		int numClusters = 0;
+
+		if ( Common.DataSet.YOUTUBE.currentDS() == true )
+		{
+			filename = Hollywood2Dataset.libsvmDir + "/YouTube.train";
+			testingFile = Hollywood2Dataset.libsvmDir + "/YouTube.test";
+			numClusters = YouTubeDataset.KMeansNumClusters;
+		}
+		else
+			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+			{
+				filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.train";
+				testingFile = Hollywood2Dataset.libsvmDir + "/Hollywood2.test";
+				numClusters = Hollywood2Dataset.KMeansNumClusters;
+			}
+			else
+				if( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+				{
+					filename = Hollywood1Dataset.libsvmDir + "/Hollywood1.train";
+					testingFile = Hollywood1Dataset.libsvmDir + "/Hollywood1.test";
+					numClusters = Hollywood1Dataset.KMeansNumClusters;
+				}
+
 		maxHistogram = new double[numClusters];
 		avgHistogram = new double[numClusters];
 
@@ -280,7 +323,7 @@ class PrepareInstance
 		{
 			BufferedWriter writer = new BufferedWriter( new FileWriter( filename ) );
 
-			if ( true ) // easy debugging
+			/*if ( true ) // easy debugging
 				// if( false )
 				statisticalProcessing( numClusters, trainingClips );
 			else
@@ -290,7 +333,7 @@ class PrepareInstance
 
 				statisticalProcessing( numClusters, combined );
 			}
-
+			*/
 			System.err.println( "Preparing Input file for libsvm training : " + filename );
 
 			for ( YTClip clip : trainingClips )
@@ -317,10 +360,9 @@ class PrepareInstance
 						for ( int j = 0; j < histogram.length; j++ )
 						{
 							// for ex. 1:0.6 2:0.0 3:1.0 ... etc
-							training_instance += String.valueOf( j + 1 )
-									+ ":"
-									+ String.valueOf( histogram[ j ]
-											/ ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) ) + " ";
+							training_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ]
+							// / ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) 
+									) + " ";
 						}
 
 						// write to training file
@@ -339,7 +381,7 @@ class PrepareInstance
 
 		// Now prepare for testing file
 
-		filename = Hollywood2Dataset.libsvmDir + "/Hollywood2.test";
+		filename = testingFile; //Hollywood2Dataset.libsvmDir + "/Hollywood2.test";
 
 		try
 		{
@@ -391,10 +433,9 @@ class PrepareInstance
 						// add attributes
 						for ( int j = 0; j < histogram.length; j++ )
 						{
-							testing_instance += String.valueOf( j + 1 )
-									+ ":"
-									+ String.valueOf( histogram[ j ]
-											/ ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) ) + " ";
+							testing_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ]
+							// / ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) 
+									) + " ";
 						}
 
 						// write to training file
@@ -802,6 +843,44 @@ class PrepareInstance
 		System.err.println( "Reading training data - Done" );
 	}
 
+	private void readHW1_Data( List < YTClip > clipList ) throws Exception
+	{
+		if ( Common.DataSet.HOLLYWOOD1.currentDS() == false )
+			return;
+
+		for ( YTClip clip : clipList )
+		{
+			// read histograms
+			String histogramFile = Hollywood1Dataset.histogramDirPath + File.separator + clip.getName() + ".histogram";
+
+			try
+			{
+				BufferedReader reader = new BufferedReader( new FileReader( histogramFile ) );
+
+				// read histogram as a string
+				String[] histogramAsString = reader.readLine().split( " " );
+
+				reader.close();
+
+				int[] histogram = new int[Hollywood1Dataset.KMeansNumClusters];
+
+				// convert histogram into integer values.
+				for ( int i = 0; i < histogram.length; i++ )
+					histogram[ i ] = Integer.parseInt( histogramAsString[ i ] );
+
+				// set histogram
+				clip.setHistogram( histogram );
+			}
+			catch ( FileNotFoundException e )
+			{
+				System.err.println( "This file should exists : " + histogramFile );
+
+				continue;
+			}
+
+		}
+	}
+
 	private void readHW2_Data( boolean isTrainingData ) throws Exception
 	{
 		// if current dataset is not Hollywood2, then return
@@ -883,7 +962,7 @@ class PrepareInstance
 				for ( int i = 0; i < histogram.length; i++ )
 					histogram[ i ] = Integer.parseInt( histogramAsString[ i ] );
 
-				// set the label
+				// set the histogram
 				clip.setHistogram( histogram );
 			}
 			catch ( FileNotFoundException e )
