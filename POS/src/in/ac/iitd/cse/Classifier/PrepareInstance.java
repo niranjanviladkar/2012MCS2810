@@ -290,7 +290,7 @@ class PrepareInstance
 				numClusters = Hollywood2Dataset.KMeansNumClusters;
 			}
 			else
-				if( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+				if ( Common.DataSet.HOLLYWOOD1.currentDS() == true )
 				{
 					filename = Hollywood1Dataset.libsvmDir + "/Hollywood1.train";
 					testingFile = Hollywood1Dataset.libsvmDir + "/Hollywood1.test";
@@ -356,13 +356,27 @@ class PrepareInstance
 
 						training_instance += " ";
 
+						// find out max in the histogram
+						double mx = -1;
+
+						for ( int j = 0; j < histogram.length; j++ )
+						{
+							if ( histogram[ j ] > mx )
+								mx = histogram[ j ];
+						}
+
 						// add attributes
 						for ( int j = 0; j < histogram.length; j++ )
 						{
 							// for ex. 1:0.6 2:0.0 3:1.0 ... etc
-							training_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ]
-							// / ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) 
-									) + " ";
+							//							training_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ]
+							//							 / ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) 
+							//									) + " ";
+							double t = histogram[ j ] / ( mx == 0 ? 1 : mx );
+							if ( t < 0.0001 )
+								t = 0;
+
+							training_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( t ) + " ";
 						}
 
 						// write to training file
@@ -429,13 +443,29 @@ class PrepareInstance
 						testing_instance += labelList.get( i );
 
 						testing_instance += " ";
+						
+						// find max in histogram
+						double mx = -1;
+						
+						for( int j = 0 ; j < histogram.length; j++ )
+						{
+							if( histogram[j] > mx )
+							{
+								mx = histogram[j];
+							}
+						}
 
 						// add attributes
 						for ( int j = 0; j < histogram.length; j++ )
 						{
-							testing_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ]
+							//testing_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( histogram[ j ]
 							// / ( maxHistogram[ j ] == 0 ? 1 : maxHistogram[ j ] ) 
-									) + " ";
+								//	) + " ";
+							
+							double t = histogram[j] / ( mx == 0 ? 1 : mx );
+							if( t < 0.0001 )
+								t = 0;
+							testing_instance += String.valueOf( j + 1 ) + ":" + String.valueOf( t ) + " ";
 						}
 
 						// write to training file

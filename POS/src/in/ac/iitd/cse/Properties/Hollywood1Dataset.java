@@ -83,5 +83,5 @@ public class Hollywood1Dataset
 	 * Strip out extra output and keep ONLY last 162 fields.<br/>
 	 * 1 Descriptor per line.
 	 */
-	public static String	stipFeaturesDirPath				= projectRoot + "features/Hollywood1_old/";
+	public static String	stipFeaturesDirPath				= projectRoot + "features/Hollywood1/";
 }
