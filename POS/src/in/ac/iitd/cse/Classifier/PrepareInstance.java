@@ -105,8 +105,42 @@ class PrepareInstance
 
 			trainingClips.addAll( trainingList );
 			testingClips.addAll( testingList );
-
+			
+//			debug_printClusterSums( trainingList );
+//			
+//			return;
+//
 			processForLibsvmClassifier( true );
+		}
+	}
+	
+	private void debug_printClusterSums( List< YTClip > list )
+	{
+		// number of clusters
+		int numClusters = list.get( 0 ).getHistogram().length;
+		int[] clusterSums = new int[ numClusters ];
+		
+		// initialize
+		for( int i = 0; i < clusterSums.length; i++ )
+			clusterSums[i] = 0;
+		
+		// for each clip
+		for( YTClip clip : list )
+		{
+			// get the histogram
+			int[] hist = clip.getHistogram();
+			
+			// add values to corresponding cluster
+			for( int i = 0; i < hist.length; i++ )
+			{
+				clusterSums[i] += hist[i];
+			}
+		}
+		
+		// print
+		for( int i = 0; i < clusterSums.length; i++ )
+		{
+			System.out.println( i + 1 + "\t" + clusterSums[i] );
 		}
 	}
 

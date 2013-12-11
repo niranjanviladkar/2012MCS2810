@@ -51,12 +51,12 @@ public class Hollywood1Dataset
 	/**
 	 * Input file used for KMeans clustering.
 	 */
-	public static String	KMeansInputFile					= projectRoot + "stip-extraction/KMeansInputFile.data";
+	public static String	KMeansInputFile					= projectRoot + "stip-extraction/kmeans/kmpp/kmeansinputfile.data";
 
 	/**
 	 * Input file used for KMeans clustering.
 	 */
-	public static String	KMeansOutputFile				= projectRoot + "stip-extraction/KMeansOutputFile.data";
+	public static String	KMeansOutputFile				= projectRoot + "stip-extraction/kmeans/kmpp/kmeansoutputfile.data";
 
 	/**
 	 * Value of K used for KMeans clustering.
@@ -83,5 +83,5 @@ public class Hollywood1Dataset
 	 * Strip out extra output and keep ONLY last 162 fields.<br/>
 	 * 1 Descriptor per line.
 	 */
-	public static String	stipFeaturesDirPath				= projectRoot + "features/Hollywood1/";
+	public static String	stipFeaturesDirPath				= projectRoot + "features/Hollywood1_old/";
 }

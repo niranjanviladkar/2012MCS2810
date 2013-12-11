@@ -184,13 +184,14 @@ class Utilities
 				histogramFileBase = Hollywood2Dataset.histogramDirPath + File.separator;
 				numCluster = Hollywood2Dataset.KMeansNumClusters;
 			}
-			else if( Common.DataSet.HOLLYWOOD1.currentDS() == true )
-			{
-				descLength = Hollywood1Dataset.DescriptorLength;
-				featuresFileBase = Hollywood1Dataset.stipFeaturesDirPath + File.separator;
-				histogramFileBase = Hollywood1Dataset.histogramDirPath + File.separator;
-				numCluster = Hollywood1Dataset.KMeansNumClusters;
-			}
+			else
+				if ( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+				{
+					descLength = Hollywood1Dataset.DescriptorLength;
+					featuresFileBase = Hollywood1Dataset.stipFeaturesDirPath + File.separator;
+					histogramFileBase = Hollywood1Dataset.histogramDirPath + File.separator;
+					numCluster = Hollywood1Dataset.KMeansNumClusters;
+				}
 		// read the centroids - output of Kmeans clustering
 
 		ReadCentroids();
@@ -250,6 +251,8 @@ class Utilities
 				for ( int i = 0; i < descLength; i++ )
 					currentDescriptor[ i ] = scanner.nextDouble();
 
+				minDist = Double.POSITIVE_INFINITY;
+				
 				// find the nearest cluster
 				for ( int i = 0; i < numCluster; i++ )
 				{
@@ -420,7 +423,7 @@ class Utilities
 
 		for ( int i = 0; i < YouTubeDataset.DescriptorLength; i++ )
 			distance += ( ( cluster[ i ] - descriptor[ i ] ) * ( cluster[ i ] - descriptor[ i ] ) );
-		return Math.sqrt(distance);
+		return Math.sqrt( distance );
 	}
 
 	/**
@@ -937,7 +940,7 @@ class Utilities
 				}
 			}
 
-			System.err.println( "Started with Preparing KMeans Input File." );
+			System.err.println( "Started with Preparing KMeans Input File : " + fileName );
 
 			BufferedWriter writer = new BufferedWriter( new FileWriter( fileName ) );
 
@@ -1042,13 +1045,14 @@ class Utilities
 					descLength = Hollywood2Dataset.DescriptorLength;
 					centroids = new double[Hollywood2Dataset.KMeansNumClusters][Hollywood2Dataset.DescriptorLength];
 				}
-				else if( Common.DataSet.HOLLYWOOD1.currentDS() == true )
-				{
-					fileName = Hollywood1Dataset.KMeansOutputFile;
-					numCluster = Hollywood1Dataset.KMeansNumClusters;
-					descLength = Hollywood1Dataset.DescriptorLength;
-					centroids = new double[ numCluster ][ descLength ];
-				}
+				else
+					if ( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+					{
+						fileName = Hollywood1Dataset.KMeansOutputFile;
+						numCluster = Hollywood1Dataset.KMeansNumClusters;
+						descLength = Hollywood1Dataset.DescriptorLength;
+						centroids = new double[numCluster][descLength];
+					}
 
 			Scanner input = new Scanner( new File( fileName ) );
 
@@ -1107,6 +1111,96 @@ class Utilities
 				+ "opts = statset('Display', 'iter', 'MaxIter', 200);" + "[~, C] = kmeans(X, " + numClusters
 				+ ", 'emptyaction', 'singleton', 'Options', opts  );\n" + "dlmwrite('" + kmeansOPFile + "', C, ' ');\n"
 				+ "exit;" );
+	}
+
+	private void debug_checkKMeans() throws Exception
+	{
+		int numClusters = 0;
+		int descLength = 0;
+		String KmeansIPFile = null;
+		String kmeansOPFile = null;
+
+		if ( Common.DataSet.YOUTUBE.currentDS() == true )
+		{
+			descLength = YouTubeDataset.DescriptorLength;
+			numClusters = YouTubeDataset.KMeansNumClusters;
+			KmeansIPFile = YouTubeDataset.KMeansInputFile;
+			kmeansOPFile = YouTubeDataset.KMeansOutputFile;
+		}
+		else
+			if ( Common.DataSet.HOLLYWOOD2.currentDS() == true )
+			{
+				descLength = Hollywood2Dataset.DescriptorLength;
+				numClusters = Hollywood2Dataset.KMeansNumClusters;
+				KmeansIPFile = Hollywood2Dataset.KMeansInputFile;
+				kmeansOPFile = Hollywood2Dataset.KMeansOutputFile;
+			}
+			else
+				if ( Common.DataSet.HOLLYWOOD1.currentDS() == true )
+				{
+					descLength = Hollywood1Dataset.DescriptorLength;
+					numClusters = Hollywood1Dataset.KMeansNumClusters;
+					KmeansIPFile = Hollywood1Dataset.KMeansInputFile;
+					kmeansOPFile = Hollywood1Dataset.KMeansOutputFile;
+				}
+
+		// read output of kmeans algorithm in 'centroids' global array.
+		ReadCentroids();
+
+		int[] clusterSums = new int[numClusters];
+
+		// initialize
+		for ( int i = 0; i < clusterSums.length; i++ )
+			clusterSums[ i ] = 0;
+
+		double[] currentDescriptor = new double[descLength];
+
+		double minDist = Double.POSITIVE_INFINITY;
+		int nearestClusterIndex = -1;
+		double currentDistance = -1;
+
+		File file = new File( kmeansOPFile );
+
+		Scanner scanner = null;
+
+		try
+		{
+			scanner = new Scanner( new FileReader( file ) );
+		}
+		catch ( Exception e )
+		{
+			// You need to run kmeans before running this code.
+			// Please make sure that path for features' directory has been provided correctly.
+
+			System.err.println( "\nThis file should exists : " + file + "\n" );
+			
+			return;
+		}
+
+
+		while ( scanner.hasNextDouble() )
+		{
+			// read current descriptor
+			for ( int i = 0; i < descLength; i++ )
+				currentDescriptor[ i ] = scanner.nextDouble();
+
+			// find the nearest cluster
+			for ( int i = 0; i < numClusters; i++ )
+			{
+				currentDistance = EuDistance( centroids[ i ], currentDescriptor );
+
+				if ( currentDistance < minDist )
+				{
+					minDist = currentDistance;
+					nearestClusterIndex = i;
+				}
+			}
+
+			// increment count of nearest cluster
+			clusterSums[ nearestClusterIndex ]++;
+		}
+
+		scanner.close();
 	}
 
 	/**

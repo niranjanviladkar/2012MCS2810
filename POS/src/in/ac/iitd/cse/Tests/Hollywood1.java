@@ -92,7 +92,7 @@ public class Hollywood1 extends Utilities
 						e1.printStackTrace();
 						breakLoop = true;
 					}
-					// breakLoop = true;
+					breakLoop = true;
 					break;
 
 				case 3:
