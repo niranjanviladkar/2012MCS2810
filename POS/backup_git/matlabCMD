@@ -1,0 +1,1 @@
+nohup /misc/slocal/matlab2010a/bin/matlab -nodisplay -nodesktop -c 27000@licmngr1.iitd.ernet.in,27000@licmngr2.iitd.ernet.in,27000@licmanager.cse.iitd.ernet.in -r 'runOBJDetector( 1, 1000 )' &
