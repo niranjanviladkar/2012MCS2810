@@ -1,5 +1,5 @@
-[trainY trainX] = libsvmread( 'Hollywood1.train' );
-[testY testX] = libsvmread( 'Hollywood1.test' );
+[trainY trainX] = libsvmread( 'Hollywood2.train' );
+[testY testX] = libsvmread( 'Hollywood2.train' );
 
 %scaleFactor=10;
 
@@ -95,3 +95,11 @@ display( 'Confusion Matrix is : ' );
 
 display( confusionMatrix );
 
+hw2_pred = fopen( 'Hollywood2.predictions', 'w' );
+
+for i = 1 : length(pred)
+	fprintf( hw2_pred, '%d\n', pred(i));
+end
+fclose( hw2_pred );
+
+dlmwrite( 'Hollywood2.decv', decv, ' ' );
