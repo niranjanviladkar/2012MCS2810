@@ -1,0 +1,36 @@
+all:
+	echo "Read this file and run correspoding target";
+
+make_train: make_traindb.sh
+	./make_traindb.sh
+
+make_test: make_testdb.sh
+	./make_testdb.sh
+
+mln_learn: make_train make_test train.db test.db rules.mln mln_learnwts.sh 
+	./mln_learnwts.sh
+
+mln_infer: mln_learn output.mln test.db mln_infer.sh
+	./mln_infer.sh
+
+appendTrueValue: appendTrueVal.pl make_appendTrueVal.sh outputOfInfer.mln append_test.db
+	./make_appendTrueVal.sh
+
+auc: make_auc.sh outputOfAppend
+	./make_auc.sh
+
+outputOfInfer.mln: mln_infer
+outputOfAppend: appendTrueValue
+append_test.db: make_test
+output.mln: mln_learn
+train.db: make_train
+test.db: make_test
+
+clean:
+	rm -rf output*
+
+distclean: clean
+	rm -rf *.db
+
+cleanAndRun: clean auc
+distcleanAndRun: distclean auc

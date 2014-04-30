@@ -88,6 +88,9 @@ class PrepareInstance
 			else
 				if ( Common.Classifier.MEKA.getCurrentClassifier() == true )
 					processForMekaClassifier( numClusters );
+		
+		printClipNames( trainingClips, "/misc/research/parags/mcs122810/ActivityRecognition/libsvm-3.17/matlab/training_names.txt" );
+		printClipNames( testingClips, "/misc/research/parags/mcs122810/ActivityRecognition/libsvm-3.17/matlab/testing_names.txt" );
 	}
 
 	PrepareInstance( List < YTClip > trainingList, List < YTClip > testingList ) throws Exception
@@ -114,35 +117,35 @@ class PrepareInstance
 		}
 	}
 	
-	private void debug_printClusterSums( List< YTClip > list )
-	{
-		// number of clusters
-		int numClusters = list.get( 0 ).getHistogram().length;
-		int[] clusterSums = new int[ numClusters ];
-		
-		// initialize
-		for( int i = 0; i < clusterSums.length; i++ )
-			clusterSums[i] = 0;
-		
-		// for each clip
-		for( YTClip clip : list )
-		{
-			// get the histogram
-			int[] hist = clip.getHistogram();
-			
-			// add values to corresponding cluster
-			for( int i = 0; i < hist.length; i++ )
-			{
-				clusterSums[i] += hist[i];
-			}
-		}
-		
-		// print
-		for( int i = 0; i < clusterSums.length; i++ )
-		{
-			System.out.println( i + 1 + "\t" + clusterSums[i] );
-		}
-	}
+//	private void debug_printClusterSums( List< YTClip > list )
+//	{
+//		// number of clusters
+//		int numClusters = list.get( 0 ).getHistogram().length;
+//		int[] clusterSums = new int[ numClusters ];
+//		
+//		// initialize
+//		for( int i = 0; i < clusterSums.length; i++ )
+//			clusterSums[i] = 0;
+//		
+//		// for each clip
+//		for( YTClip clip : list )
+//		{
+//			// get the histogram
+//			int[] hist = clip.getHistogram();
+//			
+//			// add values to corresponding cluster
+//			for( int i = 0; i < hist.length; i++ )
+//			{
+//				clusterSums[i] += hist[i];
+//			}
+//		}
+//		
+//		// print
+//		for( int i = 0; i < clusterSums.length; i++ )
+//		{
+//			System.out.println( i + 1 + "\t" + clusterSums[i] );
+//		}
+//	}
 
 	private void processForMekaClassifier( int numClusters ) throws IOException
 	{
@@ -1045,5 +1048,36 @@ class PrepareInstance
 		csvReader.close();
 
 		System.err.println( "Reading data - Done" );
+	}
+	
+	private void printClipNames( List <YTClip> clipList, String output_file )
+	{
+		int i = 0;
+		try
+		{
+			BufferedWriter writer = new BufferedWriter( new FileWriter( output_file ) );
+			
+			for( YTClip clip : clipList )
+			{
+				List< Integer > lbl_List = clip.getLabelAsIntList();
+				
+				if( lbl_List.size() > 1 )
+					continue;
+				
+				writer.write( clip.getName() );
+				writer.newLine();
+				i++;
+				System.out.println( i + "\t" + clip.getName() );
+			}
+			
+			writer.close();
+				
+		}
+		catch ( IOException e )
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }
