@@ -4,3 +4,12 @@ bin
 *~
 *.swp
 nohup.out
+Thesis/*/*.log
+Thesis/*/*.aux
+Thesis/*/*.dvi
+Thesis/*/*.toc
+Thesis/*/*.lof
+Thesis/*/*.lot
+Thesis/*/*.bbl
+Thesis/*/*.blg
+Thesis/*/*.out
