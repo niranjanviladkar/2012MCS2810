@@ -136,4 +136,3 @@ print
 for i in range(len(ActivityClipCount)):
 	print "{0:>12}".format( ActivityClipCount[i] ) ,
 print
-#pprint.pprint( Matrix )

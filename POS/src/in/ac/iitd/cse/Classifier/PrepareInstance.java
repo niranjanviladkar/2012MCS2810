@@ -384,8 +384,8 @@ class PrepareInstance
 				// create a duplicate training instance for each multi label instance.
 				{
 					// temporarily, consider only uni-labeled clips.
-					//if ( labelList.size() > 1 )
-					//	continue;
+					if ( labelList.size() > 1 )
+						continue;
 
 					for ( int i = 0; i < labelList.size(); i++ )
 					{
@@ -472,8 +472,8 @@ class PrepareInstance
 				// create a duplicate training instance for each multi label instance.
 				{
 					// temporarily, consider only uni-labeled clips.
-					//if ( labelList.size() > 1 )
-					//	continue;
+					if ( labelList.size() > 1 )
+						continue;
 
 					for ( int i = 0; i < labelList.size(); i++ )
 					{
@@ -1061,8 +1061,8 @@ class PrepareInstance
 			{
 				List< Integer > lbl_List = clip.getLabelAsIntList();
 				
-				//if( lbl_List.size() > 1 )
-				//	continue;
+				if( lbl_List.size() > 1 )
+					continue;
 				
 				writer.write( clip.getName() );
 				writer.newLine();
