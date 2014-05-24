@@ -1,21 +1,31 @@
 #!/usr/bin/python
 import re
+import sys
+
+if (len(sys.argv) != 2) or ( (sys.argv[1] != "train") and (sys.argv[1] != "test" ) ):
+	print "USAGE : {0} [train|test]".format( sys.argv[0] )
+	exit(-1)
+else:
+	type = sys.argv[1]
+
+processObj = 0
 
 projectRoot = "/misc/research/parags/mcs122810/ActivityRecognition/"
 
 # this file should contain names of avi clips without .avi extension
 # that are actually used for training SVM. The file should contain names 
 # in the order in which these clips are read from the disk.
-training_names_file = projectRoot + "libsvm-3.17/matlab/training_names.txt"
-
-# similarly, this file contains ordered names of testing files.
-# Both of training and testing names files should be obtained from java code
-# which processes these files to train SVM.
-testing_names_file = projectRoot + "libsvm-3.17/matlab/testing_names.txt"
+if type == "train":
+	clipNames_file = projectRoot + "libsvm-3.17/matlab/training_names.txt"
+else:
+	clipNames_file = projectRoot + "libsvm-3.17/matlab/testing_names.txt"
 
 # These are the predictions ( and not the true labels ) made by learnt SVM mdel.
 # These file should be obtained from matlab ( while runnng Hollywood2.m )
-svm_predictions_file = projectRoot + "libsvm-3.17/matlab/Hollywood2.train.predictions"
+if type == "train" :
+	svm_predictions_file = projectRoot + "libsvm-3.17/matlab/Hollywood2.train.predictions"
+else:
+	svm_predictions_file = projectRoot + "libsvm-3.17/matlab/Hollywood2.test.predictions"
 
 # This file contains a matrix having one row per clip.
 # Each row has 12 columns (as there are 12 acitivities)
@@ -26,18 +36,29 @@ svm_predictions_file = projectRoot + "libsvm-3.17/matlab/Hollywood2.train.predic
 
 # Important - for training, this file should be obtained from SVM using
 # both training and testing datasets as training only.
-decv_file = projectRoot + "libsvm-3.17/matlab/Hollywood2.train.decv"
+if type == "train" :
+	decv_file = projectRoot + "libsvm-3.17/matlab/Hollywood2.train.decv"
+else:
+	decv_file = projectRoot + "libsvm-3.17/matlab/Hollywood2.test.decv"
 
 # This file contains true labels for testing clips.
 # This file comes with the dataset.
-true_train_labels = projectRoot + "dataset/Hollywood/ClipSets/all_labels_train.txt"
+if type == "train" :
+	true_labels = projectRoot + "dataset/Hollywood/ClipSets/all_labels_train.txt"
+else:
+	true_labels = projectRoot + "dataset/Hollywood/ClipSets/all_labels_test.txt"
 
 # This is the directory which contains output of object detector 
-obj_train_dir = projectRoot + "detectedOBJ/Hollywood2/train"
+if type == "train" :
+	obj_dir = projectRoot + "detectedOBJ/Hollywood2/train"
+else:
+	obj_dir = projectRoot + "detectedOBJ/Hollywood2/test"
 
-processObj = 1
-
-output_file = "train.db"
+if type == "train" :
+	output_file = "train.db"
+else:
+	output_file = "test.db"
+	output_file2 = "append_test.db"
 
 total = 0
 fd = open( svm_predictions_file, "r")
@@ -94,7 +115,7 @@ def getIthLine( file, ith ):
 
 def getTLL( clipName ):
 	retLine = ""
-	fd = open( true_train_labels, "r" )
+	fd = open( true_labels, "r" )
 	for line in fd:
 		if re.search( clipName, line ):
 			retLine = line.rstrip( "\n" )
@@ -103,40 +124,45 @@ def getTLL( clipName ):
 	return retLine
 
 outFD = open( output_file, "w" )
+if type == "test" :
+	outFD2 = open( output_file2, "w" )
 
 svm_predictFD = open( svm_predictions_file, "r" )
 i = 0
 for label in svm_predictFD:
 	i += 1
-	train_file = getIthLine( training_names_file, i )
+	clipName = getIthLine( clipNames_file, i )
 	decv_line = getIthLine( decv_file, i )
-	true_lbl_line = getTLL( train_file )
+	true_lbl_line = getTLL( clipName )
 
-	print "Processing {0}.avi ( {1} out of {2} )".format( train_file, i, total )
+	print "Processing {0}.avi ( {1} out of {2} )".format( clipName, i, total )
 	tll_array = true_lbl_line.split()
 	for j in xrange( len(tll_array) ):
 		if tll_array[j] == "1":
-			outFD.write( "HasActivity(\"{0}\",\"{1}\")\n".format(train_file, activities[j - 1] ) )
+			if type == "train":
+				outFD.write( "HasActivity(\"{0}\",\"{1}\")\n".format(clipName, activities[j - 1] ) )
+			else:
+				outFD2.write( "HasActivity(\"{0}\",\"{1}\")\n".format(clipName, activities[j - 1] ) )
 
 	decv_array = decv_line.split()
 	for j in xrange( len(decv_array) ):
 		n1 = float(decv_array[j])
 		if n1 < -2: 
-			outFD.write( "ActivityConf_NI_TO_N2(\"{0}\",\"{1}\")\n".format( train_file, activities[j] ) );
+			outFD.write( "ActivityConf_NI_TO_N2(\"{0}\",\"{1}\")\n".format( clipName, activities[j] ) );
 		elif n1 < -1:
-			outFD.write( "ActivityConf_N2_TO_N1(\"{0}\",\"{1}\")\n".format( train_file, activities[j] ) );
+			outFD.write( "ActivityConf_N2_TO_N1(\"{0}\",\"{1}\")\n".format( clipName, activities[j] ) );
 		elif n1 < 0:
-			outFD.write( "ActivityConf_N1_TO_P0(\"{0}\",\"{1}\")\n".format( train_file, activities[j] ) );
+			outFD.write( "ActivityConf_N1_TO_P0(\"{0}\",\"{1}\")\n".format( clipName, activities[j] ) );
 		elif n1 < 1:
-			outFD.write( "ActivityConf_P0_TO_P1(\"{0}\",\"{1}\")\n".format( train_file, activities[j] ) );
+			outFD.write( "ActivityConf_P0_TO_P1(\"{0}\",\"{1}\")\n".format( clipName, activities[j] ) );
 		elif n1 < 2:
-			outFD.write( "ActivityConf_P1_TO_P2(\"{0}\",\"{1}\")\n".format( train_file, activities[j] ) );
+			outFD.write( "ActivityConf_P1_TO_P2(\"{0}\",\"{1}\")\n".format( clipName, activities[j] ) );
 		else :
-			outFD.write( "ActivityConf_P2_TO_PI(\"{0}\",\"{1}\")\n".format( train_file, activities[j] ) );
+			outFD.write( "ActivityConf_P2_TO_PI(\"{0}\",\"{1}\")\n".format( clipName, activities[j] ) );
 
 	if processObj == 1 :
 		frame = 0
-		objFD = open ( obj_train_dir + "/" + train_file + ".avi", "r" )
+		objFD = open ( obj_dir + "/" + clipName + ".avi", "r" )
 		
 		for line in objFD:
 			if re.search( "FRAME", line ):
@@ -148,10 +174,12 @@ for label in svm_predictFD:
 				threshold = thresholds[obj]
 
 				if score >= threshold :
-					outFD.write( "ObjPresent(\"{0}\",\"{1}\")\n".format( train_file, obj ) )
+					outFD.write( "ObjPresent(\"{0}\",\"{1}\")\n".format( clipName, obj ) )
 
 
 		objFD.close()
 
 outFD.close()
+if type == "test":
+	outFD2.close()
 
