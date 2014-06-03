@@ -9,8 +9,8 @@ of Markov Logic Networks (MLNs). Background and theory of MLNs and calculation o
 weights of formula is explained in the coming sections.
 
 \section{Markov Networks}
-Markov Network is an undirected graph $G$ with its nodes as set of variables $X = (X_1, X_2,\ldots, X_n) \in \rchi $.
-Apart from graph, it also consists of potential functions $\phi_k$ for each clique $k$ in the graph.
+\index{Markov Networks}Markov Network is an undirected graph $G$ with its nodes as set of variables $X = (X_1, X_2,\ldots, X_n) \in \rchi $.
+Apart from graph, it also consists of \index{Potential Functions}potential functions $\phi_k$ for each clique $k$ in the graph.
 Potential function $\phi_k$ is a real valued function of the state of $k^{th}$ clique.
 The joint distribution is given by
 
@@ -20,7 +20,7 @@ The joint distribution is given by
 \end{equation}
 
 where $x_{\{k\}}$ is the state of $k^{th}$ clique;
-$Z$, also known as partition function, is given by
+$Z$, also known as \index{Partition Function}partition function, is given by
 
 \begin{equation}
 	\label{partitionFunc}
@@ -39,5 +39,43 @@ where $w_i$ is the weight of the $i^{th}$ clique and $f_i(x) \in \{0,1\}$ indica
 of the $i^{th}$ clique.
 
 \section{Markov Logic}
+The domain knowledge is captured by First Order Logic (FOL) formulae. In its basic form, 
+first order knowledge base is a set of hard constraints over a set of possible worlds.
+Because of these hard constraints, if a world does not satisfy even a single formula,
+the world is considered as false or impossible.
 
-\section{SECTION NAME}
+Markov Logic uses FOL with soft constrains instead of hard. In markov logic, if a world
+does not satisfy a formula $F_i$, it is considered as less probable world in comparison to a
+world which satisfies $F_i$ assuming rest of the formulae have same state in both the worlds.
+
+Definition \ref{MLNDef} from \cite{MarkovLogic} formally defines \index{Markov Logic Networks|see {MLN}}
+Markov Logic Network (\index{MLN}MLN) as follows
+
+\begin{defn}
+	\label{MLNDef}
+	A Markov Logic Network(MLN) L is a set of pairs $(F_i, w_i)$, where $F_i$ is a
+	formula in first order logic and $w_i$ is weight associated with the formula - a real number.
+	Together with a finite set of constants $C = \{c_1, c_2,\ldots,c_{|C|}\}$, MLN $L$
+	defines a markov network, $M_{L,C}$ as follows :
+
+	\begin{enumerate}
+		\item $M_{L,C}$ contains one binary node for each possible grounding
+			of each atom appearing in L. The value of the node is 1 if ground
+			atom is true and 0 otherwise.
+		\item $M_{L,C}$ contains one feature for each possible grounding of each
+			formula $F_i$ in L. The value of the feature is 1 if the ground
+			formula is true and 0 otherwise. The weight of the feature is
+			$w_i$ associated with $F_i$ in L.
+	\end{enumerate}
+\end{defn}
+
+Probability distribution over possible world $x$ specified by markov network $M_{L,C}$ is given by
+\begin{equation}
+	\label{jointDistMLN}
+	P(X = x) = \frac{1}{Z} exp \left( \displaystyle \sum_{i = 1}^{F} w_i n_i(x)  \right)
+\end{equation}
+where $F$ is number of formulae in MLN and $n_i(x)$ is the number of true groundings of
+$F_i$ in world $x$.
+
+
+\section{Example MLN}

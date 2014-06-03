@@ -10,7 +10,7 @@ Below subsections explain what these features are and how to use them.
 As explained in \cite{laptev2005} spatial temporal interest points (\index{STIP}STIPs) are 3 dimentional points in 
 space and time where the local video features show significant variations. 
 In \cite{actionsInContext} the features extracted at STIPs are shown to perform satisfactorally for human activity recognition. 
-At each STIP, \index{histograms of oriented gradient}histograms of oriented gradient (HoG\index{HoG}) and \index{histograms of optical flow} histograms of optical flow (\index{HoF}HoF) are evaluated.
+At each STIP, \index{Histograms of Oriented Gradient}histograms of oriented gradient (HoG\index{HoG}) and \index{Histograms of Optical Flow} histograms of optical flow (\index{HoF}HoF) are evaluated.
 The number of HoG and HoF features at each STIP are 72 and 90 respectively.
 Concatinating vectors of HoG and HoF features, we get a single 162 element descriptor for each STIP. 
 
@@ -37,7 +37,7 @@ learnt model. For training a SVM model, a radial basis function (RBF) kernel is 
 and $\gamma = 0.01$. A one-versus-rest learning strategy is used to learn as many models as there are action classes.
 In case of this dataset, there are 12 action classes and thus 12 models are learnt.
 
-Classification using only video features are compared taking \index{average average precision|see {AAP}} average average precision as a measure.
+Classification using only video features are compared taking \index{Average Average Precision|see {AAP}} average average precision as a measure.
 As explained in \cite{actionsInContext}, average precision(AP) approximates area under recall-precision curve.
 Thus, AP for each activity class is calculated and then finally averaged over all the classes, average AP (\index{AAP}AAP) is calculated.
 
