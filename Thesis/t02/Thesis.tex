@@ -1,29 +1,29 @@
 \documentclass[a4paper,titlepage,openright,12pt]{report}
-\usepackage{graphicx}    
-%\usepackage{epsfig}   
-\usepackage[font=footnotesize]{subfig}
-\usepackage{float}
-\usepackage{fancyhdr}                              
-\usepackage{makeidx}
-\usepackage[nottoc,notlot,notlof]{tocbibind}     
-\usepackage{supertabular}
-\usepackage{array}              
-\usepackage{setspace} 
-\usepackage{enumerate}
-\usepackage{rotating}
-\usepackage{moreverb}
-\usepackage{multirow}
 \usepackage{amsmath}
-\usepackage{amsthm}
 \usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[toc]{appendix}
+\usepackage{array}              
 \usepackage{captcont}
-\usepackage{verbatim}
-\usepackage{titlesec}
-\usepackage{url}
+\usepackage{enumerate}
+\usepackage{fancyhdr}                              
+\usepackage{float}
+\usepackage{graphicx}    
 \usepackage{hyperref}
 \usepackage{lipsum}
+\usepackage{makeidx}
+\usepackage{moreverb}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{setspace} 
+\usepackage[font=footnotesize]{subfig}
+\usepackage{supertabular}
+\usepackage{titlesec}
+\usepackage[nottoc,notlot,notlof]{tocbibind}     
+\usepackage{url}
+\usepackage{verbatim}
+%\usepackage{epsfig}   
 %\usepackage[toc,page]{appendix}
-\usepackage[toc]{appendix}
 %\usepackage[algoruled]{algorithm2e}
 %\usepackage[figure,algoruled]{algorithm2e}
 %\usepackage[figure,boxruled]{algorithm2e}
@@ -47,6 +47,10 @@
 % with this we ensure that the chapter and section
 % headings are in lowercase.
 %\renewcommand{\bibname}{References}
+
+\DeclareRobustCommand{\rchi}{{\mathpalette\irchi\relax}}
+\newcommand{\irchi}[2]{\raisebox{\depth}{$#1\chi$}} % inner command, used by \rchi
+
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
 \fancyhf{} % delete current setting for header and footer
@@ -97,6 +101,7 @@
 \newtheorem{fact}{Fact}[section]
 
 \graphicspath{{./Figures/}}
+\makeindex
 \begin{document}
 
 \begin{comment}
@@ -108,6 +113,7 @@
 \thispagestyle{empty}
 
 \normalfont
+\pagenumbering{roman}
 \include{certificate}
 \thispagestyle{empty}
 \include{acknowledgement}
@@ -115,7 +121,6 @@
 
 
 % \setcounter{page}{1}
-% \pagenumbering{roman}
 \thispagestyle{empty}
 \include{abstract}
 
@@ -123,7 +128,7 @@
 %\include{acknowledgement}
 
 \thispagestyle{empty}
-%\tableofcontents
+\tableofcontents
 
 \thispagestyle{empty}
 
@@ -137,30 +142,31 @@
 \onehalfspacing
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
-\setcounter{page}{1}
+%\setcounter{page}{1}
 \pagenumbering{arabic}
 
 %You may have as many chapters as you please. This is just for reference.
 
-\include{chapter1_INTRO}
+%\include{chapter1_INTRO}
 
-\include{chapter2_STIP}
+%\include{chapter2_STIP}
 
-\include{chapter3_OBJ}
+%\include{chapter3_OBJ}
 
 \include{chapter4_MLN}
 
-\include{chapter5_RESULTS}
+%\include{chapter5_RESULTS}
 
-\include{chapter6_CONCLUSION}
+%\include{chapter6_CONCLUSION}
 
 \bibliographystyle{plain}
 \bibliography{biblio}
 
 %\appendix
 \begin{appendices} % Using appendices environment for more functunality
-\include{appendix}
+%\include{appendix}
 \end{appendices}
 
+%\printindex
 \end{document}
 	

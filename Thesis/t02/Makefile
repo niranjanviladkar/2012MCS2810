@@ -2,11 +2,12 @@ doc=Thesis
 all : $(doc)
 
 $(doc) : $(doc).tex
-	pdflatex $(doc).tex
-	bibtex $(doc).aux
-	pdflatex $(doc).tex
-	pdflatex $(doc).tex
-	evince $(doc).pdf
+	pdflatex $(doc).tex >/dev/null
+	bibtex $(doc).aux >/dev/null
+	makeindex -s $(doc).ist $(doc) >/dev/null 2>&1
+	pdflatex $(doc).tex >/dev/null
+	pdflatex $(doc).tex >/dev/null
+#	evince $(doc).pdf >/dev/null 2>&1 &
 clean :
 	rm -f $(doc).log
 	rm -f $(doc).aux

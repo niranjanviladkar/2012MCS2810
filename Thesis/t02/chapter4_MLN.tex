@@ -3,8 +3,41 @@
 %Replace \lipsum with text.
 % You may have as many sections as you please. This is just for reference.
 
-\section{SECTION NAME}
+As explained in \cite{MarkovLogic}, Markov Logic consists of set of First order
+logic (FOL) formulae associated with weights. The FOL formulae form the structure 
+of Markov Logic Networks (MLNs). Background and theory of MLNs and calculation of
+weights of formula is explained in the coming sections.
 
-\section{SECTION NAME}
+\section{Markov Networks}
+Markov Network is an undirected graph $G$ with its nodes as set of variables $X = (X_1, X_2,\ldots, X_n) \in \rchi $.
+Apart from graph, it also consists of potential functions $\phi_k$ for each clique $k$ in the graph.
+Potential function $\phi_k$ is a real valued function of the state of $k^{th}$ clique.
+The joint distribution is given by
+
+\begin{equation}
+	\label{jointDist}
+	P(X = x) = \frac{1}{Z}{\displaystyle \prod_{k} \phi_{k}(x_{\{k\}})}
+\end{equation}
+
+where $x_{\{k\}}$ is the state of $k^{th}$ clique;
+$Z$, also known as partition function, is given by
+
+\begin{equation}
+	\label{partitionFunc}
+	Z = \displaystyle \sum_{x \in \rchi} \displaystyle \prod_{k} \phi_k(x_{\{k\}}) 
+\end{equation}
+
+If clique potentials are replaced by exponentiation of weighted sum of features of state,
+joint distribution can be given as
+
+\begin{equation}
+	\label{jointDistWeighted}
+	P(X = x) = \frac{1}{Z} exp \left( \displaystyle \sum_i w_i f_i(x) \right)
+\end{equation}
+
+where $w_i$ is the weight of the $i^{th}$ clique and $f_i(x) \in \{0,1\}$ indicates state 
+of the $i^{th}$ clique.
+
+\section{Markov Logic}
 
 \section{SECTION NAME}
