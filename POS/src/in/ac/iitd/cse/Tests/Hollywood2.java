@@ -1,5 +1,5 @@
 /**
- * 
+ * File to work on Hollywood2 dataset.
  */
 package in.ac.iitd.cse.Tests;
 
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 /**
- * @author mcs122810
+ * @author mcs122810 - Niranjan Viladkar
  * 
  */
 public class Hollywood2 extends Utilities
@@ -24,8 +24,6 @@ public class Hollywood2 extends Utilities
 	/**
 	 * Main function.
 	 * 
-	 * @param args
-	 * @throws Exception
 	 */
 	public static void main( String[] args ) throws Exception
 	{
@@ -52,8 +50,6 @@ public class Hollywood2 extends Utilities
 			System.out.println( "Exit : 6" );
 
 			choice = scan.nextInt();
-			// choice = 2;
-			// System.out.println( "Automatically chosen choice is : 2" );
 
 			switch ( choice )
 			{

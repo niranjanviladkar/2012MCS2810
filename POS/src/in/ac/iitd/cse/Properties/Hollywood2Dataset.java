@@ -30,17 +30,17 @@ public class Hollywood2Dataset
 	/**
 	 * Input file used for KMeans clustering.
 	 */
-	public static String	KMeansInputFile					= projectRoot + "stip-extraction/KMeansInputFile.data";
+	public static String	KMeansInputFile					= projectRoot + "stip-extraction/kmeans/kmpp/kmeansinputfile.data";
 
 	/**
 	 * Input file used for KMeans clustering.
 	 */
-	public static String	KMeansOutputFile				= projectRoot + "stip-extraction/KMeansOutputFile.data";
+	public static String	KMeansOutputFile				= projectRoot + "stip-extraction/kmeans/kmpp/kmeansoutputfile.data";
 
 	/**
 	 * Value of K used for KMeans clustering.
 	 */
-	public static int		KMeansNumClusters				= 1000;
+	public static int		KMeansNumClusters				= 200;
 
 	/**
 	 * Path to the directory which will contain final clip labels.

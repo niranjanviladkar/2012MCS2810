@@ -6,7 +6,6 @@ package in.ac.iitd.cse.Tests;
 import in.ac.iitd.cse.Classifier.LibSvmClassifier;
 import in.ac.iitd.cse.Properties.Common;
 import in.ac.iitd.cse.Properties.Hollywood1Dataset;
-import in.ac.iitd.cse.Properties.Hollywood2Dataset;
 import in.ac.iitd.cse.YouTubeClip.YTClip;
 
 import java.io.BufferedReader;
@@ -92,7 +91,7 @@ public class Hollywood1 extends Utilities
 						e1.printStackTrace();
 						breakLoop = true;
 					}
-					// breakLoop = true;
+					breakLoop = true;
 					break;
 
 				case 3:
@@ -217,6 +216,8 @@ public class Hollywood1 extends Utilities
 
 			clip.setLabelAsIntList( labelAsIntList );
 		}
+		
+		csvReader.close();
 
 		//		for ( YTClip clip : allTrainingClips )
 		//		{

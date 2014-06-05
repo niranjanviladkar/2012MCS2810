@@ -1,6 +1,0 @@
-*.class
-bin
-*.arff
-*~
-*.swp
-nohup.out

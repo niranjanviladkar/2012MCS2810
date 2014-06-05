@@ -1,0 +1,30 @@
+/*
+*  variables start with a lower case.
+*  so, for example,
+*  activity = { Run, Hug, Kiss, Eat, Fight } etc.
+*  'a' of activity has to be lower cased.
+*  first letter of each constant has to be upper cased.
+*  so, 'R' of run is upper cased.
+*  
+*  After the declaration of types and constants, come formulas.
+*/
+
+HasActivity(clip,activity)
+
+ActivityConf_NI_TO_N2(clip,activity)
+ActivityConf_N2_TO_N1(clip,activity)
+ActivityConf_N1_TO_P0(clip,activity)
+ActivityConf_P0_TO_P1(clip,activity)
+ActivityConf_P1_TO_P2(clip,activity)
+ActivityConf_P2_TO_PI(clip,activity)
+
+ObjPresent(clip,object)
+
+ActivityConf_NI_TO_N2(c,a) => HasActivity(c,a)
+ActivityConf_N2_TO_N1(c,a) => HasActivity(c,a)
+ActivityConf_N1_TO_P0(c,a) => HasActivity(c,a)
+ActivityConf_P0_TO_P1(c,a) => HasActivity(c,a)
+ActivityConf_P1_TO_P2(c,a) => HasActivity(c,a)
+ActivityConf_P2_TO_PI(c,a) => HasActivity(c,a)
+
+ObjPresent(c,+o) => HasActivity(c,+a)
