@@ -1,5 +1,7 @@
 \chapter{Object Detection}
 
+\label{ch3_OBJ}
+
 %Replace \lipsum with text.
 % You may have as many sections as you please. This is just for reference.
 
@@ -10,25 +12,25 @@ method and its use in this project.
 
 \section{Object Detector}
 Object detector based on Discriminatively Trained Deformable Part Models \cite{voc-release4} was used in
-the project. It can run on an image at a time. The detectors used in this project are trained on PASCAL 2007 datasets.
+the project. It can run on an image at a time. The detectors used in this project are trained on PASCAL 2007 data sets.
 There are 20 models corresponding to 20 different objects.
 These objects are : aeroplane, bicycle,
 bird, boat, bottle, bus, car, cat, chair, cow, dining table, dog, horse,
 motorbike, person, potted plant, sheep, sofa, train, tv monitor.
-For this project only 10 relavant models were used : bicycle, bottle, bus, car,
+For this project only 10 relevant models were used : bicycle, bottle, bus, car,
 chair, diningtable, motorbike, person, sofa, tvmonitor.
 
 \section{Detection in Video}
-Above described object detector models work on a single image at a time. To detect objects in video clips, 1 frame per second was extracted from the video clip and all the object detector models were run on the frame. In the dataset used in this project, shortest clips is about 3-4 seconds long and longest clips are of the order of a minute. Frame rate is 24 frames per second.
+Above described object detector models work on a single image at a time. To detect objects in video clips, 1 frame per second was extracted from the video clip and all the object detector models were run on the frame. In the data set used in this project, shortest clips is about 3-4 seconds long and longest clips are of the order of a minute. Frame rate is 24 frames per second.
 
 The object detector models give a \index{Bounding Box}bounding box and a confidence (also called \index{Decision Value}decision value) for each detection 
 on an absolute scale between $-\infty$ to $\infty$. 
 Usually, a positive decision value represents true positive in all the models. 
-A negative decisioin value represent lesser confident detection. 
+A negative decision value represent lesser confident detection. 
 It might be a true positive or a false positive. 
 One can specify a threshold before running object detector model 
 so that only the detections at least as confident as the threshold are considered.
-Ususally, such thresholds are negative to allow detection of lesser confident objects.
+Usually, such thresholds are negative to allow detection of lesser confident objects.
 
 \section{Output of Object Detector}
 TODO - image of object detection
