@@ -28,11 +28,60 @@ on an absolute scale between $-\infty$ to $\infty$.
 Usually, a positive decision value represents true positive in all the models. 
 A negative decision value represent lesser confident detection. 
 It might be a true positive or a false positive. 
-One can specify a threshold before running object detector model 
+One can specify a threshold decision value before running object detector model 
 so that only the detections at least as confident as the threshold are considered.
-Usually, such thresholds are negative to allow detection of lesser confident objects.
+Usually, such thresholds are negative to allow detection of lesser confident objects also.
 
 \section{Output of Object Detector}
-TODO - image of object detection
+
+The visual output of object detector looks as shown in figures \ref{fig:CarDetection} and \ref{fig:PersonDetection}. 
+The red boxes are called as bounding boxes.
+For each box, a confidence value is also evaluated - also called as decision value.
+
+Table \ref{table:ObjDetection} shows the decision values for sample detections.
+
+\floatstyle{plain}
+\restylefloat{figure}
+\begin{figure}[here]
+\begin{center} 
+\includegraphics[scale=0.5]{car_detection_1.jpg} 
+\caption{ Car detection in a frame. \label{fig:CarDetection}} 
+\end{center} 
+\end{figure}  
+
+\begin{figure}[here]
+\begin{center} 
+\includegraphics[scale=0.5]{person_detection_151.jpg} 
+\caption{ Person detection in a frame. \label{fig:PersonDetection}} 
+\end{center} 
+\end{figure}  
+
+
+\begin{table}[t]
+\centering
+\begin{tabular}{| l | c |}
+\hline
+{\bf Activity Class} & {\bf Average Precision} \\ \hline
+%
+AnswerPhone & 11.36\% \\ \hline
+DriveCar & 66.96\% \\ \hline
+Eat & 45.45\% \\ \hline
+FightPerson & 57.63\% \\ \hline
+GetOutCar & 17.86\% \\ \hline
+HandShake & 25.93\% \\ \hline
+HugPerson & 15.15\% \\ \hline
+Kiss & 18.18\% \\ \hline
+Run & 38.78\% \\ \hline
+SitDown & 40.96\% \\ \hline
+SitUp & 5.26\% \\ \hline
+StandUp & 35.20\% \\ \hline
+Average AP & 31.56\% \\ \hline
+%
+\end{tabular}
+\caption{Average precision for classification using only video features}
+\label{table:ObjDetection}
+\end{table}
+
+
 
 TODO - table showing sample output

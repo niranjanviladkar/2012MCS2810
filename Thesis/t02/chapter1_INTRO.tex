@@ -5,6 +5,10 @@
 %Replace \lipsum with text.
 % You may have as many sections as you please. This is just for reference.
 
+
+
+
+
 \section{Introduction}
 Human activity recognition is an area of interest in the field of large scale surveillance.
 A highly accurate and precise system would obviate the need for human attention
@@ -13,7 +17,7 @@ actions being performed by the human in the video and can decide for itself if t
 in which case, it may raise an alarm for human attention.
 
 This project tries to improve the existing activity recognition system
-by adding domain knowledge to it.
+by adding domain knowledge and support for uncertainty to it.
 
 \begin{comment}
 % You may add figures in the following manner.
@@ -25,6 +29,30 @@ by adding domain knowledge to it.
 \end{center}
 \end{figure}
 \end{comment}
+
+
+
+
+\section{Related Work}
+In \cite{Realistic}, authors have come up with a method to annotate video clips 
+from Hollywood movies using their text scripts.
+Authors present a method for classification using local space-time features, space-time pyramids 
+and multi-channel non-linear SVM. The method of classification is similar to that explained in chapter \ref{ch2_STIP}. 
+In \cite{actionsInContext}, authors have also added scene information to the classification.
+
+In \cite{improving}, authors have used object information present in the video clip. 
+The correlation between activity and object has been found using analysis of large amount of text. 
+Note that this correlation is not found directly via video but via text.
+Thus it has the limitation that only the correlations appearing in the text can be captured.
+Finally an integrated classifier is formed which combines classification based on methods from chapter \ref{ch2_STIP} 
+and probability of activity deduced from object information.
+
+
+
+
+
+
+
 
 \section{Motivation}
 Existing activity recognition systems do not take advantage of underlying domain.
@@ -51,24 +79,25 @@ Thus, using hard constraints is neither practical nor robust for real world vide
 Solution to this is to attach weights with rules like \eqref{MLNRule} with weights being proportional to the real world relevance.
 This idea can be captured using Markov Logic Networks (MLNs).
 
-\section{Related Work}
-In \cite{Realistic}, authors have come up with a method to annotate video clips 
-from Hollywood movies using their text scripts.
-Authors present a method for classification using local space-time features, space-time pyramids 
-and multi-channel non-linear SVM. The method of classification is similar to that explained in chapter \ref{ch2_STIP}. In \cite{actionsInContext}, authors have also added scene information to classification
 
-In \cite{improving}, authors have used object information present in the video clip. 
-The correlation between activity and object has been found using analysis of large amount of text. 
-Note that this correlation is not found directly via video but via text.
-Thus it has the limitation that only the correlations appearing in the text can be captured.
-Finally an integrated classifier is formed which combines classification based on methods from chapter \ref{ch2_STIP} 
-and probability of activity deduced from object information.
+
+
+
+
+
 
 \section{Problem Statement}
 As evident from previous section, existing methods use video and object features. They do not capture domain information, i.e. correlation between object and activity. 
 This project captures the correlation as well as makes the system more robust towards noisy training data.
 Problem statement of this project is to improve the existing human activity recognition systems
 by incorporating domain knowledge using Markov Logic Networks (MLN).
+
+
+
+
+
+
+
 
 \section{Data set Description}
 Data set used in this project is standard Hollywood2 (actions) data set from \cite{actionsInContext}. 
@@ -82,7 +111,7 @@ There are 12 activity classes : AnswerPhone, DriveCar, Eat, FightPerson,
 \begin{itemize}
 	\item A support vector machine model is learnt using the video features of training data set. 
 	\item Presence of objects in video clips is found along with the confidence of detection using object detector. 
-	\item MLN models is learn to capture the correlation between activity and object.
+	\item MLN model is learnt to capture the correlation between activity and object.
 	\item Learnt MLN model is used to classify test video clips.
 
 \end{itemize}
