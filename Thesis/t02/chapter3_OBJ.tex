@@ -56,32 +56,28 @@ Table \ref{table:ObjDetection} shows the decision values for sample detections.
 \end{center} 
 \end{figure}  
 
-
-\begin{table}[t]
+\begin{table}[t,here]
 \centering
-\begin{tabular}{| l | c |}
+\begin{tabular}{|l|c|}
 \hline
-{\bf Activity Class} & {\bf Average Precision} \\ \hline
-%
-AnswerPhone & 11.36\% \\ \hline
-DriveCar & 66.96\% \\ \hline
-Eat & 45.45\% \\ \hline
-FightPerson & 57.63\% \\ \hline
-GetOutCar & 17.86\% \\ \hline
-HandShake & 25.93\% \\ \hline
-HugPerson & 15.15\% \\ \hline
-Kiss & 18.18\% \\ \hline
-Run & 38.78\% \\ \hline
-SitDown & 40.96\% \\ \hline
-SitUp & 5.26\% \\ \hline
-StandUp & 35.20\% \\ \hline
-Average AP & 31.56\% \\ \hline
-%
+\multicolumn{2}{|c|}{FRAME1} \\
+\hline
+ Car            &-0.181786\\
+\hline
+\multicolumn{1}{|c|}\vdots & \vdots \\
+\hline
+\multicolumn{1}{|c|}\vdots & \vdots \\
+\hline
+\multicolumn{2}{|c|}{FRAME151} \\
+\hline
+Person	&0.579786\\
+\hline
+Person	&-0.593087\\
+\hline
 \end{tabular}
-\caption{Average precision for classification using only video features}
+\caption{Output of object detector with decision values}
 \label{table:ObjDetection}
 \end{table}
 
 
 
-TODO - table showing sample output
