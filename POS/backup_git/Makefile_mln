@@ -1,17 +1,46 @@
-all:
-	echo "Read this file and run correspoding target";
+# by default `make` executes whole process
+# as if object information is ignored
+#
+# If you want to include object information also,
+# run `make obj`
+#
+all: distclean aap
+obj: distclean aapobj
 
-make_train: make_traindb.sh
-	./make_traindb.sh
+make_train: make_db.py
+	./make_db.py train noobj
 
-make_test: make_testdb.sh
-	./make_testdb.sh
+make_test: make_db.py
+	./make_db.py test noobj
 
-mln_learn: make_train make_test train.db test.db rules.mln mln_learnwts.sh 
+mln_learn: make_train make_test mln_learnwts.sh 
 	./mln_learnwts.sh
 
-mln_infer: mln_learn output.mln test.db mln_infer.sh
+mln_infer: mln_learn make_test mln_infer.sh
 	./mln_infer.sh
+
+aap: make_test mln_infer aap.py
+	./aap.py
+
+
+
+make_trainobj: make_db.py
+	./make_db.py train obj
+
+make_testobj: make_db.py
+	./make_db.py test obj
+
+mln_learnobj: make_trainobj make_testobj mln_learnwts.sh 
+	./mln_learnwts.sh
+
+mln_inferobj: mln_learnobj make_testobj mln_infer.sh
+	./mln_infer.sh
+
+aapobj: make_testobj mln_inferobj aap.py
+	./aap.py
+
+
+
 
 appendTrueValue: appendTrueVal.pl make_appendTrueVal.sh outputOfInfer.mln append_test.db
 	./make_appendTrueVal.sh
@@ -30,7 +59,7 @@ clean:
 	rm -rf output*
 
 distclean: clean
-	rm -rf *.db
+	rm -rf *.db rules.mln
 
 cleanAndRun: clean auc
 distcleanAndRun: distclean auc
