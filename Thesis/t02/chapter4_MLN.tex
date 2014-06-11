@@ -80,6 +80,32 @@ where $F$ is number of formulae in MLN and $n_i(x)$ is the number of true ground
 $F_i$ in world $x$.
 
 
+
+\section{Use of MLNs in the Project}
+Alchemy 2.0 is used to do inference via Markov Logic Networks.
+The activity prediction and confidence information from SVM is used
+alongwith object detection and confidence information from object detector.
+
+Sample rules look like : \\
+\begin{tabular}{l c l}
+	\label{MLNRule01}
+	$\forall clip$ ActivityConf\_NI\_TO\_N2(clip,activity) & $\implies$ & HasActivity(clip, activity) \\
+	$\forall clip$ ActivityConf\_N2\_TO\_N15(clip,activity) & $\implies$ & HasActivity(clip, activity) \\
+	$\forall clip$ ActivityConf\_N15\_TO\_N1(clip,activity) & $\implies$ & HasActivity(clip, activity) \\
+	~ & $\vdots$ & ~ \\
+	$\forall clip$ ActivityConf\_P1\_TO\_P15(clip, activity) & $\implies$ & HasActivity(clip, activity) \\
+	$\forall clip$ ActivityConf\_P15\_TO\_P2(clip,activity) & $\implies$ & HasActivity(clip, activity) \\
+	$\forall clip$ ActivityConf\_P2\_TO\_PI(clip,activity) & $\implies$ & HasActivity(clip, activity) \\
+	~ & $\vdots$ & ~ \\
+	$\forall clip$ HasObject( clip, chair ) & $\implies$ & HasActivity( clip, Eat ) \\
+	$\forall clip$ HasObject( clip, car ) & $\implies$ & HasActivity( clip, DriveCar ) \\
+	~ & $\vdots$ & ~ \\
+\end{tabular}
+
+
+
+
+\begin{comment}
 \section{Example MLN}
 \begin{tikzpicture}
 	%[scale=.8,auto=left,every node/.style={circle,fill=blue!20}]
@@ -96,3 +122,4 @@ $F_i$ in world $x$.
 %	\draw (\from) -- (\to);
 
 \end{tikzpicture}
+\end{comment}
