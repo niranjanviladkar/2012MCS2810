@@ -86,7 +86,8 @@ Alchemy 2.0 is used to do inference via Markov Logic Networks.
 The activity prediction and confidence information from SVM is used
 alongwith object detection and confidence information from object detector.
 
-Sample rules look like : \\
+MLN rules look like : \\
+\\
 \begin{tabular}{l c l}
 	\label{MLNRule01}
 	$\forall clip$ ActivityConf\_NI\_TO\_N2(clip,activity) & $\implies$ & HasActivity(clip, activity) \\
@@ -97,11 +98,26 @@ Sample rules look like : \\
 	$\forall clip$ ActivityConf\_P15\_TO\_P2(clip,activity) & $\implies$ & HasActivity(clip, activity) \\
 	$\forall clip$ ActivityConf\_P2\_TO\_PI(clip,activity) & $\implies$ & HasActivity(clip, activity) \\
 	~ & $\vdots$ & ~ \\
-	$\forall clip$ HasObject( clip, chair ) & $\implies$ & HasActivity( clip, Eat ) \\
-	$\forall clip$ HasObject( clip, car ) & $\implies$ & HasActivity( clip, DriveCar ) \\
+	$\forall clip$ ObjPresent( clip, chair ) & $\implies$ & HasActivity( clip, Eat ) \\
+	$\forall clip$ ObjPresent( clip, chair ) & $\implies$ & HasActivity( clip, SitDown ) \\
+	$\forall clip$ ObjPresent( clip, car ) & $\implies$ & HasActivity( clip, DriveCar ) \\
 	~ & $\vdots$ & ~ \\
+	$\forall clip$ NumPersons\_0\_TO\_1(c) & $\implies$ & HasActivity(c,+a) \\
+	~ & $\vdots$ & ~ \\
+	$\forall clip$ NumPersons\_2\_TO\_I(c) & $\implies$ & HasActivity(c,+a) \\
 \end{tabular}
+\\
+\\
+\\
+The output of SVM is binned according to the confidence values.
+NI\_TO\_N2 bin corresponds to confidence values from $-\infty$ to $-2$, 
+P1\_TO\_P15 corresponds to confidence range of $1$ to $1.5$ ans so on.
 
+Average number of persons per frame is calculated for each clip and
+binned similarly.
+
+HasActivity(c, +a) is directive to Alchemy to generate number of rules where +a is replaced
+by all possible activities - one rule per activity. In the case of this project, 12 such rules are genrated.
 
 
 

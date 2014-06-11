@@ -1,4 +1,71 @@
 \chapter{Results}
 
 \label{ch5_RESULTS}
+In order to compare results, as explained in section \ref{AP_definition}, 
+average precision (AP) is calculated for each activity class. AP is
+taken as a measure of performance in the work of \cite{actionsInContext}.
+
+\section{Results of experiments using tf-idf features}
+Table \ref{table:SVM_Setup} shows APs for all classes as per SVM setup of this project.
+
+
+\begin{table}[t,here]
+\centering
+\captionsetup{justification=centering,margin=2cm}
+\begin{tabular}{| l | c | c |}
+\hline
+{\bf Activity Class} & {\bf AP as per Paper} & {\bf AP as per project} \\ \hline
+%
+AnswerPhone & 8.80\% & 11.36\% \\ \hline
+DriveCar & 74.90\% & 66.96\% \\ \hline
+Eat & 26.30\% & 45.45\% \\ \hline
+FightPerson & 67.50\% & 57.63\% \\ \hline
+GetOutCar & 9.00\% & 17.86\% \\ \hline
+HandShake & 11.60\% & 25.93\% \\ \hline
+HugPerson & 13.50\% & 15.15\% \\ \hline
+Kiss & 49.60\% & 18.18\% \\ \hline
+Run & 53.70\% & 38.78\% \\ \hline
+SitDown & 31.60\% & 40.96\% \\ \hline
+SitUp & 7.20\% & 5.26\% \\ \hline
+StandUp & 35\% & 35.20\% \\ \hline
+Average AP & 32.39\% & 31.56\% \\ \hline
+%
+\end{tabular}
+\caption{Average precision for Basic SVM Setup - without using tf-idf features}
+\label{table:SVM_Setup}
+\end{table}
+
+These AP values are obtained with using only the video features. 
+Object and People information is not added to the feature vector.
+When term frequency and inverse document frequency features of 
+object and/or people are also added to the basic SVM feature vector, 
+it shows significant improvemnt as described in table \ref{table:SVM_TFIDF}.
+
+\begin{table}[t,here]
+\centering
+\captionsetup{justification=centering,margin=2cm}
+\begin{tabular}{| l | c | c |}
+\hline
+	{\bf Activity Class}
+	& \multicolumn{1}{p{3cm}|}{\centering {\bf AP - Basic \\ SVM}}
+	& \multicolumn{1}{p{3cm}|}{\centering {\bf AP - Object \\ and People} }\\ \hline
+AnswerPhone & 11.36\% & 16.67\% \\ \hline
+DriveCar & 66.96\% & 70.09\% \\ \hline
+Eat & 45.45\% & 50.00\% \\ \hline
+FightPerson & 57.63\% & 66.04\% \\ \hline
+GetOutCar & 17.86\% & 12.12\% \\ \hline
+HandShake & 25.93\% & 31.82\% \\ \hline
+HugPerson & 15.15\% & 17.86\% \\ \hline
+Kiss & 18.18\% & 20.69\% \\ \hline
+Run & 38.78\% & 39.35\% \\ \hline
+SitDown & 40.96\% & 42.05\% \\ \hline
+SitUp & 5.26\% & 8.70\% \\ \hline
+StandUp & 35.20\% & 37.88\%\\ \hline
+Average AP & 31.56\% & 34.44\% \\ \hline
+%
+\end{tabular}
+\caption{Average precision after adding tf-idf features}
+\label{table:SVM_TFIDF}
+\end{table}
+
 
