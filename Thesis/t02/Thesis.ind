@@ -1,41 +1,41 @@
 \begin{theindex}
 \textbf{A}
-  \item AAP, \hyperpage{6}
-  \item Average Average Precision, \hyperindexformat{\see {AAP}}{5}
+  \item AAP, \hyperpage{7}
+  \item Average Average Precision, \hyperindexformat{\see {AAP}}{6}
 
   \indexspace
 \textbf{B}
-  \item Bag of Features Representation, \hyperpage{5}
-  \item BoF, \hyperpage{5}
-  \item Bounding Box, \hyperpage{7}
+  \item Bag of Features Representation, \hyperpage{6}
+  \item BoF, \hyperpage{6}
+  \item Bounding Box, \hyperpage{8}
 
   \indexspace
 \textbf{D}
-  \item Decision Value, \hyperpage{7}
+  \item Decision Value, \hyperpage{8}
 
   \indexspace
 \textbf{H}
-  \item Histograms of Optical Flow, \hyperpage{4}
-  \item Histograms of Oriented Gradient, \hyperpage{4}
-  \item HoF, \hyperpage{4}
-  \item HoG, \hyperpage{4}
+  \item Histograms of Optical Flow, \hyperpage{5}
+  \item Histograms of Oriented Gradient, \hyperpage{5}
+  \item HoF, \hyperpage{5}
+  \item HoG, \hyperpage{5}
 
   \indexspace
 \textbf{M}
-  \item Markov Logic Networks, \hyperindexformat{\see {MLN}}{11}
-  \item Markov Networks, \hyperpage{10}
-  \item MLN, \hyperpage{11}
+  \item Markov Logic Networks, \hyperindexformat{\see {MLN}}{12}
+  \item Markov Networks, \hyperpage{11}
+  \item MLN, \hyperpage{12}
 
   \indexspace
 \textbf{P}
-  \item Partition Function, \hyperpage{10}
-  \item Potential Functions, \hyperpage{10}
+  \item Partition Function, \hyperpage{11}
+  \item Potential Functions, \hyperpage{11}
 
   \indexspace
 \textbf{S}
-  \item Spatial Temporal Interest Points, \hyperpage{4}
-  \item STIP, \hyperpage{4}
-  \item Support Vector Machines, \hyperpage{5}
-  \item SVM, \hyperpage{5}
+  \item Spatial Temporal Interest Points, \hyperpage{5}
+  \item STIP, \hyperpage{5}
+  \item Support Vector Machines, \hyperpage{6}
+  \item SVM, \hyperpage{6}
 
 \end{theindex}
