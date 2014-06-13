@@ -1,6 +1,6 @@
 \begin{theindex}
 \textbf{A}
-  \item AAP, \hyperpage{5}
+  \item AAP, \hyperpage{4}
   \item Average Average Precision, \hyperindexformat{\see {AAP}}{4}
 
   \indexspace
@@ -22,14 +22,14 @@
 
   \indexspace
 \textbf{M}
-  \item Markov Logic Networks, \hyperindexformat{\see {MLN}}{8}
-  \item Markov Networks, \hyperpage{7}
-  \item MLN, \hyperpage{8}
+  \item Markov Logic Networks, \hyperindexformat{\see {MLN}}{7}
+  \item Markov Networks, \hyperpage{6}
+  \item MLN, \hyperpage{7}
 
   \indexspace
 \textbf{P}
   \item Partition Function, \hyperpage{7}
-  \item Potential Functions, \hyperpage{7}
+  \item Potential Functions, \hyperpage{6}
 
   \indexspace
 \textbf{S}
