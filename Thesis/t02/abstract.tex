@@ -5,20 +5,19 @@
 \vspace{0.5in}
 
 %replace \lipsum with your abstract
-Human Activity Recognition in a video has been extensively studied upon area. 
-Various approaches include classification of video clips based on features like SIFT, HoG-HoF, scene, etc.
-These experiments are done on a standard dataset, so the results are comparable.
+Human Activity Recognition is an important vision problem. 
+Most existing appraoches ( TODO -cite) perform classification of video clips 
+based on low level features like HoG-HoF. They don't consider the domain knowledge while classification.
+This methodology is vulnerable to noisy training data.
 
-All the previous approaches use classification based on features in the video but they don't consider the domain knowledge while classification.
-This project intends to add domain knowledge to the classification in the form of first order logic formulae.
+For example, presence of two persons in a clip increases chances of activity `conversation',
+but low level features may not be able to capture this effectively.
 
-Classical first order logic consists of hard rules. 
-If a world does not satisfy even one formula, 
-the world is considered to be false. 
-Such hard constraints can not be applied to the real world predicates. 
-This project uses inference using Markov Logic Networks (MLN) 
-to associate probabilities with formulae instead of their true/falsehood.
+This project adds domain knowledge in the form of object and people information
+to the classification using Markov Logic. Markov Logic caputres semantic relationship
+using weighted first order logic formulae. Thus the model learnt is less vulenrable to noisy
+training data.
 
-Finally a comparison of activity predictions beetween 
-approach of this project and 
-published work is shown on the standard action video dataset.
+This project gives an end to end system for activity recognition. It takes input from 
+a video classifier and an object detector and builds semantic model on top of this information.
+Activity predictions using this approach shows improvement over the existing frameworks.
