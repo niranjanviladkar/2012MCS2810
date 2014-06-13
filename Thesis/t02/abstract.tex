@@ -5,18 +5,22 @@
 \vspace{0.5in}
 
 %replace \lipsum with your abstract
-Human Activity Recognition is an important vision problem. 
-Most existing appraoches ( TODO -cite) perform classification of video clips 
+Human Activity Recognition is an important vision problem.
+In recent years, there have been various approaches towards the problem
+\cite{actionsInContext,Realistic,improving,Parking}.
+Most existing approaches perform classification of video clips 
 based on low level features like HoG-HoF. They don't consider the domain knowledge while classification.
 This methodology is vulnerable to noisy training data.
 
 For example, presence of two persons in a clip increases chances of activity `conversation',
-but low level features may not be able to capture this effectively.
+a partial occlusion in the scene will lead to different low level features.
+Thus low level features may not be able to capture the information conveyed by 
+the presence of two persons effectively.
 
 This project adds domain knowledge in the form of object and people information
-to the classification using Markov Logic. Markov Logic caputres semantic relationship
-using weighted first order logic formulae. Thus the model learnt is less vulenrable to noisy
-training data.
+to the classification using Markov Logic. Markov Logic captures semantic relationship
+using weighted first order logic formulae. Thus the model learnt is less vulnerable to noisy
+training data and occlusions.
 
 This project gives an end to end system for activity recognition. It takes input from 
 a video classifier and an object detector and builds semantic model on top of this information.
