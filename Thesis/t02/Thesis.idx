@@ -8,12 +8,12 @@
 \indexentry{BoF|hyperpage}{4}
 \indexentry{Support Vector Machines|hyperpage}{4}
 \indexentry{SVM|hyperpage}{4}
-\indexentry{Average Average Precision|hyperindexformat{\see {AAP}}}{4}
-\indexentry{AAP|hyperpage}{5}
 \indexentry{Bounding Box|hyperpage}{5}
 \indexentry{Decision Value|hyperpage}{5}
-\indexentry{Markov Networks|hyperpage}{7}
-\indexentry{Potential Functions|hyperpage}{7}
-\indexentry{Partition Function|hyperpage}{7}
-\indexentry{Markov Logic Networks|hyperindexformat{\see {MLN}}}{8}
-\indexentry{MLN|hyperpage}{8}
+\indexentry{Markov Networks|hyperpage}{6}
+\indexentry{Potential Functions|hyperpage}{6}
+\indexentry{Partition Function|hyperpage}{6}
+\indexentry{Markov Logic Networks|hyperindexformat{\see {MLN}}}{7}
+\indexentry{MLN|hyperpage}{7}
+\indexentry{Average Average Precision|hyperindexformat{\see {AAP}}}{16}
+\indexentry{AAP|hyperpage}{17}

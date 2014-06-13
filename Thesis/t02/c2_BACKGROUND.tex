@@ -31,12 +31,11 @@ Concatenating vectors of HoG and HoF features, we get a single 162 element descr
 
 \subsection{Clustering}
 After extraction of STIP features, each video clip roughly has $O(1000)$ such descriptors.
-100,000 descriptors are sampled randomly from all the descriptors across all the clips.
-While doing random sampling, each clip is given equal chance - this avoids biased sampling
-towards ( or against) any particular class of videos if they happen to be longer ( or shorter) than other videos on an average.
-These 100,000 random descriptors are clustered into $k = 200$ clusters using k-means.
+Some number of descriptors are sampled randomly from all the descriptors across all the clips.
+These random descriptors are clustered into $k$ clusters using k-means.
 
 \subsection{\index{Bag of Features Representation}Bag of Features Representation}
+\label{section_BOF}
 Each descriptor in each clip is clustered into one of the $k$ clusters using
 least Euclidean distance. Thus each clip is represented by a $k$ sized vector
 where $i^{th}$ element in this vector represents number of descriptors of that clip 
@@ -74,13 +73,7 @@ Average AP & 31.56\% \\ \hline
 \label{AP_definition}
 The BoF representation of all training clips are used to train a
 support vector machine (\index{SVM}SVM) and BoF representation of a disjoint set of testing clips is classified using
-learnt model. For training a SVM model, a radial basis function (RBF) kernel is used with parameters $C = 100$ 
-and $\gamma = 0.01$. A one-versus-rest learning strategy is used to learn as many models as there are action classes.
-In case of this data set, there are 12 action classes and thus 12 models are learnt.
-
-Classification using only video features are compared taking \index{Average Average Precision|see {AAP}} average average precision as a measure.
-As explained in \cite{actionsInContext}, average precision(AP) approximates area under recall-precision curve.
-Thus, AP for each activity class is calculated and then finally averaged over all the classes, average AP (\index{AAP}AAP) is calculated.
+learnt model. 
 
 \section{Object Detection}
 
@@ -95,6 +88,7 @@ potentially be made more confident. Below subsections introduce the object detec
 method and its use in this project.
 
 \subsection{Object Detector}
+\label{section_OBJDET}
 Object detector based on Discriminatively Trained Deformable Part Models \cite{voc-release4} was used in
 the project. It can run on an image at a time. The detectors used in this project are trained on PASCAL 2007 data sets.
 There are 20 models corresponding to 20 different objects.
@@ -115,53 +109,6 @@ It might be a true positive or a false positive.
 One can specify a threshold decision value before running object detector model 
 so that only the detections at least as confident as the threshold are considered.
 Usually, such thresholds are negative to allow detection of lesser confident objects also.
-
-\subsection{Output of Object Detector}
-
-The visual output of object detector looks as shown in figures \ref{fig:CarDetection} and \ref{fig:PersonDetection}. 
-The red boxes are called as bounding boxes.
-For each box, a confidence value is also evaluated - also called as decision value.
-
-\floatstyle{plain}
-\restylefloat{figure}
-\begin{figure}[here]
-\begin{center} 
-\includegraphics[scale=0.5]{car_detection_1.jpg} 
-\caption{ Car detection in a frame. \label{fig:CarDetection}} 
-\end{center} 
-\end{figure}  
-
-\begin{figure}[here]
-\begin{center} 
-\includegraphics[scale=0.5]{person_detection_151.jpg} 
-\caption{ Person detection in a frame. \label{fig:PersonDetection}} 
-\end{center} 
-\end{figure}  
-
-\begin{comment}
-\begin{table}[t,here]
-\centering
-\begin{tabular}{|l|c|}
-\hline
-\multicolumn{2}{|c|}{FRAME1} \\
-\hline
- Car            &-0.181786\\
-\hline
-\multicolumn{1}{|c|}\vdots & \vdots \\
-\hline
-\multicolumn{1}{|c|}\vdots & \vdots \\
-\hline
-\multicolumn{2}{|c|}{FRAME151} \\
-\hline
-Person	&0.579786\\
-\hline
-Person	&-0.593087\\
-\hline
-\end{tabular}
-\caption{Output of object detector with decision values}
-\label{table:ObjDetection}
-\end{table}
-\end{comment}
 
 \section{Markov Logic Networks}
 
