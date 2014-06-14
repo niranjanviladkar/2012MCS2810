@@ -7,16 +7,16 @@ It has 823 labeled training video clips and 884 labeled testing video clips.
 There are 12 activity classes : AnswerPhone, DriveCar, Eat, FightPerson,
  GetOutCar, HandShake, HugPerson, Kiss, Run, SitDown, SitUp, StandUp.
  Each clip is 10 to 30 seconds long. Frame rate is 24 fps.
- Each clip is provided with a true label. Few of the clips have multiple labels, in this project, only single labelled clips are used.
+ Each clip is provided with a true label. Few of the clips have multiple labels, in this project, only single labeled clips are used.
 
 
  \section{Methodology}
  \label{section_METHODOLOGY}
- {\bf Video recognizer setup - } 100,000 HoG-HoF feature vectors are randomely sampled from 
+ {\bf Video recognizer setup - } 100,000 HoG-HoF feature vectors are randomly sampled from 
  set of all feature vectors extracted from video clips using \cite{stipCode}.
  While doing random sampling, each clip is given equal chance - this avoids biased sampling
 towards (or against) any particular class of videos if they happen to be longer (or shorter) than other videos on an average.
-These randomely sampled descriptors are clustered in $k = 200$ clusters using k-means.
+These randomly sampled descriptors are clustered in $k = 200$ clusters using k-means.
 All clips are represented in Bag-of-Features representation over these clusters as explained in section \ref{section_BOF}.
 
 ~\\
@@ -72,6 +72,42 @@ Person	&-0.593087\\
 \label{table:ObjDetection}
 \end{table}
 
+Table \ref{table:ObjDetConf} shows the thresholds used to generate predicates
+for evidence and inference of MLN.
+
+\begin{table}[t,here]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+Object & Threshold \\
+\hline
+Bicycle            &-0.90\\
+\hline
+Bottle            &-0.83\\
+\hline
+Bus            &-0.83\\
+\hline
+ Car            &-0.20\\
+\hline
+ Chair            &-0.77\\
+\hline
+Dining Table            &-0.80\\
+\hline
+Motor Bike            &-0.90\\
+\hline
+Person            &-0.70\\
+\hline
+Sofa           &-0.87\\
+\hline
+TV Monitor            &-0.80\\
+\hline
+\end{tabular}
+\caption{Thresholds on object detector confidence}
+\label{table:ObjDetConf}
+\end{table}
+
+
+
 ~ \\
 {\bf Alchemy Setup - } MLN model is learnt using Alchemy 2.0 \cite{alchemy2.0} software.
 All the parameters are kept default. `QueryEvidence' option is not set.
@@ -119,10 +155,13 @@ to add the object and people information to the existing video recognizer.
 \label{table:MLN_RESULTS}
 \end{table}
 
-
-
-TODO - Explanation of above table.
-
+Table \ref{table:MLN_RESULTS} shows comparison of APs for various strategies using MLNs.
+As can be seen, Average AP, when only action is considered for evidence and inference, is 28.53\%. 
+This number gradually improves as more information is brought into the system.
+Action information when added with Object information shows Average AP to be 30.30\%. 
+Action and People information shows Average AP to be 31.28\%.
+And finally, adding both Object and People information to action information,
+Average AP of 33.86\% is achieved.
 
 
 ~\\
@@ -130,11 +169,11 @@ TODO - Explanation of above table.
 {\bf TF-IDF Features - }
 The Bag-of-Features vector of each clip can be appended with Term Frequency -
 Inverse Document Frequency (tf-idf) features corresponding 
-to 12 objects and number of people information. Thus adding 13 more features to each
+to 10 objects and number of people information. Thus adding 11 more features to each
 feature vector.
 These new feature vectors are now used to learn SVM model with similar parameters 
 and methodology explained in section \ref{section_METHODOLOGY}.
-It shows significant improvemnt as described in table \ref{table:SVM_TFIDF}.
+It shows significant improvement as described in table \ref{table:SVM_TFIDF}.
 
 \begin{table}[t,here]
 \centering
@@ -163,7 +202,9 @@ Average AP & 31.56\% & 34.44\% \\ \hline
 \label{table:SVM_TFIDF}
 \end{table}
 
-TODO - Comparison between tf-idf and MLN. Feedback.
+Advantage of {\bf MLN approach over TF-IDF} approach is that, MLNs can support feed-backs.
+A high confidence of an activity can increase probability of object being present in that particular clip. 
+This kind of feedback information cannot be captured using TF-IDF features.
 
 \begin{comment}
 Table \ref{table:SVM_Setup} shows APs for all classes as per SVM setup of this project.

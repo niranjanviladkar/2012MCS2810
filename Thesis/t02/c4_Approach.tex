@@ -32,7 +32,7 @@ such rules using the evidence provided. Following sections explain in detail
 about the evidence creation, rules, etc.
 
 \section{MLN Evidence}
-The Hollywood2 data set \cite{hollywood2} (described in section \ref{TODO}) provides
+The Hollywood2 data set \cite{hollywood2} (described in chapter \ref{ch5_RESULTS}) provides
 true activity labels for training data. These labels are used to create predicates
 like
 \begin{equation}
@@ -51,7 +51,7 @@ are partitioned into bins to create predicates like
 
 Here, P1\_TO\_P15 represents a bin with confidence value of +1 to +1.5.
 Similarly other bins are formed and predicates are generated to form the evidence.
-Each clip has 12 such predicates as there are 12 acitivity classes.
+Each clip has 12 such predicates as there are 12 activity classes.
 
 Object detector \cite{voc-release4} gives object detections in frames
 along with the corresponding confidence values. Experimentally determined thresholds
@@ -64,7 +64,7 @@ are used to decide whether to consider object detection and predicates like foll
 \end{equation}
 
 Finally, to generate evidence for people information, average number of ``person"
-objects are calculated in each clip. These averages are partioned into bins
+objects are calculated in each clip. These averages are partitioned into bins
 and each clip is assigned one bin. Predicates like following are formed using this method
 \begin{equation}
 	\begin{split}
@@ -89,10 +89,9 @@ For example,
 \end{equation}
 
 Here, the $1^{st}$ rule captures relation between low confidence ($-1$ to $-0.5$) of presence
-of activity and actual evidence. And $2{nd}$ rule captures relation between
+of activity and actual evidence. And $2^{nd}$ rule captures relation between
 higher confidence ($+1$ to $+1.5$) of presence of activity and actual evidence.
 Thus intuitively, $1^{st}$ rule will get lower weight as compared to $2^{nd}$ rule.
-Exact weights are given in chapter \ref{ch5_RESULTS}.
 
 ~ \\
 For adding {\bf object information}, both positive and negative rules are written.
@@ -127,8 +126,8 @@ For example,
 
 where, $1^{st}$ rule has a bin that corresponds to average number of people 
 per frame between 0 to 1.
-``+a" means rule will be expanded to all possible activites. Thus for each bin,
-rules corresponding to all 12 activites will be used in MLN learning.
+``+a" means rule will be expanded to all possible activities. Thus for each bin,
+rules corresponding to all 12 activities will be used in MLN learning.
 
 
 
@@ -136,13 +135,13 @@ rules corresponding to all 12 activites will be used in MLN learning.
 \section{MLN Inference}
 For inference, the learnt SVM model is used to classify testing
 data set clips. This step provides with the confidence values of activities for
-each clip. These confidence values are partioned into bins in same manner
+each clip. These confidence values are partitioned into bins in same manner
 as done for generating evidence.
 The object and people information is added in similar fashion as that of
 evidence generation process. 
 
 Inference is made on predicate ``HasActivity". Thus only difference
-between evidence and inference is absense of ``HasActivity" predicates.
+between evidence and inference is absence of ``HasActivity" predicates.
 
 Sample inference instance looks like
 \begin{equation}

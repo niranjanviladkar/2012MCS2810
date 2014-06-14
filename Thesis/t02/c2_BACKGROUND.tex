@@ -42,33 +42,6 @@ where $i^{th}$ element in this vector represents number of descriptors of that c
 nearest to the $i^{th}$ cluster. This vector is called a Bag of Features (\index{BoF}BoF)
 representation of the clip.
 
-\begin{comment}
-\begin{table}[t]
-\centering
-\begin{tabular}{| l | c |}
-\hline
-{\bf Activity Class} & {\bf Average Precision} \\ \hline
-%
-AnswerPhone & 11.36\% \\ \hline
-DriveCar & 66.96\% \\ \hline
-Eat & 45.45\% \\ \hline
-FightPerson & 57.63\% \\ \hline
-GetOutCar & 17.86\% \\ \hline
-HandShake & 25.93\% \\ \hline
-HugPerson & 15.15\% \\ \hline
-Kiss & 18.18\% \\ \hline
-Run & 38.78\% \\ \hline
-SitDown & 40.96\% \\ \hline
-SitUp & 5.26\% \\ \hline
-StandUp & 35.20\% \\ \hline
-Average AP & 31.56\% \\ \hline
-%
-\end{tabular}
-\caption{Average precision for classification using only video features}
-\label{table:AP_OnlyAction}
-\end{table}
-\end{comment}
-
 \subsection{\index{Support Vector Machines}Support Vector Machines}
 \label{AP_definition}
 The BoF representation of all training clips are used to train a
@@ -119,8 +92,8 @@ Usually, such thresholds are negative to allow detection of lesser confident obj
 
 As explained in \cite{MarkovLogic}, Markov Logic consists of set of First order
 logic (FOL) formulae associated with weights. The FOL formulae form the structure 
-of Markov Logic Networks (MLNs). Background and theory of MLNs and calculation of
-weights of formula is explained in the coming sections.
+of Markov Logic Networks (MLNs). Background and theory of MLNs
+is explained in the coming subsections.
 
 \subsection{Markov Networks}
 \index{Markov Networks}Markov Network is an undirected graph $G$ with its nodes as set of variables $X = (X_1, X_2,\ldots, X_n) \in \rchi $.
