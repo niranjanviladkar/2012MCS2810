@@ -28,11 +28,56 @@ on an absolute scale between $-\infty$ to $\infty$.
 Usually, a positive decision value represents true positive in all the models. 
 A negative decision value represent lesser confident detection. 
 It might be a true positive or a false positive. 
-One can specify a threshold before running object detector model 
+One can specify a threshold decision value before running object detector model 
 so that only the detections at least as confident as the threshold are considered.
-Usually, such thresholds are negative to allow detection of lesser confident objects.
+Usually, such thresholds are negative to allow detection of lesser confident objects also.
 
 \section{Output of Object Detector}
-TODO - image of object detection
 
-TODO - table showing sample output
+The visual output of object detector looks as shown in figures \ref{fig:CarDetection} and \ref{fig:PersonDetection}. 
+The red boxes are called as bounding boxes.
+For each box, a confidence value is also evaluated - also called as decision value.
+
+Table \ref{table:ObjDetection} shows the decision values for sample detections.
+
+\floatstyle{plain}
+\restylefloat{figure}
+\begin{figure}[here]
+\begin{center} 
+\includegraphics[scale=0.5]{car_detection_1.jpg} 
+\caption{ Car detection in a frame. \label{fig:CarDetection}} 
+\end{center} 
+\end{figure}  
+
+\begin{figure}[here]
+\begin{center} 
+\includegraphics[scale=0.5]{person_detection_151.jpg} 
+\caption{ Person detection in a frame. \label{fig:PersonDetection}} 
+\end{center} 
+\end{figure}  
+
+\begin{table}[t,here]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\multicolumn{2}{|c|}{FRAME1} \\
+\hline
+ Car            &-0.181786\\
+\hline
+\multicolumn{1}{|c|}\vdots & \vdots \\
+\hline
+\multicolumn{1}{|c|}\vdots & \vdots \\
+\hline
+\multicolumn{2}{|c|}{FRAME151} \\
+\hline
+Person	&0.579786\\
+\hline
+Person	&-0.593087\\
+\hline
+\end{tabular}
+\caption{Output of object detector with decision values}
+\label{table:ObjDetection}
+\end{table}
+
+
+

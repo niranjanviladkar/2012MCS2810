@@ -1,0 +1,39 @@
+AnswerPhone : tp = 7, fp = 48, true = 57, infer = 55
+AnswerPhone	0.127272727273
+DriveCar : tp = 75, fp = 35, true = 97, infer = 110
+DriveCar	0.681818181818
+Eat : tp = 16, fp = 24, true = 28, infer = 40
+Eat	0.4
+FightPerson : tp = 33, fp = 20, true = 60, infer = 53
+FightPerson	0.622641509434
+GetOutCar : tp = 4, fp = 24, true = 51, infer = 28
+GetOutCar	0.142857142857
+HandShake : tp = 5, fp = 7, true = 40, infer = 12
+HandShake	0.416666666667
+HugPerson : tp = 5, fp = 26, true = 30, infer = 31
+HugPerson	0.161290322581
+Kiss : tp = 19, fp = 73, true = 64, infer = 92
+Kiss	0.20652173913
+Run : tp = 51, fp = 70, true = 121, infer = 121
+Run	0.421487603306
+SitDown : tp = 36, fp = 55, true = 92, infer = 91
+SitDown	0.395604395604
+SitUp : tp = 2, fp = 14, true = 31, infer = 16
+SitUp	0.125
+StandUp : tp = 54, fp = 95, true = 127, infer = 149
+StandUp	0.362416107383
+0.127272727273
+0.681818181818
+0.4
+0.622641509434
+0.142857142857
+0.416666666667
+0.161290322581
+0.20652173913
+0.421487603306
+0.395604395604
+0.125
+0.362416107383
+aap	0.338631366338
+accuracy = 0.384711779449
+

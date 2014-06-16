@@ -1,0 +1,65 @@
+\chapter{Introduction}
+
+\label{ch1_INTRO}
+
+%Replace \lipsum with text.
+% You may have as many sections as you please. This is just for reference.
+
+
+
+
+
+Human activity recognition is an area of interest in the field of large scale surveillance.
+A highly accurate and precise system would obviate the need for human attention
+at each of the surveillance video output all the time. The system can recognize the
+actions being performed by the human in the video and can decide for itself if the actions are abnormal;
+in which case, it may raise an alarm for human attention.
+
+This project tries to improve the existing activity recognition system
+by adding domain knowledge and support for uncertainty to it.
+
+
+\section{Motivation}
+Existing activity recognition systems \cite{actionsInContext,Realistic,improving}  do not take advantage of underlying domain.
+Domain may have significant influence over the activity types, the objects appearing
+in the activity etc. For example, presence of a dining table improves the chances
+of activity eating as compared to driving. Or if, the video is occluded partially,
+but objects like bottle and chair are visible, then also, chances of activity eating
+are more as compared to other activities. This relationship between objects and activities
+can be captured by First Order Logic (FOL).
+
+But merely using FOL is not sufficient. In its basic form, FOL uses hard constraints.
+To explain this with example, consider a rule
+\begin{equation}
+	\label{MLNRule}
+	\forall clip ~ HasObject( clip, bottle ) \implies HasActivity( clip, eating )
+\end{equation}
+
+In real world scenario, it is perfectly possible that a video clip contains a bottle,
+but the activity might be different than eating. 
+The rule gets violated in this scenario as it is universally quantified over all the clips. 
+Rule may also get violated in case of noisy training data. 
+Thus, using hard constraints is neither practical nor robust for real world video clips. 
+
+Solution to this is to attach weights with rules like \eqref{MLNRule} with weights being proportional to the real world relevance.
+This idea can be captured using Markov Logic Networks (MLNs). Markov Logic allows us 
+to capture the relationship between activities and objects using weighted first order logic formulae.
+Thus in case of noisy training data or in case of occlusion of part of the objects,
+such model performs better as compared to the models built only on low level features.
+
+
+This project captures the semantic relationship between activities and objects 
+as well as makes the system more robust towards noisy training data.
+Aim of this project is to provide end to end recognition system to improve 
+the existing human activity recognition systems
+by adding domain knowledge i.e. object and people information to them.
+
+
+
+ \section{Thesis Outline}
+Chapter \ref{ch2_BACKGROUND} gives the theoretical background. It explains video classification using only video features. It explains how to extract and use the video features. 
+It further descirbes object detection in detail and also describes the theory of Markov Logic Networks. 
+Chapter \ref{ch3_RELATED} throws light on previous approaches and points out potential improvement areas.
+Chapter \ref{ch4_APPROACH} explains design decisions and approach of this project.
+Chapter \ref{ch5_RESULTS} shows the result comparisons.
+Finally thesis concludes with chapter \ref{ch6_CONCLUSION} which notes conclusion and future work.

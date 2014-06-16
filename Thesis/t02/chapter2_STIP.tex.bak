@@ -1,0 +1,62 @@
+\chapter{Classification using video features}
+
+\label{ch2_STIP}
+
+%Replace \lipsum with text.
+% You may have as many sections as you please. This is just for reference.
+
+Video clips representing human actions can be classified based on features extracted from the video.
+Below subsections explain what these features are and how to use them.
+
+\section{Spatial Temporal Interest Points\index{Spatial Temporal Interest Points}}
+As explained in \cite{laptev2005} spatial temporal interest points (\index{STIP}STIPs) are 3 dimentional points in 
+space and time where the local video features show significant variations. 
+In \cite{actionsInContext} the features extracted at STIPs are shown to perform satisfactorally for human activity recognition. 
+At each STIP, \index{Histograms of Oriented Gradient}histograms of oriented gradient (HoG\index{HoG}) and \index{Histograms of Optical Flow} histograms of optical flow (\index{HoF}HoF) are evaluated.
+The number of HoG and HoF features at each STIP are 72 and 90 respectively.
+Concatinating vectors of HoG and HoF features, we get a single 162 element descriptor for each STIP. 
+
+\section{Clustering}
+After extraction of STIP features, each video clip roughly has $O(1000)$ such descriptors.
+100,000 desciptors are sampled randomely from all the descriptors across all the clips.
+While doing random sampling, each clip is given equal chance - this avoids biased sampling
+towards any particular class of videos if they happen to be longer than other videos on an average
+and vice versa.
+These 100,000 random descriptors are clustered into $k = 200$ clusters using k-means.
+
+\section{\index{Bag of Features Representation}Bag of Features Representation}
+Each descriptor in each clip is clustered into one of the $k$ clusters using
+least Euclidean distance. Thus each clip is represented by a $k$ sized vector
+where $i^{th}$ element in this vector represents number of decriptors of that clip 
+nearest to the $i^{th}$ cluster. This vector is called a Bag of Features (\index{BoF}BoF)
+representation of the clip.
+
+
+\section{\index{Support Vector Machines}Support Vector Machines}
+The BoF representation of all training clips are used to train a
+support vector machine (\index{SVM}SVM) and BoF representation of a disjoint set of testing clips is classified using
+learnt model. For training a SVM model, a radial basis function (RBF) kernel is used with parameters $C = 100$ 
+and $\gamma = 0.01$. A one-versus-rest learning strategy is used to learn as many models as there are action classes.
+In case of this dataset, there are 12 action classes and thus 12 models are learnt.
+
+Classification using only video features are compared taking \index{Average Average Precision|see {AAP}} average average precision as a measure.
+As explained in \cite{actionsInContext}, average precision(AP) approximates area under recall-precision curve.
+Thus, AP for each activity class is calculated and then finally averaged over all the classes, average AP (\index{AAP}AAP) is calculated.
+
+The table \ref{table:AP_OnlyAction} shows the APs for each individual class for classification using only video features.
+
+\begin{table}
+\centering
+\begin{tabular}{| c | c |}
+\hline
+{\bf item 1} & {\bf item 2} \\ \hline
+%
+abcde & 5 \\ \hline
+%
+pqrst & 4 \\ \hline
+\end{tabular}
+\caption{A sample table}
+\label{table:AP_OnlyAction}
+\end{table}
+
+

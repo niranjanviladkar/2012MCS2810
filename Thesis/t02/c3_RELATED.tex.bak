@@ -1,0 +1,49 @@
+\chapter{Related Work}
+
+\label{ch3_RELATED}
+
+In \cite{Realistic}, authors have come up with a method to annotate video clips 
+from Hollywood movies using their text scripts.
+Authors present a method for classification using local space-time features, 
+space-time pyramids and multi-channel non-linear SVM. 
+
+Their approach is based on low level space time features such as HoG-HoF features. 
+All video clips are represented in Bag-of-Features representation. 
+These Bag-of-Features vectors are used to train a SVM model. 
+Note that as this method uses low level features, it will be ineffective 
+in case the video is partially occluded or the training data is noisy.
+
+~\\
+In \cite{actionsInContext}, authors add context in the form of scene information to the classification problem. 
+As quoted by authors, an example is, activity eating is more probable to happen in kitchen 
+while activity running is likely to happen outdoor. Thus scene contexts of these two activities will help in classification.
+
+There approach also consists of forming a Bag-Of-Features representation of video clips
+using low level features like HoG-HoF. Thus suffering similar problems as explained above. 
+The scene information is retrieved using text scripts.
+Thus this information is limited by the text available 
+and may not be able to capture the actual relationship between
+scene and activity as seen in the video.
+
+~\\
+In \cite{improving}, authors have used object information present in the video clip. 
+The correlation between activity and object has been found using analysis of large amount of text. 
+Note that this correlation is not found directly via video but via text.
+Thus it has the limitation that only the correlations appearing in the text can be captured.
+Also, a naive Bayes assumption is made which assume that video features 
+and object features are independent of each other given the activity class.
+Finally an integrated classifier is formed which combines classification based on methods from section \ref{section_STIP} 
+and probability of activity deduced from object information.
+
+~\\
+In \cite{Parking}, Markov Logic Networks are used to capture the interaction
+between humans and vehicles, such as, open door, drive away etc. 
+Although this method does capture the relationship irrespective of occlusions
+and noisy training data, it is limited to human - vehicle interaction.
+For real world videos, a more general system is required.
+
+~\\
+Thus, it can be seen that most of the previous approaches don't capture semantic relationship between activities and objects.
+Next chapter explains how this project combines object and people information
+with existing activity recognition to improve the recongnition results.
+

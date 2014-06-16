@@ -18,6 +18,8 @@
 \usepackage{setspace} 
 \usepackage[font=footnotesize]{subfig}
 \usepackage{supertabular}
+\usepackage{tabularx}
+\usepackage{tikz}
 \usepackage{titlesec}
 \usepackage[nottoc,notlot,notlof]{tocbibind}     
 \usepackage{url}
@@ -102,9 +104,12 @@
 
 \graphicspath{{./Figures/}}
 \makeindex
+\makeatletter
+\setlength{\@fptop}{0pt}
+\makeatother
 \begin{document}
 
-\begin{comment}
+%\begin{comment}
 % Begin title page
 \pagenumbering{roman}
 \include{titlepage}
@@ -136,7 +141,7 @@
 \listoffigures
 
 \listoftables
-\end{comment}
+%\end{comment}
 
 \thispagestyle{empty}
 \cleardoublepage
@@ -150,11 +155,15 @@
 
 \include{chapter1_INTRO}
 
-\include{chapter2_STIP}
+%\include{chapter2_STIP}
 
-\include{chapter3_OBJ}
+%\include{chapter3_OBJ}
 
-\include{chapter4_MLN}
+%\include{chapter4_MLN}
+
+\include{c2_BACKGROUND}
+\include{c3_RELATED}
+\include{c4_Approach}
 
 \include{chapter5_RESULTS}
 
@@ -164,9 +173,9 @@
 \bibliography{biblio}
 
 %\appendix
-\begin{appendices} % Using appendices environment for more functunality
-\include{appendix}
-\end{appendices}
+%\begin{appendices} % Using appendices environment for more functunality
+%\include{appendix}
+%\end{appendices}
 
 \printindex
 \end{document}

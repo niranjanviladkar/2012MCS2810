@@ -2,15 +2,11 @@
 
 import re
 
-
-projectRoot = "/misc/research/parags/mcs122810/ActivityRecognition/"
-
-outputOfInferFile = projectRoot + "alchemy/project5_analysis_1db/outputOfInfer.mln"
-
-append_testDbFile = projectRoot + "alchemy/project5_analysis_1db/append_test.db"
+outputOfInferFile = "outputOfInfer.mln"
+append_testDbFile = "append_test.db"
 
 # all classes file
-classesFile = projectRoot + 'dataset/Hollywood/ClipSets/classes.txt'
+classesFile = '/misc/research/parags/mcs122810/ActivityRecognition/dataset/Hollywood/ClipSets/classes.txt'
 
 classes = {} 
 i = 0
@@ -20,8 +16,38 @@ for line in classFD:
 	i += 1
 classFD.close()
 
-#for i in xrange(12):
-#	print classes[i]
+def getInferredActivity( clip ):
+	i = 0
+	maxProb = -1
+	inferredActivity = ""
+	outputOfInferFD = open( outputOfInferFile, "r" )
+	for line in outputOfInferFD:
+		if re.search( clip, line ):
+			lineArray = line.split()
+			activity = lineArray[0].split('"')[3]
+			probability = float( lineArray[1] )
+
+			if probability > maxProb:
+				maxProb = probability
+				inferredActivity = activity
+	outputOfInferFD.close()
+	return inferredActivity
+
+def getAllInferred ():
+	i = 0
+	vector = {}
+	prevClip = ""
+	outputOfInferFD = open( outputOfInferFile, "r" )
+	for line in outputOfInferFD:
+		lineArray = line.split()
+		clipName = lineArray[0].split('"')[1]
+		if clipName != prevClip:
+			prevClip = clipName
+			vector[i] = getInferredActivity( clipName )
+			i += 1
+
+	outputOfInferFD.close()
+	return vector
 
 def getInferredVector( action ):
 	vector = {}
@@ -33,7 +59,7 @@ def getInferredVector( action ):
 			clipName = lineArray[0].split('"')[1]
 			probability = float(lineArray[1])
 
-			if probability > 0.9:
+			if getInferredActivity( clipName ) == action :
 				vector[i] = 1
 			else:
 				vector[i] = 0
@@ -54,6 +80,19 @@ def getTrueVector( action ):
 		i += 1
 	trueTestFD.close()
 	return vector
+
+def getAllTrue():
+	vector = {}
+	i = 0
+	trueTestFD = open( append_testDbFile, "r" )
+	for line in trueTestFD:
+		lineArray = line.split('"')
+		vector[i] = lineArray[3]
+		i += 1
+	trueTestFD.close()
+	return vector
+
+
 
 def negate( v ):
 	vector = {}
@@ -95,11 +134,21 @@ def getPrecision( action ):
 	truePositiveSum = sum( andAll( trueVector, inferredVector ) )
 	falsePositiveSum = sum ( andAll( negate(trueVector), inferredVector ) )
 
+	print "{2} : tp = {0}, fp = {1}, true = {3}, infer = {4}".format(truePositiveSum, falsePositiveSum, action, sum(trueVector), sum(inferredVector))
 	#print "{0}, {1}".format(truePositiveSum, falsePositiveSum)
 
 	precision = float( truePositiveSum ) / float ( truePositiveSum + falsePositiveSum )
 	return precision
 
+def getMicroAccuracyVector( v1, v2 ):
+	i = 0
+	vector = {}
+	for i in xrange( len(v1) ):
+		if v1[i] == v2[i]:
+			vector[i] = 1
+		else:
+			vector[i] = 0
+	return vector
 
 #precision = getPrecision( classes[4] )
 #print classes[4] + "\t" + str(precision)
@@ -112,18 +161,17 @@ for i in xrange( len( classes ) ):
 	print classes[i] + "\t" + str(allPrecisionsVector[i])
 
 for i in xrange( len( classes ) ):
-	allPrecisionsVector[i] = getPrecision( classes[i] )
 	print allPrecisionsVector[i]
-print "aap" + "\t" + str( sum( allPrecisionsVector ) / len( allPrecisionsVector ) )
+
+aap = sum( allPrecisionsVector ) / len( allPrecisionsVector ) 
+
+print "aap" + "\t" + str( aap )
+
+inferredLabels = getAllInferred()
+trueLabels = getAllTrue()
+
+microAcVec = getMicroAccuracyVector( inferredLabels, trueLabels )
+microAccuracy = float ( sum( microAcVec ) ) / float ( len( microAcVec ) )
+
+print "accuracy = {0}\n".format( microAccuracy )
 exit()
-#print "aap" + "\t" + str( sum( allPrecisionsVector ) / len( allPrecisionsVector ) )
-#exit()
-
-
-#for i in xrange( len(inferredVector) ):
-#	print inferredVector[i]
-
-#for i in xrange( len( trueVector ) ):
-#	print trueVector[i]
-
-
