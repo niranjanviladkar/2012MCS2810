@@ -166,11 +166,12 @@ Average AP of 33.86\% is achieved.
 
 ~\\
 
-{\bf TF-IDF Features - }
-The Bag-of-Features vector of each clip can be appended with Term Frequency -
-Inverse Document Frequency (tf-idf) features corresponding 
-to 10 objects and number of people information. Thus adding 11 more features to each
-feature vector.
+{\bf Object and People Features in SVM - }
+The Bag-of-Features vector of each clip can be appended with Object and People features.
+Term Frequency - Inverse Document Frequency (tf-idf) counts of objects are taken as object features.
+One feature corresponding to one object.
+Average number of people per frame are taken as people features.
+Thus adding 11 more features to each feature vector.
 These new feature vectors are now used to learn SVM model with similar parameters 
 and methodology explained in section \ref{section_METHODOLOGY}.
 It shows significant improvement as described in table \ref{table:SVM_TFIDF}.
@@ -198,40 +199,11 @@ StandUp & 35.20\% & 37.88\%\\ \hline
 Average AP & 31.56\% & 34.44\% \\ \hline
 %
 \end{tabular}
-\caption{Average precision after adding tf-idf features}
+\caption{Average Precision : Object and People Features in SVM}
 \label{table:SVM_TFIDF}
 \end{table}
 
-Advantage of {\bf MLN approach over TF-IDF} approach is that, MLNs can support feed-backs.
+Advantage of {\bf MLN approach over SVM} approach is that, MLNs can support feed-backs.
 A high confidence of an activity can increase probability of object being present in that particular clip. 
-This kind of feedback information cannot be captured using TF-IDF features.
+This kind of feedback information cannot be captured using Object and People SVM features.
 
-\begin{comment}
-Table \ref{table:SVM_Setup} shows APs for all classes as per SVM setup of this project.
-
-\begin{table}[t,here]
-\centering
-\captionsetup{justification=centering,margin=2cm}
-\begin{tabular}{| l | c | c |}
-\hline
-{\bf Activity Class} & {\bf AP as per Paper} & {\bf AP as per project} \\ \hline
-%
-AnswerPhone & 8.80\% & 11.36\% \\ \hline
-DriveCar & 74.90\% & 66.96\% \\ \hline
-Eat & 26.30\% & 45.45\% \\ \hline
-FightPerson & 67.50\% & 57.63\% \\ \hline
-GetOutCar & 9.00\% & 17.86\% \\ \hline
-HandShake & 11.60\% & 25.93\% \\ \hline
-HugPerson & 13.50\% & 15.15\% \\ \hline
-Kiss & 49.60\% & 18.18\% \\ \hline
-Run & 53.70\% & 38.78\% \\ \hline
-SitDown & 31.60\% & 40.96\% \\ \hline
-SitUp & 7.20\% & 5.26\% \\ \hline
-StandUp & 35\% & 35.20\% \\ \hline
-Average AP & 32.39\% & 31.56\% \\ \hline
-%
-\end{tabular}
-\caption{Average precision for Basic SVM Setup - without using tf-idf features}
-\label{table:SVM_Setup}
-\end{table}
-\end{comment}

@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: Thesis.aux
+A level-1 auxiliary file: titlepage.aux
+A level-1 auxiliary file: certificate.aux
+A level-1 auxiliary file: acknowledgement.aux
+A level-1 auxiliary file: abstract.aux
+A level-1 auxiliary file: chapter1_INTRO.aux
+A level-1 auxiliary file: c2_BACKGROUND.aux
+A level-1 auxiliary file: c3_RELATED.aux
+A level-1 auxiliary file: c4_Approach.aux
+A level-1 auxiliary file: chapter5_RESULTS.aux
+A level-1 auxiliary file: chapter6_CONCLUSION.aux
+The style file: plain.bst
+Database file #1: biblio.bib
+Warning--to sort, need author or key in alchemy2.0
+You've used 11 entries,
+            2118 wiz_defined-function locations,
+            572 strings with 5868 characters,
+and the built_in function-call counts, 3292 in all, are:
+= -- 319
+> -- 133
+< -- 2
++ -- 53
+- -- 42
+* -- 185
+:= -- 521
+add.period$ -- 33
+call.type$ -- 11
+change.case$ -- 54
+chr.to.int$ -- 0
+cite$ -- 12
+duplicate$ -- 131
+empty$ -- 302
+format.name$ -- 42
+if$ -- 719
+int.to.chr$ -- 0
+int.to.str$ -- 11
+missing$ -- 6
+newline$ -- 57
+num.names$ -- 20
+pop$ -- 82
+preamble$ -- 1
+purify$ -- 43
+quote$ -- 0
+skip$ -- 110
+stack$ -- 0
+substring$ -- 169
+swap$ -- 32
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 44
+warning$ -- 1
+while$ -- 30
+width$ -- 13
+write$ -- 112
+(There was 1 warning)

@@ -1,0 +1,63 @@
+\begin{thebibliography}{10}
+
+\bibitem{alchemy2.0}
+{Alchemy - 2 : Inference and Learning in Markov Logic}.
+\newblock \url{http://code.google.com/p/alchemy-2/downloads/list}.
+
+\bibitem{libsvm}
+Chih-Chung Chang and Chih-Jen Lin.
+\newblock {LIBSVM -- A Library for Support Vector Machines}.
+\newblock \url{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}.
+
+\bibitem{voc-release4}
+P.~F. Felzenszwalb, R.~B. Girshick, and D.~McAllester.
+\newblock {Discriminatively Trained Deformable Part Models, Release 4}.
+\newblock \url{http://cs.brown.edu/~pff/latent-release4/}.
+
+\bibitem{stipCode}
+Ivan Laptev.
+\newblock {HoG-HoF Feature Extraction at Space Time Interest Points Code}.
+\newblock \url{http://www.di.ens.fr/~laptev/download/stip-2.0-linux.zip}.
+
+\bibitem{hollywood2}
+Ivan Laptev.
+\newblock {Hollywood 2 Data Set (Action)}.
+\newblock \url{http://www.di.ens.fr/~laptev/actions/hollywood2/}.
+
+\bibitem{laptev2005}
+Ivan Laptev.
+\newblock {On Space-Time Interest Points}.
+\newblock {\em IJCV}, 64(2/3):107--123, 2005.
+
+\bibitem{Realistic}
+Ivan Laptev, Marcin Marsza{\l}ek, Cordelia Schmid, and Benjamin Rozenfeld.
+\newblock {Learning Realistic Human Actions from Movies}.
+\newblock In {\em Conference on Computer Vision \& Pattern Recognition}, Jun
+  2008.
+
+\bibitem{actionsInContext}
+Marcin Marsza{\l}ek, Ivan Laptev, and Cordelia Schmid.
+\newblock {Actions in Context}.
+\newblock In {\em IEEE Conference on Computer Vision \& Pattern Recognition},
+  2009.
+
+\bibitem{improving}
+Tanvi~S. Motwani and Raymond~J. Mooney.
+\newblock {Improving Video Activity Recognition using Object Recognition and
+  Text Mining }.
+\newblock In {\em Proceedings of the 20th European Conference on Artificial
+  Intelligence (ECAI-2012)}, pages 600--605, August 2012.
+
+\bibitem{MarkovLogic}
+Matthew Richardson and Pedro Domingos.
+\newblock {Markov Logic Networks}.
+\newblock {\em Mach. Learn.}, 62(1-2):107--136, February 2006.
+
+\bibitem{Parking}
+Son~D. Tran and Larry~S. Davis.
+\newblock {Event Modeling and Recognition Using Markov Logic Networks}.
+\newblock In {\em Proceedings of the 10th European Conference on Computer
+  Vision: Part II}, ECCV '08, pages 610--623, Berlin, Heidelberg, 2008.
+  Springer-Verlag.
+
+\end{thebibliography}

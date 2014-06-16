@@ -1,7 +1,7 @@
 \begin{theindex}
 \textbf{A}
   \item AAP, \hyperpage{17}
-  \item Average Average Precision, \hyperindexformat{\see {AAP}}{17}
+  \item Average Average Precision, \see {AAP}{17}
 
   \indexspace
 \textbf{B}
@@ -22,7 +22,7 @@
 
   \indexspace
 \textbf{M}
-  \item Markov Logic Networks, \hyperindexformat{\see {MLN}}{7}
+  \item Markov Logic Networks, \see {MLN}{7}
   \item Markov Networks, \hyperpage{6}
   \item MLN, \hyperpage{7}
 
