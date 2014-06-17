@@ -1,26 +1,20 @@
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
-\contentsline {section}{\numberline {1.1}Motivation}{1}{section.1.1}
-\contentsline {section}{\numberline {1.2}Thesis Outline}{2}{section.1.2}
 \contentsline {chapter}{\numberline {2}Background}{3}{chapter.2}
 \contentsline {section}{\numberline {2.1}Classification based on Video Features}{3}{section.2.1}
-\contentsline {subsection}{\numberline {2.1.1}Spatial Temporal Interest Points}{3}{subsection.2.1.1}
-\contentsline {subsection}{\numberline {2.1.2}Clustering}{4}{subsection.2.1.2}
-\contentsline {subsection}{\numberline {2.1.3}Bag of Features Representation}{4}{subsection.2.1.3}
-\contentsline {subsection}{\numberline {2.1.4}Support Vector Machines}{4}{subsection.2.1.4}
 \contentsline {section}{\numberline {2.2}Object Detection}{4}{section.2.2}
-\contentsline {subsection}{\numberline {2.2.1}Object Detector}{5}{subsection.2.2.1}
-\contentsline {subsection}{\numberline {2.2.2}Detection in Video}{5}{subsection.2.2.2}
 \contentsline {section}{\numberline {2.3}Markov Logic Networks}{5}{section.2.3}
-\contentsline {subsection}{\numberline {2.3.1}Markov Networks}{6}{subsection.2.3.1}
-\contentsline {subsection}{\numberline {2.3.2}Markov Logic}{6}{subsection.2.3.2}
-\contentsline {chapter}{\numberline {3}Related Work}{8}{chapter.3}
-\contentsline {chapter}{\numberline {4}Approach}{10}{chapter.4}
-\contentsline {section}{\numberline {4.1}MLN Evidence}{11}{section.4.1}
-\contentsline {section}{\numberline {4.2}MLN Rules}{12}{section.4.2}
-\contentsline {section}{\numberline {4.3}MLN Inference}{13}{section.4.3}
-\contentsline {chapter}{\numberline {5}Results}{15}{chapter.5}
-\contentsline {section}{\numberline {5.1}Methodology}{15}{section.5.1}
-\contentsline {section}{\numberline {5.2}Precision Comparisons}{17}{section.5.2}
-\contentsline {chapter}{\numberline {6}Conclusion}{20}{chapter.6}
-\contentsline {chapter}{Bibliography}{21}{chapter*.8}
-\contentsline {chapter}{Index}{23}{chapter*.8}
+\contentsline {chapter}{\numberline {3}Related Work}{7}{chapter.3}
+\contentsline {chapter}{\numberline {4}Approach}{9}{chapter.4}
+\contentsline {section}{\numberline {4.1}MLN Evidence}{10}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Evidence from Video Recognizer}{10}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}Evidence from Object Detector}{10}{subsection.4.1.2}
+\contentsline {section}{\numberline {4.2}MLN Rules}{11}{section.4.2}
+\contentsline {section}{\numberline {4.3}MLN Learning and Inference}{12}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Learning}{12}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Inference}{13}{subsection.4.3.2}
+\contentsline {chapter}{\numberline {5}Experiments}{14}{chapter.5}
+\contentsline {section}{\numberline {5.1}Dataset}{14}{section.5.1}
+\contentsline {section}{\numberline {5.2}Methodology}{14}{section.5.2}
+\contentsline {section}{\numberline {5.3}Results}{16}{section.5.3}
+\contentsline {chapter}{\numberline {6}Conclusion}{19}{chapter.6}
+\contentsline {chapter}{Bibliography}{20}{chapter*.8}

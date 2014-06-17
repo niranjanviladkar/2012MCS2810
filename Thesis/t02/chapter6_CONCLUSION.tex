@@ -3,12 +3,25 @@
 \label{ch6_CONCLUSION}
 
 Various experiments aimed at improving video activity recognition were performed during this project.
-Approaches included experiments using MLNs and adding tf-idf information to SVM learning.
-It was found that adding object and people information to the existing recognition framework
+Approaches included experiments using MLNs and adding object \& people information to SVM learning.
+We provide a seamless method to combine outputs of multiple noisy detectors to enhance the recognition
+process. It was found that adding object and people information to the existing recognition framework
 improves the precision results.
 
-Moreover, wherever there is a relationship between action and object, that can be represented by first order logic,
-markov logic networks effectively capture the relationship.
+%Moreover, wherever there is a relationship between action and object, that can be represented by first order logic,
+% markov logic networks effectively capture the relationship.
 
 The system developed by this project builds on top of video recognizer and object detector.
 Higher the precision of both of these systems, higher the precision of overall system.
+
+Future work can target to add more semantic information to the model such as scene information.
+An important future contribution could be to complete feed-back loop to improve the quality
+of the object detector. 
+For instance, if dining table is occluded in a video of `eating' activity, the feedback from 
+the activity recognizer can be used to boost up the confidence and predict the presence of dining table.
+
+\begin{comment}
+For instance, if dining table is occluded in `eating' activity,
+the feedback information from MLN can be used to increase the confidence of the presence of
+object dining table.
+\end{comment}

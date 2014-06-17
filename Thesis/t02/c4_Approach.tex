@@ -32,14 +32,15 @@ such rules using the evidence provided. Following sections explain in detail
 about the evidence creation, rules, etc.
 
 \section{MLN Evidence}
-The Hollywood2 data set \cite{hollywood2} (described in chapter \ref{ch5_RESULTS}) provides
+The Hollywood2 dataset \cite{hollywood2} (described in chapter \ref{ch5_RESULTS}) provides
 true activity labels for training data. These labels are used to create predicates
 like
 \begin{equation}
 	HasActivity( ``actioncliptrain00001", ``SitUp" )
 \end{equation}
 
-The learnt SVM model is used to classify training data set itself to get
+\subsection{Evidence from Video Recognizer}
+The learnt SVM model is used to classify training dataset itself to get
 confidence values of activities for all clips. These confidence values
 are partitioned into bins to create predicates like
 \begin{equation}
@@ -53,6 +54,7 @@ Here, P1\_TO\_P15 represents a bin with confidence value of +1 to +1.5.
 Similarly other bins are formed and predicates are generated to form the evidence.
 Each clip has 12 such predicates as there are 12 activity classes.
 
+\subsection{Evidence from Object Detector}
 Object detector \cite{voc-release4} gives object detections in frames
 along with the corresponding confidence values. Experimentally determined thresholds
 are used to decide whether to consider object detection and predicates like following are formed
@@ -73,6 +75,8 @@ and each clip is assigned one bin. Predicates like following are formed using th
 	\end{split}
 \end{equation}
 
+Now, in order to find the semantic relationship between activities and object \& people information,
+the MLN model needs to be learnt using MLN evidence and rules.
 
 
 
@@ -132,17 +136,23 @@ rules corresponding to all 12 activities will be used in MLN learning.
 
 
 
-\section{MLN Inference}
-For inference, the learnt SVM model is used to classify testing
-data set clips. This step provides with the confidence values of activities for
-each clip. These confidence values are partitioned into bins in same manner
-as done for generating evidence.
-The object and people information is added in similar fashion as that of
-evidence generation process. 
+\section{MLN Learning and Inference}
+\subsection{Learning}
+The evidence generated is used to learn a MLN model according to the rules provided.
+It learns weights for the rules mentioned in the previous section. The query predicate
+given is ``HasActivity". The positive rules, which capture intuitive relationship
+between activity and object \& people information, are expected to get higher weights
+as compared to negative rules, which state counter intuitive relationship.
 
+\subsection{Inference}
+The learnt MLN model, i.e. a set weighted first order logic formulae, is used with 
+evidence to predict activity classes for test dataset.
 Inference is made on predicate ``HasActivity". Thus only difference
 between evidence and inference is absence of ``HasActivity" predicates.
+MLN Inference process provides with the probabilities of all activities for
+each clip. 
 
+\begin{comment}
 Sample inference instance looks like
 \begin{equation}
 	\begin{split}
@@ -155,10 +165,11 @@ Sample inference instance looks like
 		~ & \vdots
 	\end{split}
 \end{equation}
+\end{comment}
 
 ~ \\
 {\bf AAP Calculations - }Using the probabilities given by MLN inference, inferred activity for each
-clip is determined corresponding to maximum probability. The data set provides with true activity labels for test clips. 
+clip is determined corresponding to maximum probability. The dataset provides with true activity labels for test clips. 
 These true activities and MLN inferred activities are used to calculate average average precision
-of MLN system. Next chapter shows the results.
+of MLN system. Next chapter presents the experimental results.
 

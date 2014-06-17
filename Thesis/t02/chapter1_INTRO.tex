@@ -9,17 +9,17 @@
 
 
 
-Human activity recognition is an area of interest in the field of large scale surveillance.
-A highly accurate and precise system would obviate the need for human attention
-at each of the surveillance video output all the time. The system can recognize the
-actions being performed by the human in the video and can decide for itself if the actions are abnormal;
-in which case, it may raise an alarm for human attention.
+Human activity recognition is an area of interest in the field of vision.
+For example, if one wants to extract only a certain type of activity
+sequence from YouTube videos, like eating or driving etc., a highly accurate and precise 
+video recognition system would drastically reduce the need for human intervention.
+The work in \cite{improving} processes YouTube dataset for activity recognition problem.
 
+\begin{comment}
 This project tries to improve the existing activity recognition system
-by adding domain knowledge and support for uncertainty to it.
+by adding semantic information about the domain and support for uncertainty to it.
+\end{comment}
 
-
-\section{Motivation}
 Existing activity recognition systems \cite{actionsInContext,Realistic,improving}  do not take advantage of underlying domain.
 Domain may have significant influence over the activity types, the objects appearing
 in the activity etc. For example, presence of a dining table improves the chances
@@ -44,19 +44,17 @@ Thus, using hard constraints is neither practical nor robust for real world vide
 Solution to this is to attach weights with rules like \eqref{MLNRule} with weights being proportional to the real world relevance.
 This idea can be captured using Markov Logic Networks (MLNs). Markov Logic allows us 
 to capture the relationship between activities and objects using weighted first order logic formulae.
-Thus in case of noisy training data or in case of occlusion of part of the objects,
-such model performs better as compared to the models built only on low level features.
+This helps in building a better overall model for activity detection.
 
 
-This project captures the semantic relationship between activities and objects 
-as well as makes the system more robust towards noisy training data.
+This project exploits the semantic relationship between activities and objects
+augmenting the information captured by low level features. 
 Aim of this project is to provide end to end recognition system to improve 
 the existing human activity recognition systems
 by adding domain knowledge i.e. object and people information to them.
 
 
 
- \section{Thesis Outline}
 Chapter \ref{ch2_BACKGROUND} gives the theoretical background. It explains video classification using only video features. It explains how to extract and use the video features. 
 It further describes object detection in detail and also describes the theory of Markov Logic Networks. 
 Chapter \ref{ch3_RELATED} throws light on previous approaches and points out potential improvement areas.

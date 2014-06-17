@@ -1,0 +1,44 @@
+\begin{center}
+\LARGE{Abstract}
+\end{center}
+
+\vspace{0.5in}
+
+%replace \lipsum with your abstract
+Human Activity Recognition is an important vision problem.
+In recent years, there have been various approaches towards the problem
+\cite{actionsInContext,Realistic,improving,Parking}.
+Most existing approaches perform classification of video clips 
+based on low level features like HoG-HoF. 
+This approach can not exploit the semantic relationship between activities 
+and presence of various kinds of objects (and people) in the underlying domain.
+
+\begin{comment}
+They don't consider the semantic information about the domain while classification.
+This methodology is not able to capture semantic relationship between activities and underlying domain.
+\end{comment}
+
+For example, in a video clip showing an action of ‘eating', even if the low level 
+feature based detector has low confidence about this activity, presence of dining table 
+and other objects such as bottle and chair can boost up the confidence and help make the correct prediction.
+
+\begin{comment}
+For exmaple, in a video clip showing an action of `eating', even if low level
+feature based detector has low confidence about presence of diningtable, 
+high level features such as bottle and chair object features can enhance the 
+confidence of object dining table being present.
+
+For example, presence of two persons in a clip increases chances of activity `conversation',
+a partial occlusion in the scene will lead to different low level features.
+Thus low level features may not be able to capture the information conveyed by 
+the presence of two persons effectively.
+\end{comment}
+
+This project adds domain knowledge in the form of object and people information
+to the classification using Markov Logic. Markov Logic captures semantic relationship
+using weighted first order logic formulae. An experiment where object and people features are 
+added to SVM features, shows significant improvement in the predictions.
+
+This project gives an end to end system for activity recognition. It takes input from 
+a video classifier and an object detector and builds semantic model on top of this information.
+Activity predictions using this approach shows improvement over the existing frameworks.

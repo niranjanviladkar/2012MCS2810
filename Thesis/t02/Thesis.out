@@ -1,6 +1,4 @@
 \BOOKMARK [0][-]{chapter.1}{Introduction}{}
-\BOOKMARK [1][-]{section.1.1}{Motivation}{chapter.1}
-\BOOKMARK [1][-]{section.1.2}{Thesis Outline}{chapter.1}
 \BOOKMARK [0][-]{chapter.2}{Background}{}
 \BOOKMARK [1][-]{section.2.1}{Classification based on Video Features}{chapter.2}
 \BOOKMARK [1][-]{section.2.2}{Object Detection}{chapter.2}
@@ -9,10 +7,10 @@
 \BOOKMARK [0][-]{chapter.4}{Approach}{}
 \BOOKMARK [1][-]{section.4.1}{MLN Evidence}{chapter.4}
 \BOOKMARK [1][-]{section.4.2}{MLN Rules}{chapter.4}
-\BOOKMARK [1][-]{section.4.3}{MLN Inference}{chapter.4}
-\BOOKMARK [0][-]{chapter.5}{Results}{}
-\BOOKMARK [1][-]{section.5.1}{Methodology}{chapter.5}
-\BOOKMARK [1][-]{section.5.2}{Precision Comparisons}{chapter.5}
+\BOOKMARK [1][-]{section.4.3}{MLN Learning and Inference}{chapter.4}
+\BOOKMARK [0][-]{chapter.5}{Experiments}{}
+\BOOKMARK [1][-]{section.5.1}{Dataset}{chapter.5}
+\BOOKMARK [1][-]{section.5.2}{Methodology}{chapter.5}
+\BOOKMARK [1][-]{section.5.3}{Results}{chapter.5}
 \BOOKMARK [0][-]{chapter.6}{Conclusion}{}
 \BOOKMARK [0][-]{chapter*.8}{Bibliography}{}
-\BOOKMARK [0][-]{chapter*.8}{Index}{}

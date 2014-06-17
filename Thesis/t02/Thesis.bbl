@@ -1,13 +1,27 @@
 \begin{thebibliography}{10}
 
 \bibitem{alchemy2.0}
-{Alchemy - 2 : Inference and Learning in Markov Logic}.
+{Alchemy-2 : Inference and Learning in Markov Logic}.
 \newblock \url{http://code.google.com/p/alchemy-2/downloads/list}.
 
 \bibitem{libsvm}
 Chih-Chung Chang and Chih-Jen Lin.
 \newblock {LIBSVM -- A Library for Support Vector Machines}.
 \newblock \url{http://www.csie.ntu.edu.tw/~cjlin/libsvm/}.
+
+\bibitem{svm}
+{Corinna Cortes and Vladimir Vapnik}.
+\newblock {Support-Vector Networks}.
+\newblock In {\em {Machine Learning}}, pages 273--297, 1995.
+
+\bibitem{pascal07}
+{Everingham, M. and Van~Gool, L. and Williams, C. K. I. and Winn, J. and
+  Zisserman, A.}
+\newblock {The {PASCAL} {V}isual {O}bject {C}lasses {C}hallenge 2007
+  {(VOC2007)} {R}esults}.
+\newblock
+  \url{http://www.pascal-network.org/challenges/VOC/voc2007/workshop/index.htm%
+l}.
 
 \bibitem{voc-release4}
 P.~F. Felzenszwalb, R.~B. Girshick, and D.~McAllester.
@@ -21,7 +35,7 @@ Ivan Laptev.
 
 \bibitem{hollywood2}
 Ivan Laptev.
-\newblock {Hollywood 2 Data Set (Action)}.
+\newblock {Hollywood 2 Dataset (Action)}.
 \newblock \url{http://www.di.ens.fr/~laptev/actions/hollywood2/}.
 
 \bibitem{laptev2005}

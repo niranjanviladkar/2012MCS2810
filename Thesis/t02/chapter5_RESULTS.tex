@@ -1,8 +1,9 @@
-\chapter{Results}
+\chapter{Experiments}
 
 \label{ch5_RESULTS}
-{\bf Data set - } All experiments in this project are performed on standard Hollywood2 (actions) 
-\cite{hollywood2} data set from \cite{actionsInContext}. 
+\section{Dataset} 
+All experiments in this project are performed on standard Hollywood2 (actions) 
+\cite{hollywood2} dataset from \cite{actionsInContext}. 
 It has 823 labeled training video clips and 884 labeled testing video clips. 
 There are 12 activity classes : AnswerPhone, DriveCar, Eat, FightPerson,
  GetOutCar, HandShake, HugPerson, Kiss, Run, SitDown, SitUp, StandUp.
@@ -38,14 +39,14 @@ Table \ref{table:ObjDetection} shows sample confidence output.
 \begin{figure}[here]
 \begin{center} 
 \includegraphics[scale=0.5]{car_detection_1.jpg} 
-\caption{ Car detection in a frame. \label{fig:CarDetection}} 
+\caption[Car detection in a frame]{ Car detection in a frame. {\it Source:}\cite{hollywood2} \label{fig:CarDetection}} 
 \end{center} 
 \end{figure}  
 
 \begin{figure}[here]
 \begin{center} 
 \includegraphics[scale=0.5]{person_detection_151.jpg} 
-\caption{ Person detection in a frame. \label{fig:PersonDetection}} 
+\caption[Person detection in a frame]{ Person detection in a frame. {\it Source:}\cite{hollywood2} \label{fig:PersonDetection}} 
 \end{center} 
 \end{figure}  
 
@@ -110,7 +111,8 @@ TV Monitor            &-0.80\\
 
 ~ \\
 {\bf Alchemy Setup - } MLN model is learnt using Alchemy 2.0 \cite{alchemy2.0} software.
-All the parameters are kept default. `QueryEvidence' option is not set.
+All the parameters are kept default. The learning algorithm used is the default Alchemy
+learning algorithm.
 
 ~\\
 {\bf Classification metric - } Predictions are compared by taking \index{Average Average Precision|see {AAP}} average average precision as a measure.
@@ -118,10 +120,44 @@ As explained in \cite{actionsInContext}, average precision(AP) approximates area
 Thus, AP for each activity class is calculated and then finally averaged over all the classes, average AP (\index{AAP}AAP) is calculated.
 AP is taken as a measure of performance in the work of \cite{actionsInContext}.
 
-\section{Precision Comparisons}
+\section{Results}
 {\bf MLN - } Using alchemy 2.0 \cite{alchemy2.0} software, various experiments were performed 
 to add the object and people information to the existing video recognizer. 
+\begin{table}[t,here]
+\centering
+\captionsetup{justification=centering,margin=2cm}
+\begin{tabular}{| l | c | c | c | c |}
+\hline
+	{\bf Activity Class} 
+	&\multicolumn{4}{c|}{\centering {\bf MLN} }\\ \hline
 
+	~ 
+	& \multicolumn{1}{p{1.2cm}|}{\centering {\bf Only \\ Action}}
+	& \multicolumn{1}{p{1.2cm}|}{\centering {\bf Action \& \\ Object}}
+	& \multicolumn{1}{p{1.2cm}|}{\centering {\bf Action \& \\ People}}
+	& \multicolumn{1}{p{1.2cm}|}{\centering {\bf Action \\ Object \& \\ People}}
+	\\ \hline
+	AnswerPhone	& 10.64\%  & 11.11\%  & 11.67\%  & 12.73\%  \\ \hline
+	DriveCar  	& 66.06\%  & 66.67\%  & 71.57\%  & 68.18\%  \\ \hline
+	Eat  		& 32.50\%  & 40.00\%  & 35.00\%  & 40.00\%  \\ \hline
+	FightPerson  	& 56.90\%  & 54.84\%  & 61.54\%  & 62.26\%  \\ \hline
+	GetOutCar  	& 8.00\%   & 13.79\%  & 17.39\%  & 14.29\%  \\ \hline
+	HandShake  	& 21.43\%  & 25.00\%  & 30.77\%  & 41.67\%  \\ \hline
+	HugPerson  	& 15.79\%  & 13.79\%  & 14.29\%  & 16.13\%  \\ \hline
+	Kiss  		& 18.07\%  & 19.78\%  & 19.79\%  & 20.65\%  \\ \hline
+	Run  		& 36.42\%  & 41.48\%  & 40.32\%  & 42.15\%  \\ \hline
+	SitDown  	& 38.10\%  & 35.56\%  & 34.78\%  & 39.56\%  \\ \hline
+	SitUp  		& 0.00\%   & 5.26\%   & 0.00\%   & 12.50\%  \\ \hline
+	StandUp  	& 38.46\%  & 36.29\%  & 38.26\%  & 36.24\%  \\ \hline
+	AAP  		& 28.53\%  & 30.30\%  & 31.28\%  & 33.86\%  \\ \hline
+
+\end{tabular}
+\caption{MLN Experiments - Average precisions}
+\label{table:MLN_RESULTS}
+\end{table}
+
+
+\begin{comment}
 \begin{table}[t,here]
 \centering
 \captionsetup{justification=centering,margin=2cm}
@@ -154,6 +190,7 @@ to add the object and people information to the existing video recognizer.
 \caption{MLN Experiments - Average precisions}
 \label{table:MLN_RESULTS}
 \end{table}
+\end{comment}
 
 Table \ref{table:MLN_RESULTS} shows comparison of APs for various strategies using MLNs.
 As can be seen, Average AP, when only action is considered for evidence and inference, is 28.53\%. 
@@ -176,6 +213,39 @@ These new feature vectors are now used to learn SVM model with similar parameter
 and methodology explained in section \ref{section_METHODOLOGY}.
 It shows significant improvement as described in table \ref{table:SVM_TFIDF}.
 
+
+\begin{table}[t,here]
+\centering
+\captionsetup{justification=centering,margin=2cm}
+\begin{tabular}{| l | c | c | c | c |}
+\hline
+	{\bf Activity Class}
+	& \multicolumn{1}{p{2cm}|}{\centering {\bf SVM Basic}}
+	& \multicolumn{1}{p{2cm}|}{\centering {\bf SVM Basic\\ + Object} }
+	& \multicolumn{1}{p{2cm}|}{\centering {\bf SVM Basic\\ + People} }
+	& \multicolumn{1}{p{2cm}|}{\centering {\bf SVM Basic\\ + People \\+ Object} } \\ \hline
+AnswerPhone & 11.36\% & 11.63\% & 16.67\% & 16.67\% \\ \hline
+DriveCar & 66.96\%  & 66.69\% & 70.09\% & 70.09\% \\ \hline
+Eat & 45.45\% & 44.12\% & 35.00\% & 50.00\% \\ \hline
+FightPerson & 57.63\%  & 57.63\% & 60.00\% & 66.04\% \\ \hline
+GetOutCar & 17.86\%  & 17.86\% & 10.34\% & 12.12\% \\ \hline
+HandShake & 25.93\%  & 25.93\% & 36.36\% & 31.82\% \\ \hline
+HugPerson & 15.15\%  & 15.62\% & 17.86\% & 17.86\% \\ \hline
+Kiss & 18.18\%  & 18.18\% & 17.65\% & 20.69\% \\ \hline
+Run & 38.78\%  & 38.51\% & 36.42\% & 39.35\% \\ \hline
+SitDown & 40.96\%  & 40.96\% & 42.68\% & 42.05\% \\ \hline
+SitUp & 5.26\%  & 5.26\% & 4.55\% & 8.70\% \\ \hline
+StandUp & 35.20\%  & 35.20\% & 37.21\% & 37.88\%\\ \hline
+Average AP & 31.56\%  & 31.49\% & 31.64\% & 34.44\% \\ \hline
+%
+\end{tabular}
+\caption{Average Precision : Object and People Features in SVM}
+\label{table:SVM_TFIDF}
+\end{table}
+
+
+
+\begin{comment}
 \begin{table}[t,here]
 \centering
 \captionsetup{justification=centering,margin=2cm}
@@ -202,6 +272,7 @@ Average AP & 31.56\% & 34.44\% \\ \hline
 \caption{Average Precision : Object and People Features in SVM}
 \label{table:SVM_TFIDF}
 \end{table}
+\end{comment}
 
 Advantage of {\bf MLN approach over SVM} approach is that, MLNs can support feed-backs.
 A high confidence of an activity can increase probability of object being present in that particular clip. 

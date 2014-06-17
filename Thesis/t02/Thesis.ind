@@ -1,17 +1,16 @@
 \begin{theindex}
 \textbf{A}
-  \item AAP, \hyperpage{17}
-  \item Average Average Precision, \see {AAP}{17}
+  \item AAP, \hyperpage{16}
+  \item Average Average Precision, \see {AAP}{16}
 
   \indexspace
 \textbf{B}
-  \item Bag of Features Representation, \hyperpage{4}
   \item BoF, \hyperpage{4}
-  \item Bounding Box, \hyperpage{5}
+  \item Bounding Box, \hyperpage{4}
 
   \indexspace
 \textbf{D}
-  \item Decision Value, \hyperpage{5}
+  \item Decision Value, \hyperpage{4}
 
   \indexspace
 \textbf{H}
@@ -22,20 +21,12 @@
 
   \indexspace
 \textbf{M}
-  \item Markov Logic Networks, \see {MLN}{7}
-  \item Markov Networks, \hyperpage{6}
-  \item MLN, \hyperpage{7}
-
-  \indexspace
-\textbf{P}
-  \item Partition Function, \hyperpage{6}
-  \item Potential Functions, \hyperpage{6}
+  \item Markov Logic Networks, \see {MLN}{5}
+  \item MLN, \hyperpage{5}
 
   \indexspace
 \textbf{S}
-  \item Spatial Temporal Interest Points, \hyperpage{3}
   \item STIP, \hyperpage{3}
-  \item Support Vector Machines, \hyperpage{4}
   \item SVM, \hyperpage{4}
 
 \end{theindex}

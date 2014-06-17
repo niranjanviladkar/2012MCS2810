@@ -10,8 +10,11 @@ space-time pyramids and multi-channel non-linear SVM.
 Their approach is based on low level space time features such as HoG-HoF features. 
 All video clips are represented in Bag-of-Features representation. 
 These Bag-of-Features vectors are used to train a SVM model. 
-Note that as this method uses low level features, it will be ineffective 
-in case the video is partially occluded or the training data is noisy.
+Note that as this method uses low level features, it can not exploit the 
+rich semantic information relating activities with presence of objects and people.
+
+%it will be ineffective 
+%in case the video is partially occluded or the training data is noisy.
 
 ~\\
 In \cite{actionsInContext}, authors add context in the form of scene information to the classification problem. 
@@ -38,8 +41,9 @@ and probability of activity deduced from object information.
 ~\\
 In \cite{Parking}, Markov Logic Networks are used to capture the interaction
 between humans and vehicles, such as, open door, drive away etc. 
-Although this method does capture the relationship irrespective of occlusions
-and noisy training data, it is limited to human - vehicle interaction.
+But their model is limited to human vehicle interaction.
+%Although this method does capture the relationship irrespective of occlusions
+%and noisy training data, it is limited to human - vehicle interaction.
 For real world videos, a more general system is required.
 
 ~\\
